@@ -1,17 +1,64 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="源文件">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="头文件">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
-    </Filter>
     <Filter Include="资源文件">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="main">
+      <UniqueIdentifier>{3d9522a1-d977-433d-bf6a-ee0fdaaeb979}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RenderTools">
+      <UniqueIdentifier>{a2f6358b-dac0-4358-b8c2-63afaf0ceba8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="RenderData">
+      <UniqueIdentifier>{6745e1d9-1cc7-4c2f-b1b2-edf84573adfc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CommonData">
+      <UniqueIdentifier>{1163cc04-7f01-46b2-a4bb-9cf465514fd4}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="main\main.h">
+      <Filter>main</Filter>
+    </ClInclude>
+    <ClInclude Include="main\ToolWindow.h">
+      <Filter>main</Filter>
+    </ClInclude>
+    <ClInclude Include="main\CSJRenderWindow.h">
+      <Filter>main</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderTools\RenderManager.h" />
+    <ClInclude Include="main\stdafx.h" />
+    <ClInclude Include="main\targetver.h" />
+    <ClInclude Include="CommonData\CSJDataManager.h" />
+    <ClInclude Include="RenderData\CSJOutVideoBuf.h" />
+    <ClInclude Include="RenderData\graphics.h" />
+    <ClInclude Include="RenderTools\Render.h" />
+    <ClInclude Include="RenderTools\SceneRenderer.h" />
+    <ClInclude Include="RenderTools\TextureBlitter.h" />
+    <ClInclude Include="CommonData\CSJLogManager.h" />
+    <ClInclude Include="RenderData\gl_display.h" />
+    <ClInclude Include="RenderTools\GLRenderImpl.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main\main.cpp">
+      <Filter>main</Filter>
+    </ClCompile>
+    <ClCompile Include="main\ToolWindow.cpp">
+      <Filter>main</Filter>
+    </ClCompile>
+    <ClCompile Include="main\CSJRenderWindow.cpp">
+      <Filter>main</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderTools\RenderManager.cpp" />
+    <ClCompile Include="CommonData\CSJDataManager.cpp" />
+    <ClCompile Include="RenderData\CSJOutVideoBuf.cpp" />
+    <ClCompile Include="RenderData\graphics.cpp" />
+    <ClCompile Include="RenderTools\Render.cpp" />
+    <ClCompile Include="RenderTools\SceneRenderer.cpp" />
+    <ClCompile Include="RenderTools\TextureBlitter.cpp" />
+    <ClCompile Include="CommonData\CSJLogManager.cpp" />
+    <ClCompile Include="RenderTools\GLRenderImpl.cpp" />
   </ItemGroup>
 </Project>

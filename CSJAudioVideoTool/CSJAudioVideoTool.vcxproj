@@ -18,6 +18,37 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="CommonData\CSJDataManager.h" />
+    <ClInclude Include="CommonData\CSJLogManager.h" />
+    <ClInclude Include="main\CSJRenderWindow.h" />
+    <ClInclude Include="main\stdafx.h" />
+    <ClInclude Include="main\targetver.h" />
+    <ClInclude Include="main\ToolWindow.h" />
+    <ClInclude Include="main\main.h" />
+    <ClInclude Include="RenderTools\GLRenderImpl.h" />
+    <ClInclude Include="RenderTools\Render.h" />
+    <ClInclude Include="RenderData\CSJOutVideoBuf.h" />
+    <ClInclude Include="RenderData\graphics.h" />
+    <ClInclude Include="RenderData\gl_display.h" />
+    <ClInclude Include="RenderTools\RenderManager.h" />
+    <ClInclude Include="RenderTools\SceneRenderer.h" />
+    <ClInclude Include="RenderTools\TextureBlitter.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="CommonData\CSJDataManager.cpp" />
+    <ClCompile Include="CommonData\CSJLogManager.cpp" />
+    <ClCompile Include="main\CSJRenderWindow.cpp" />
+    <ClCompile Include="main\ToolWindow.cpp" />
+    <ClCompile Include="main\main.cpp" />
+    <ClCompile Include="RenderTools\GLRenderImpl.cpp" />
+    <ClCompile Include="RenderTools\Render.cpp" />
+    <ClCompile Include="RenderData\CSJOutVideoBuf.cpp" />
+    <ClCompile Include="RenderData\graphics.cpp" />
+    <ClCompile Include="RenderTools\RenderManager.cpp" />
+    <ClCompile Include="RenderTools\SceneRenderer.cpp" />
+    <ClCompile Include="RenderTools\TextureBlitter.cpp" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{D086BC3B-9155-4395-9AF2-D211F115334A}</ProjectGuid>
@@ -29,7 +60,7 @@
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v141</PlatformToolset>
-    <CharacterSet>MultiByte</CharacterSet>
+    <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -42,7 +73,7 @@
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v141</PlatformToolset>
-    <CharacterSet>MultiByte</CharacterSet>
+    <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -69,17 +100,32 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ExecutablePath>$(ExecutablePath)</ExecutablePath>
+    <IncludePath>E:\technology\Projects\CSJAudioVideoTool\CSJAudioVideoTool\CSJAudioVideoTool\third_part\DuiLib_projects;E:\technology\Projects\CSJAudioVideoTool\CSJAudioVideoTool\CSJAudioVideoTool\main;$(IncludePath)</IncludePath>
+    <OutDir>$(SolutionDir)build\$(ProjectName)\$(platform)\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)build\$(ProjectName)\$(platform)\$(Configuration)\</IntDir>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;GLEW_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <AdditionalIncludeDirectories>$(ProjectDir)RenderData;$(ProjectDir)RenderTools;$(ProjectDir)CommonData;$(ProjectDir);$(ProjectDir)third_part\glew-2.1.0\include;$(ProjectDir)third_part\glfw-3.3.3\include;$(ProjectDir)third_part\log4cpp\include;$(SolutionDir)Include\CSJMediaPegTools;$(SolutionDir)Duilib\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
+      <AdditionalLibraryDirectories>$(SolutionDir)Lib\$(platform)\$(configuration);$(ProjectDir)third_part\glew-2.1.0\Lib\Win32;$(ProjectDir)third_part\glfw-3.3.3\Lib\$(platform);$(ProjectDir)third_part\log4cpp\lib\$(platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>base_d.lib;duilib_d.lib;ui_components_d.lib;opengl32.lib;glew32sd.lib;glfw3d.lib;GLTool.lib;log4cpp.lib;CSJMediaPegTools.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>$(SolutionDir)copy_file.bat $(SolutionDir) $(ProjectName) $(TargetName) $(TargetExt) $(Platform) $(Configuration)
+Xcopy /y $(SolutionDir)Dlls\* $(SolutionDir)bin\$(Configuration)\</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -87,9 +133,14 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(ProjectDir)RenderData;$(ProjectDir)RenderTools;$(ProjectDir)CommonData;$(ProjectDir);$(ProjectDir)third_part\Duilib_Projects;$(ProjectDir)third_part\glew-2.1.0\include;$(ProjectDir)third_part\glfw-3.3.3\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_WINDOWS;GLEW_STATIC;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
+      <AdditionalLibraryDirectories>$(ProjectDir)third_part\glfw-3.3.3\Lib\$(platform);$(ProjectDir)third_part\glew-2.1.0\lib\$(platform);$(ProjectDir)third_part\log4cpp\Lib\$(platform);$(SolutionDir)libs\$(platform)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>base_d.lib;duilib_d.lib;ui_components.lib;opengl32.lib;glew32sd.lib;glfw3d.lib;GLTool.lib;log4cpp.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -122,8 +173,6 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
