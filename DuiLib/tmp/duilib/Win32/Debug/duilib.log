@@ -1,0 +1,130 @@
+﻿cl : 命令行 warning D9035: “Gm”选项已否决，并将在将来的版本中移除
+  StdAfx.cpp
+d:\windows kits\10\include\10.0.17763.0\um\gdiplusheaders.h(701): warning C4458: “nativeCap”的声明隐藏了类成员
+  d:\windows kits\10\include\10.0.17763.0\um\gdiplusheaders.h(716): note: 参见“Gdiplus::CustomLineCap::nativeCap”的声明
+d:\windows kits\10\include\10.0.17763.0\um\gdiplusimageattributes.h(368): warning C4458: “nativeImageAttr”的声明隐藏了类成员
+  d:\windows kits\10\include\10.0.17763.0\um\gdiplusimageattributes.h(382): note: 参见“Gdiplus::ImageAttributes::nativeImageAttr”的声明
+d:\windows kits\10\include\10.0.17763.0\um\gdiplusmatrix.h(301): warning C4458: “nativeMatrix”的声明隐藏了类成员
+  d:\windows kits\10\include\10.0.17763.0\um\gdiplusmatrix.h(315): note: 参见“Gdiplus::Matrix::nativeMatrix”的声明
+d:\windows kits\10\include\10.0.17763.0\um\gdiplusbrush.h(95): warning C4458: “nativeBrush”的声明隐藏了类成员
+  d:\windows kits\10\include\10.0.17763.0\um\gdiplusbrush.h(108): note: 参见“Gdiplus::Brush::nativeBrush”的声明
+d:\windows kits\10\include\10.0.17763.0\um\gdipluspen.h(467): warning C4458: “nativePen”的声明隐藏了类成员
+  d:\windows kits\10\include\10.0.17763.0\um\gdipluspen.h(481): note: 参见“Gdiplus::Pen::nativePen”的声明
+d:\windows kits\10\include\10.0.17763.0\um\gdipluspath.h(891): warning C4458: “nativePath”的声明隐藏了类成员
+  d:\windows kits\10\include\10.0.17763.0\um\gdipluspath.h(905): note: 参见“Gdiplus::GraphicsPath::nativePath”的声明
+d:\windows kits\10\include\10.0.17763.0\um\gdipluspath.h(1078): warning C4458: “nativeIterator”的声明隐藏了类成员
+  d:\windows kits\10\include\10.0.17763.0\um\gdipluspath.h(1092): note: 参见“Gdiplus::GraphicsPathIterator::nativeIterator”的声明
+e:\technology\projects\csjaudiovideotool\csjaudiovideotool\duilib\duilib\control\label.h(341): warning C4456: “clrColor”的声明隐藏了上一个本地声明
+  e:\technology\projects\csjaudiovideotool\csjaudiovideotool\duilib\duilib\control\label.h(330): note: 参见“clrColor”的声明
+  e:\technology\projects\csjaudiovideotool\csjaudiovideotool\duilib\duilib\control\label.h(312): note: 编译 类 模板 成员函数 "void ui::LabelTemplate<ui::Control>::PaintText(ui::IRenderContext *)" 时
+  e:\technology\projects\csjaudiovideotool\csjaudiovideotool\duilib\duilib\control\progress.h(10): note: 参见对正在编译的 类 模板 实例化 "ui::LabelTemplate<ui::Control>" 的引用
+e:\technology\projects\csjaudiovideotool\csjaudiovideotool\duilib\duilib\control\label.h(343): warning C4456: “dwClrColor”的声明隐藏了上一个本地声明
+  e:\technology\projects\csjaudiovideotool\csjaudiovideotool\duilib\duilib\control\label.h(331): note: 参见“dwClrColor”的声明
+e:\technology\projects\csjaudiovideotool\csjaudiovideotool\duilib\duilib\control\label.h(348): warning C4456: “clrColor”的声明隐藏了上一个本地声明
+  e:\technology\projects\csjaudiovideotool\csjaudiovideotool\duilib\duilib\control\label.h(341): note: 参见“clrColor”的声明
+e:\technology\projects\csjaudiovideotool\csjaudiovideotool\duilib\duilib\control\label.h(350): warning C4456: “dwClrColor”的声明隐藏了上一个本地声明
+  e:\technology\projects\csjaudiovideotool\csjaudiovideotool\duilib\duilib\control\label.h(331): note: 参见“dwClrColor”的声明
+cl : 命令行 warning D9035: “Gm”选项已否决，并将在将来的版本中移除
+  WinImplBase.cpp
+e:\technology\projects\csjaudiovideotool\csjaudiovideotool\duilib\duilib\utils\winimplbase.cpp(1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+  UnZip.cpp
+e:\technology\projects\csjaudiovideotool\csjaudiovideotool\duilib\duilib\utils\unzip.cpp(3508): warning C4457: “buf”的声明隐藏了函数参数
+  e:\technology\projects\csjaudiovideotool\csjaudiovideotool\duilib\duilib\utils\unzip.cpp(3475): note: 参见“buf”的声明
+  TreeView.cpp
+  Slider.cpp
+  ScrollBar.cpp
+e:\technology\projects\csjaudiovideotool\csjaudiovideotool\duilib\duilib\control\scrollbar.cpp(445): warning C4302: “类型强制转换”: 从“LPWSTR”到“WORD”截断
+e:\technology\projects\csjaudiovideotool\csjaudiovideotool\duilib\duilib\control\scrollbar.cpp(449): warning C4302: “类型强制转换”: 从“LPWSTR”到“WORD”截断
+  RichEdit.cpp
+e:\technology\projects\csjaudiovideotool\csjaudiovideotool\duilib\duilib\control\richedit.cpp(1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+e:\technology\projects\csjaudiovideotool\csjaudiovideotool\duilib\duilib\control\richedit.cpp(808): warning C4458: “fWordWrap”的声明隐藏了类成员
+  e:\technology\projects\csjaudiovideotool\csjaudiovideotool\duilib\duilib\control\richedit.cpp(184): note: 参见“ui::CTxtWinHost::fWordWrap”的声明
+e:\technology\projects\csjaudiovideotool\csjaudiovideotool\duilib\duilib\control\richedit.cpp(917): warning C4458: “fAllowBeep”的声明隐藏了类成员
+  e:\technology\projects\csjaudiovideotool\csjaudiovideotool\duilib\duilib\control\richedit.cpp(185): note: 参见“ui::CTxtWinHost::fAllowBeep”的声明
+e:\technology\projects\csjaudiovideotool\csjaudiovideotool\duilib\duilib\control\richedit.cpp(1081): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+e:\technology\projects\csjaudiovideotool\csjaudiovideotool\duilib\duilib\control\richedit.cpp(2256): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+e:\technology\projects\csjaudiovideotool\csjaudiovideotool\duilib\duilib\control\richedit.cpp(2395): warning C4302: “类型强制转换”: 从“LPWSTR”到“WORD”截断
+e:\technology\projects\csjaudiovideotool\csjaudiovideotool\duilib\duilib\control\richedit.cpp(2402): warning C4302: “类型强制转换”: 从“LPWSTR”到“WORD”截断
+  Progress.cpp
+  List.cpp
+e:\technology\projects\csjaudiovideotool\csjaudiovideotool\duilib\duilib\control\list.cpp(228): warning C4457: “pControl”的声明隐藏了函数参数
+  e:\technology\projects\csjaudiovideotool\csjaudiovideotool\duilib\duilib\control\list.cpp(216): note: 参见“pControl”的声明
+  Combo.cpp
+  Markup.cpp
+  GlobalManager.cpp
+  WindowBuilder.cpp
+e:\technology\projects\csjaudiovideotool\csjaudiovideotool\duilib\duilib\core\windowbuilder.cpp(65): warning C4456: “nAttributes”的声明隐藏了上一个本地声明
+  e:\technology\projects\csjaudiovideotool\csjaudiovideotool\duilib\duilib\core\windowbuilder.cpp(57): note: 参见“nAttributes”的声明
+e:\technology\projects\csjaudiovideotool\csjaudiovideotool\duilib\duilib\core\windowbuilder.cpp(91): warning C4456: “nAttributes”的声明隐藏了上一个本地声明
+  e:\technology\projects\csjaudiovideotool\csjaudiovideotool\duilib\duilib\core\windowbuilder.cpp(57): note: 参见“nAttributes”的声明
+e:\technology\projects\csjaudiovideotool\csjaudiovideotool\duilib\duilib\core\windowbuilder.cpp(96): warning C4456: “pstr”的声明隐藏了上一个本地声明
+  e:\technology\projects\csjaudiovideotool\csjaudiovideotool\duilib\duilib\core\windowbuilder.cpp(60): note: 参见“pstr”的声明
+e:\technology\projects\csjaudiovideotool\csjaudiovideotool\duilib\duilib\core\windowbuilder.cpp(123): warning C4456: “pstr”的声明隐藏了上一个本地声明
+  e:\technology\projects\csjaudiovideotool\csjaudiovideotool\duilib\duilib\core\windowbuilder.cpp(60): note: 参见“pstr”的声明
+e:\technology\projects\csjaudiovideotool\csjaudiovideotool\duilib\duilib\core\windowbuilder.cpp(132): warning C4456: “pstr”的声明隐藏了上一个本地声明
+  e:\technology\projects\csjaudiovideotool\csjaudiovideotool\duilib\duilib\core\windowbuilder.cpp(60): note: 参见“pstr”的声明
+e:\technology\projects\csjaudiovideotool\csjaudiovideotool\duilib\duilib\core\windowbuilder.cpp(143): warning C4456: “pstr”的声明隐藏了上一个本地声明
+  e:\technology\projects\csjaudiovideotool\csjaudiovideotool\duilib\duilib\core\windowbuilder.cpp(60): note: 参见“pstr”的声明
+e:\technology\projects\csjaudiovideotool\csjaudiovideotool\duilib\duilib\core\windowbuilder.cpp(149): warning C4456: “pstr”的声明隐藏了上一个本地声明
+  e:\technology\projects\csjaudiovideotool\csjaudiovideotool\duilib\duilib\core\windowbuilder.cpp(60): note: 参见“pstr”的声明
+e:\technology\projects\csjaudiovideotool\csjaudiovideotool\duilib\duilib\core\windowbuilder.cpp(155): warning C4456: “pstr”的声明隐藏了上一个本地声明
+  e:\technology\projects\csjaudiovideotool\csjaudiovideotool\duilib\duilib\core\windowbuilder.cpp(60): note: 参见“pstr”的声明
+e:\technology\projects\csjaudiovideotool\csjaudiovideotool\duilib\duilib\core\windowbuilder.cpp(168): warning C4456: “pstr”的声明隐藏了上一个本地声明
+  e:\technology\projects\csjaudiovideotool\csjaudiovideotool\duilib\duilib\core\windowbuilder.cpp(60): note: 参见“pstr”的声明
+e:\technology\projects\csjaudiovideotool\csjaudiovideotool\duilib\duilib\core\windowbuilder.cpp(177): warning C4456: “pstr”的声明隐藏了上一个本地声明
+  e:\technology\projects\csjaudiovideotool\csjaudiovideotool\duilib\duilib\core\windowbuilder.cpp(60): note: 参见“pstr”的声明
+  Control.cpp
+e:\technology\projects\csjaudiovideotool\csjaudiovideotool\duilib\duilib\core\control.cpp(751): warning C4456: “callback”的声明隐藏了上一个本地声明
+  e:\technology\projects\csjaudiovideotool\csjaudiovideotool\duilib\duilib\core\control.cpp(734): note: 参见“callback”的声明
+e:\technology\projects\csjaudiovideotool\csjaudiovideotool\duilib\duilib\core\control.cpp(786): warning C4302: “类型强制转换”: 从“LPWSTR”到“WORD”截断
+e:\technology\projects\csjaudiovideotool\csjaudiovideotool\duilib\duilib\core\control.cpp(789): warning C4302: “类型强制转换”: 从“LPWSTR”到“WORD”截断
+e:\technology\projects\csjaudiovideotool\csjaudiovideotool\duilib\duilib\core\control.cpp(794): warning C4302: “类型强制转换”: 从“LPWSTR”到“WORD”截断
+e:\technology\projects\csjaudiovideotool\csjaudiovideotool\duilib\duilib\core\control.cpp(798): warning C4302: “类型强制转换”: 从“LPWSTR”到“WORD”截断
+  Box.cpp
+e:\technology\projects\csjaudiovideotool\csjaudiovideotool\duilib\duilib\core\box.cpp(280): warning C4456: “callback”的声明隐藏了上一个本地声明
+  e:\technology\projects\csjaudiovideotool\csjaudiovideotool\duilib\duilib\core\box.cpp(263): note: 参见“callback”的声明
+e:\technology\projects\csjaudiovideotool\csjaudiovideotool\duilib\duilib\core\box.cpp(315): warning C4456: “callback”的声明隐藏了上一个本地声明
+  e:\technology\projects\csjaudiovideotool\csjaudiovideotool\duilib\duilib\core\box.cpp(298): note: 参见“callback”的声明
+  Window.cpp
+e:\technology\projects\csjaudiovideotool\csjaudiovideotool\duilib\duilib\core\window.cpp(1874): warning C4838: 从“int”转换到“BYTE”需要收缩转换
+  TimerManager.cpp
+  StringUtil.cpp
+  Shadow.cpp
+  OnScreenKeyboardManager.cpp
+  MultiLangSupport.cpp
+  正在生成代码...
+  正在编译...
+  DpiManager.cpp
+  ApiWrapper.cpp
+  UIlib.cpp
+  Render.cpp
+e:\technology\projects\csjaudiovideotool\csjaudiovideotool\duilib\duilib\render\render.cpp(9): warning C4838: 从“int”转换到“BYTE”需要收缩转换
+  Pen.cpp
+  Path.cpp
+  Matrix.cpp
+  IRender.cpp
+  Factory.cpp
+  Clip.cpp
+  Brush.cpp
+  Bitmap.cpp
+  Placeholder.cpp
+  Image.cpp
+  Define.cpp
+  VirtualListBox.cpp
+  CircleProgress.cpp
+e:\technology\projects\csjaudiovideotool\csjaudiovideotool\duilib\duilib\control\circleprogress.cpp(1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+  VBox.cpp
+  TileBox.cpp
+  TabBox.cpp
+  正在生成代码...
+  正在编译...
+  HBox.cpp
+  ChildBox.cpp
+  AnimationPlayer.cpp
+  AnimationManager.cpp
+  正在生成代码...
+  duilib.vcxproj -> E:\technology\Projects\CSJAudioVideoTool\CSJAudioVideoTool\DuiLib\duilib\..\output\duilib\Win32\Debug\duilib_d.lib
+  E:\technology\Projects\CSJAudioVideoTool\CSJAudioVideoTool\DuiLib\duilib\..\output\duilib\Win32\Debug\duilib_d.lib
+  复制了 1 个文件
+  E:\technology\Projects\CSJAudioVideoTool\CSJAudioVideoTool\DuiLib\duilib\..\output\duilib\Win32\Debug\duilib_d.pdb
+  复制了 1 个文件

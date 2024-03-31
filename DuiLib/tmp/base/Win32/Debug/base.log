@@ -1,0 +1,53 @@
+﻿  des.cpp
+  file_util.cpp
+  file_util_posix.cpp
+  file_util_win.cpp
+  default_message_pump.cpp
+  message_loop.cpp
+  message_loop_proxy.cpp
+  message_pump.cpp
+  win_io_message_pump.cpp
+  win_message_pump.cpp
+  win_ui_message_pump.cpp
+  cpu.cpp
+  network_util.cpp
+e:\technology\projects\csjaudiovideotool\csjaudiovideotool\duilib\base\network\network_util.cpp : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+  lock_posix.cpp
+  lock_win.cpp
+  semaphore_posix.cpp
+  semaphore_win.cpp
+  waitable_event_posix.cpp
+  waitable_event_win.cpp
+  atomicops_internals_x86_gcc.cc
+  正在生成代码...
+  正在编译...
+  modp_b64.cc
+  framework_thread.cpp
+  thread_local_posix.cpp
+  thread_local_win.cpp
+  thread_manager.cpp
+  thread_posix.cpp
+  thread_win.cpp
+  time.cpp
+  time_posix.cpp
+  time_win.cpp
+  at_exit.cpp
+  base64.cpp
+  cmd_line_args.cpp
+  string_number_conversions.cpp
+  string_util.cpp
+  object_watcher.cpp
+  path_util.cpp
+  platform_string_util.cpp
+  security_util.cpp
+  shared_memory.cpp
+  正在生成代码...
+  正在编译...
+  win_util.cpp
+  正在生成代码...
+  ConvertUTF.c
+  base.vcxproj -> E:\technology\Projects\CSJAudioVideoTool\CSJAudioVideoTool\DuiLib\base\..\output\base\Win32\Debug\base_d.lib
+  E:\technology\Projects\CSJAudioVideoTool\CSJAudioVideoTool\DuiLib\base\..\output\base\Win32\Debug\base_d.lib
+  复制了 1 个文件
+  E:\technology\Projects\CSJAudioVideoTool\CSJAudioVideoTool\DuiLib\base\..\output\base\Win32\Debug\base_d.pdb
+  复制了 1 个文件
