@@ -4,6 +4,8 @@
 #include <mfidl.h>
 #include <mfapi.h>
 
+#include "CSJMFCaptureHeader.h"
+
 CSJMFCapture* CSJMFCapture::getMFCapture() {
     return new CSJMFCaptureImpl();
 }
@@ -16,60 +18,90 @@ CSJMFCaptureImpl::~CSJMFCaptureImpl() {
 
 }
 
-CSJMFDeviceList CSJMFCaptureImpl::getCaptureDevices(CSJMFDeviceType deviceType) {
-    IMFMediaSource *pSource = NULL;
+CSJMFDeviceList CSJMFCaptureImpl::getVideoCapDevices() {
+    return m_videoDevs;
+}
+
+CSJMFDeviceList CSJMFCaptureImpl::getAudioCapDevices() {
+    return m_audioDevs;
+}
+
+void CSJMFCaptureImpl::getVideoDevices() {
     IMFAttributes *pAttributes = NULL;
-    IMFActivate **ppDevices = NULL;
 
-    HRESULT hr = MFCreateAttributes(&pAttributes, 1);
-    if (FAILED(hr)) {
-        return CSJMFDeviceList();
-    }
-
-    hr = pAttributes->SetGUID(MF_DEVSOURCE_ATTRIBUTE_SOURCE_TYPE,
-                              MF_DEVSOURCE_ATTRIBUTE_SOURCE_TYPE_VIDCAP_GUID);
-    if (FAILED(hr)) {
-        //SafeRelease(&pAttributes);
-    }
-
-    UINT32 count;
-    hr = MFEnumDeviceSources(pAttributes, &ppDevices, &count);
-    if (FAILED(hr)) {
-    
-    }
-
-    if (count == 0) {
-    
-    }
-    
-    WCHAR *szFriendlyName = NULL;
-    UINT32 ccName;
-    for (DWORD i = 0; i < count; i++) {
-        // 获取设备的名称，不是唯一，因此不能用来作为判断选择设备的依据.
-        hr = ppDevices[i]->GetAllocatedString(MF_DEVSOURCE_ATTRIBUTE_FRIENDLY_NAME, 
-                                              &szFriendlyName, 
-                                              &ccName);
+    do {
+        HRESULT hr = MFCreateAttributes(&pAttributes, 1);
         if (FAILED(hr)) {
-            continue ;
+            break;
         }
 
-        // 获取一个视频采集的符号链接，可以唯一标识一个视频采集设备;
-        // 也可以通过此链接创建一个采集数据源.
-        WCHAR *szDeviceSymbLink;
-        UINT32 symLinkLength;
-        hr = ppDevices[i]->GetAllocatedString(MF_DEVSOURCE_ATTRIBUTE_SOURCE_TYPE_VIDCAP_SYMBOLIC_LINK,
-                                              &szDeviceSymbLink,
-                                              &symLinkLength);
+        hr = pAttributes->SetGUID(MF_DEVSOURCE_ATTRIBUTE_SOURCE_TYPE,
+                                  MF_DEVSOURCE_ATTRIBUTE_SOURCE_TYPE_VIDCAP_GUID);
+        if (FAILED(hr)) {
+            break;
+        }
 
-        // TODO: WCHAR 需要转换成string，考虑添加一个常用工具的dll;
-        // TODO: 目前获取捕获设备已经OK，接下来是要学习怎么给设备设置
-        //       具体的捕获参数
+        hr = MFEnumDeviceSources(pAttributes, &m_videoDevices, &m_videoDevicesCnt);
+        if (FAILED(hr) || m_videoDevicesCnt == 0) {
+            break;
+        }
 
-        std::wstring deviceSymb(szDeviceSymbLink);
-        std::wstring deviceName(szFriendlyName);
+        WCHAR *szFriendlyName = NULL;
+        UINT32 ccName;
+        for (DWORD i = 0; i < m_videoDevicesCnt; i++) {
+            // 获取设备的名称，不是唯一，因此不能用来作为判断选择设备的依据.
+            hr = m_videoDevices[i]->GetAllocatedString(MF_DEVSOURCE_ATTRIBUTE_FRIENDLY_NAME,
+                                                       &szFriendlyName,
+                                                       &ccName);
+            if (FAILED(hr)) {
+                continue;
+            }
 
-        m_videoDevMap.insert({deviceSymb, deviceName});
-    }
+            std::wstring devName(szFriendlyName);
+            m_videoDevs.push_back(devName);
+        }
+    } while (FALSE);
 
-    return CSJMFDeviceList();
+    SafeRelease(&pAttributes);
+    pAttributes = NULL;
+}
+
+void CSJMFCaptureImpl::getAudioDevices() {
+    IMFAttributes *pAttributes = NULL;
+
+    do {
+        HRESULT hr = MFCreateAttributes(&pAttributes, 1);
+        if (FAILED(hr)) {
+            break;
+        }
+
+        hr = pAttributes->SetGUID(MF_DEVSOURCE_ATTRIBUTE_SOURCE_TYPE,
+                                  MF_DEVSOURCE_ATTRIBUTE_SOURCE_TYPE_AUDCAP_GUID);
+        if (FAILED(hr)) {
+            break;
+        }
+
+        hr = MFEnumDeviceSources(pAttributes, &m_audioDevices, &m_audioDevicesCnt);
+        if (FAILED(hr) || m_audioDevicesCnt == 0) {
+            break;
+        }
+
+        WCHAR *szFriendlyName = NULL;
+        UINT32 ccName;
+        for (DWORD i = 0; i < m_audioDevicesCnt; i++) {
+            // 获取设备的名称，不是唯一，因此不能用来作为判断选择设备的依据.
+            hr = m_audioDevices[i]->GetAllocatedString(MF_DEVSOURCE_ATTRIBUTE_FRIENDLY_NAME,
+                                                       &szFriendlyName,
+                                                       &ccName);
+            if (FAILED(hr)) {
+                continue;
+            }
+
+            std::wstring devName(szFriendlyName);
+            m_audioDevs.push_back(devName);
+        }
+    } while (FALSE);
+
+    SafeRelease(&pAttributes);
+    pAttributes = NULL;
 }

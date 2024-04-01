@@ -1,12 +1,12 @@
 #include "CSJMediaTransformerImpl.h"
 
-CSJMediaTransformer* CSJMediaTransformer::getTransformer() {
-    return new CSJMediaTransformerImpl();
+CSJSharedTransfomer CSJMediaTransformer::getTransformer() {
+    return std::make_shared<CSJMediaTransformerImpl>();
 }
 
-CSJMediaTransformer* CSJMediaTransformer::getTransformerWithFileName(std::string& srcFile,
-                                                                     std::string& destFile) {
-    return new CSJMediaTransformerImpl(srcFile, destFile);
+CSJSharedTransfomer CSJMediaTransformer::getTransformerWithFileName(std::string& srcFile,
+                                                                    std::string& destFile) {
+    return std::make_shared<CSJMediaTransformerImpl>(srcFile, destFile);
 }
 
 CSJMediaTransformerImpl::CSJMediaTransformerImpl() {

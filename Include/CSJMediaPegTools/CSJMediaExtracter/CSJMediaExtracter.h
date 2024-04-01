@@ -6,6 +6,9 @@
 
 #include "CSJMediaPegToolDefine.h"
 
+class CSJMediaExtracter;
+using CSJSharedExtracter = std::shared_ptr<CSJMediaExtracter>;
+
 typedef enum {
     CSJ_EXTRACTDATA_VIDEO = 0,  // extract video data;
     CSJ_EXTRACTDATA_AUDIO,      // extract audio data ;
@@ -59,7 +62,7 @@ public:
     *  
     *  @return            a instance of CSJMediaExtracter. 
     */
-    static CSJMediaExtracter *getExtracter(std::string &srcFilePath, std::string& dstFilePath, CSJExtracteType type);
+    static CSJSharedExtracter getExtracter(std::string &srcFilePath, std::string& dstFilePath, CSJExtracteType type);
 
     /*
     *  Generate a CSJMediaExtracter object.
@@ -69,7 +72,7 @@ public:
     *
     *  @return            a instance of CSJMediaExtracter.
     */
-    static CSJMediaExtracter *getExtracter(CSJExtracteType type);
+    static CSJSharedExtracter getExtracter(CSJExtracteType type);
 
     /*
     *  Set a delegate to the extracter.

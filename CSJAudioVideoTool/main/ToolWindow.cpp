@@ -124,7 +124,7 @@ void ToolWindow::updateRenderWindowPos() {
 void ToolWindow::extractMediaData() {
     std::string str1 = "partyAnimals.mp4";
     std::string str2 = "partyAnimals.aac";
-    CSJMediaExtracter *mediaExtracter = CSJMediaExtracter::getExtracter(str1, str2, CSJ_EXTRACTDATA_AUDIO);
+    CSJSharedExtracter mediaExtracter = CSJMediaExtracter::getExtracter(str1, str2, CSJ_EXTRACTDATA_AUDIO);
     if (!mediaExtracter) {
         std::cout << "media extracter created successfully" << std::endl;
         return ;
@@ -141,7 +141,7 @@ void ToolWindow::extractMediaData() {
 void ToolWindow::extractVideoData() {
     std::string str1 = "partyAnimals.mp4";
     std::string str2 = "partyAnimals.h264";
-    CSJMediaExtracter *mediaExtracter = CSJMediaExtracter::getExtracter(str1, str2, CSJ_EXTRACTDATA_VIDEO);
+    CSJSharedExtracter mediaExtracter = CSJMediaExtracter::getExtracter(str1, str2, CSJ_EXTRACTDATA_VIDEO);
     if (!mediaExtracter) {
         std::cout << "media extracter created successfully" << std::endl;
         return;
@@ -159,7 +159,7 @@ void ToolWindow::transformMedia() {
     std::string str1 = "partyAnimals.mp4";
     std::string str2 = "partyAnimals.flv";
 
-    CSJMediaTransformer *mediaTransformer = CSJMediaTransformer::getTransformerWithFileName(str1, str2);
+    CSJSharedTransfomer mediaTransformer = CSJMediaTransformer::getTransformerWithFileName(str1, str2);
     if (!mediaTransformer) {
         return;
     }

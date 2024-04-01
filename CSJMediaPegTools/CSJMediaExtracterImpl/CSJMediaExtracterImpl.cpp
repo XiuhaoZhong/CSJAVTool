@@ -22,16 +22,14 @@
             ((const uint8_t *)(x))[1])
 #endif
 
-CSJMediaExtracter* CSJMediaExtracter::getExtracter(std::string &srcFilePath, 
+CSJSharedExtracter CSJMediaExtracter::getExtracter(std::string &srcFilePath, 
                                                    std::string& dstFilePath,
                                                    CSJExtracteType type) {
-    CSJMediaExtracterImpl *impl = new CSJMediaExtracterImpl(srcFilePath, dstFilePath, type);
-
-    return impl;
+    return std::make_shared<CSJMediaExtracterImpl>(srcFilePath, dstFilePath, type);
 }
 
-CSJMediaExtracter* CSJMediaExtracter::getExtracter(CSJExtracteType type) {
-    return new CSJMediaExtracterImpl(type);
+CSJSharedExtracter CSJMediaExtracter::getExtracter(CSJExtracteType type) {
+    return std::make_shared<CSJMediaExtracterImpl>(type);
 }
 
 CSJMediaExtracterImpl::CSJMediaExtracterImpl(std::string& srcFilePath, 

@@ -11,11 +11,23 @@ public:
     CSJMFCaptureImpl();
     ~CSJMFCaptureImpl();
 
-    CSJMFDeviceList getCaptureDevices(CSJMFDeviceType deviceType) override;
+    CSJMFDeviceList getVideoCapDevices() override;
+
+    CSJMFDeviceList getAudioCapDevices() override;
+
+protected:
+    void getVideoDevices();
+    void getAudioDevices();
+
 
 private:
-    CSJMFDeviceMap m_videoDevMap;
-    CSJMFDeviceMap m_audioDevMap;
+    CSJMFDeviceList m_videoDevs;        // video devices's name list;
+    IMFActivate     **m_videoDevices;   // holding the active object for the device.
+    UINT32          m_videoDevicesCnt;  // the count of video devices.
+
+    CSJMFDeviceList m_audioDevs;        // audio devices's name list;
+    IMFActivate     **m_audioDevices;
+    UINT32          m_audioDevicesCnt;
 };
 
 #endif // __CSJMFCAPTUREIMPL_H__

@@ -5,6 +5,9 @@
 
 #include <string>
 
+class CSJMediaTransformer;
+using CSJSharedTransfomer = std::shared_ptr<CSJMediaTransformer>;
+
 /**
  * The main functionality of this class is transforming media file from 
  * a media type to another media type. The type is indicated by the suffix
@@ -39,12 +42,12 @@ public:
      *  Get a transformer instance, and users must set the source file and 
      *  destination file by other interfaces.
      */
-    static CSJMediaTransformer* getTransformer();
+    static CSJSharedTransfomer getTransformer();
 
     /**
      *  Get a transformer instance by the src file and destination file.
      */
-    static CSJMediaTransformer* getTransformerWithFileName(std::string& srcFile, 
+    static CSJSharedTransfomer getTransformerWithFileName(std::string& srcFile,
                                                            std::string& destFile);
 
     /**
