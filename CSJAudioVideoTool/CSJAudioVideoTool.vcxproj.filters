@@ -28,18 +28,42 @@
     <ClInclude Include="main\CSJRenderWindow.h">
       <Filter>main</Filter>
     </ClInclude>
-    <ClInclude Include="RenderTools\RenderManager.h" />
-    <ClInclude Include="main\stdafx.h" />
-    <ClInclude Include="main\targetver.h" />
-    <ClInclude Include="CommonData\CSJDataManager.h" />
-    <ClInclude Include="RenderData\CSJOutVideoBuf.h" />
-    <ClInclude Include="RenderData\graphics.h" />
-    <ClInclude Include="RenderTools\Render.h" />
-    <ClInclude Include="RenderTools\SceneRenderer.h" />
-    <ClInclude Include="RenderTools\TextureBlitter.h" />
-    <ClInclude Include="CommonData\CSJLogManager.h" />
-    <ClInclude Include="RenderData\gl_display.h" />
-    <ClInclude Include="RenderTools\GLRenderImpl.h" />
+    <ClInclude Include="CommonData\CSJDataManager.h">
+      <Filter>CommonData</Filter>
+    </ClInclude>
+    <ClInclude Include="CommonData\CSJLogManager.h">
+      <Filter>CommonData</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderData\CSJOutVideoBuf.h">
+      <Filter>RenderData</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderData\gl_display.h">
+      <Filter>RenderData</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderData\graphics.h">
+      <Filter>RenderData</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderTools\GLRenderImpl.h">
+      <Filter>RenderTools</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderTools\Render.h">
+      <Filter>RenderTools</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderTools\RenderManager.h">
+      <Filter>RenderTools</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderTools\SceneRenderer.h">
+      <Filter>RenderTools</Filter>
+    </ClInclude>
+    <ClInclude Include="main\stdafx.h">
+      <Filter>RenderTools</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderTools\TextureBlitter.h">
+      <Filter>RenderTools</Filter>
+    </ClInclude>
+    <ClInclude Include="main\targetver.h">
+      <Filter>main</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main\main.cpp">
@@ -51,14 +75,32 @@
     <ClCompile Include="main\CSJRenderWindow.cpp">
       <Filter>main</Filter>
     </ClCompile>
-    <ClCompile Include="RenderTools\RenderManager.cpp" />
-    <ClCompile Include="CommonData\CSJDataManager.cpp" />
-    <ClCompile Include="RenderData\CSJOutVideoBuf.cpp" />
-    <ClCompile Include="RenderData\graphics.cpp" />
-    <ClCompile Include="RenderTools\Render.cpp" />
-    <ClCompile Include="RenderTools\SceneRenderer.cpp" />
-    <ClCompile Include="RenderTools\TextureBlitter.cpp" />
-    <ClCompile Include="CommonData\CSJLogManager.cpp" />
-    <ClCompile Include="RenderTools\GLRenderImpl.cpp" />
+    <ClCompile Include="CommonData\CSJDataManager.cpp">
+      <Filter>CommonData</Filter>
+    </ClCompile>
+    <ClCompile Include="CommonData\CSJLogManager.cpp">
+      <Filter>CommonData</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderData\CSJOutVideoBuf.cpp">
+      <Filter>RenderData</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderData\graphics.cpp">
+      <Filter>RenderData</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderTools\GLRenderImpl.cpp">
+      <Filter>RenderTools</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderTools\Render.cpp">
+      <Filter>RenderTools</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderTools\RenderManager.cpp">
+      <Filter>RenderTools</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderTools\SceneRenderer.cpp">
+      <Filter>RenderTools</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderTools\TextureBlitter.cpp">
+      <Filter>RenderTools</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

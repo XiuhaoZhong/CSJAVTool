@@ -115,16 +115,17 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PreprocessorDefinitions>WIN32;_WINDOWS;GLEW_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
-      <AdditionalIncludeDirectories>$(ProjectDir)RenderData;$(ProjectDir)RenderTools;$(ProjectDir)CommonData;$(ProjectDir);$(ProjectDir)third_part\glew-2.1.0\include;$(ProjectDir)third_part\glfw-3.3.3\include;$(ProjectDir)third_part\log4cpp\include;$(SolutionDir)Include\CSJMediaPegTools;$(SolutionDir)Duilib\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)RenderData;$(ProjectDir)RenderTools;$(ProjectDir)CommonData;$(ProjectDir);$(ProjectDir)third_part\glew-2.1.0\include;$(ProjectDir)third_part\glfw-3.3.3\include;$(ProjectDir)third_part\log4cpp\include;$(SolutionDir)Include\CSJMediaPegTools;$(SolutionDir)Duilib\;$(SolutionDir)Include\CSJMediaCapture;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <AdditionalLibraryDirectories>$(SolutionDir)Lib\$(platform)\$(configuration);$(ProjectDir)third_part\glew-2.1.0\Lib\Win32;$(ProjectDir)third_part\glfw-3.3.3\Lib\$(platform);$(ProjectDir)third_part\log4cpp\lib\$(platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>base_d.lib;duilib_d.lib;ui_components_d.lib;opengl32.lib;glew32sd.lib;glfw3d.lib;GLTool.lib;log4cpp.lib;CSJMediaPegTools.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>base_d.lib;duilib_d.lib;ui_components_d.lib;opengl32.lib;glew32sd.lib;glfw3d.lib;GLTool.lib;log4cpp.lib;CSJMediaPegTools.lib;CSJMediaCapture.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>$(SolutionDir)copy_file.bat $(SolutionDir) $(ProjectName) $(TargetName) $(TargetExt) $(Platform) $(Configuration)
-Xcopy /y $(SolutionDir)Dlls\* $(SolutionDir)bin\$(Configuration)\</Command>
+      <Command>Xcopy /y $(SolutionDir)Dlls\*.dll $(SolutionDir)bin\$(Configuration)\
+$(SolutionDir)copy_file.bat $(SolutionDir) $(ProjectName) $(TargetName) $(TargetExt) $(Platform) $(Configuration)
+</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
