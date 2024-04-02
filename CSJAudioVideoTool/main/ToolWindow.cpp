@@ -9,6 +9,7 @@
 #include "CSJRenderWindow.h"
 #include "CSJMediaExtracter/CSJMediaExtracter.h"
 #include "CSJMediaTransformer/CSJMediaTransformer.h"
+#include "CSJMFCapture/CSJMFCapture.h"
 
 const std::wstring ToolWindow::kClassName = L"Basic";
 
@@ -41,7 +42,8 @@ LONG ToolWindow::GetStyle() {
 void ToolWindow::InitWindow() {
     //extractMediaData();
     //extractVideoData();
-    transformMedia();
+    //transformMedia();
+    loadMFCapture();
 }
 
 LRESULT ToolWindow::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam) {
@@ -168,4 +170,21 @@ void ToolWindow::transformMedia() {
     if (!ret) {
         std::cout << "Transform media file failed!" << std::endl;
     }
+}
+
+void ToolWindow::loadMFCapture() {
+    CSJSharedCapture mfCapture = CSJMFCapture::getMFCapture();
+    if (!mfCapture) {
+        // create media foundation capture failed.
+        return ;
+    }
+
+    if (!mfCapture->initializeCapture()) {
+        // media foundation capture init failed.
+        return ;
+    }
+
+    mfCapture->selectedCamera(0);
+
+    mfCapture->startCapture();
 }

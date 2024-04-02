@@ -99,9 +99,11 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
+      <AdditionalDependencies>Mfuuid.lib;Mfplat.lib;Mf.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>Xcopy /y $(ProjectDir)CSJMFCapture\CSJMFCapture.h $(SolutionDir)Include\$(ProjectName)\CSJMFCapture\
+      <Command>Xcopy /y $(ProjectDir)CSJMediaCaptureDefine.h $(SolutionDir)Include\$(ProjectName)\
+Xcopy /y $(ProjectDir)CSJMFCapture\CSJMFCapture.h $(SolutionDir)Include\$(ProjectName)\CSJMFCapture\
 $(SolutionDir)copy_file.bat $(SolutionDir) $(ProjectName) $(TargetName) $(TargetExt) $(Platform) $(Configuration)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -162,14 +164,17 @@ $(SolutionDir)copy_file.bat $(SolutionDir) $(ProjectName) $(TargetName) $(Target
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="CSJMediaCaptureDefines.h" />
+    <ClInclude Include="CSJMediaCaptureDefine.h" />
+    <ClInclude Include="CSJMFCaptureHeader.h" />
     <ClInclude Include="CSJMFCaptureImpl\CSJMFCaptureImpl.h" />
     <ClInclude Include="CSJMFCapture\CSJMFCapture.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="CSJMFCaptureImpl\CSJMFCaptureImpl.cpp" />
+    <ClCompile Include="CSJMFCaptureImpl\CSJMFCaptureImpl.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

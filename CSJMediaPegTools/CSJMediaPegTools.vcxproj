@@ -104,7 +104,7 @@
       <AdditionalDependencies>avformat.lib;avutil.lib;avcodec.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>Xcopy /y $(ProjectDir)CSJMediaExtracter\CSJMediaExtracter.h $(SolutionDir)Include\$(ProjectName)\CSJMediaExtracter\
+      <Command>Xcopy /y $(ProjectDir)$(ProjectName)\CSJMFCapture.h $(SolutionDir)Include\$(ProjectName)\CSJMFCapture\
 Xcopy /y $(ProjectDir)CSJMediaTransformer\CSJMediaTransformer.h $(SolutionDir)Include\$(ProjectName)\CSJMediaTransformer\
 $(SolutionDir)copy_file.bat $(SolutionDir) $(ProjectName) $(TargetName) $(TargetExt) $(Platform) $(Configuration)
 </Command>

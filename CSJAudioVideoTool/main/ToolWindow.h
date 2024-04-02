@@ -41,6 +41,8 @@ protected:
 
     void transformMedia();
 
+    void loadMFCapture();
+
 private:
 
 	HDC hdc;

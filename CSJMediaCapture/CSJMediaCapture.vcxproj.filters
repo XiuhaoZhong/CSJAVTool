@@ -27,14 +27,17 @@
     <ClInclude Include="pch.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="CSJMediaCaptureDefines.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="CSJMFCapture\CSJMFCapture.h">
       <Filter>CSJMFCapture</Filter>
     </ClInclude>
     <ClInclude Include="CSJMFCaptureImpl\CSJMFCaptureImpl.h">
       <Filter>CSJMFCaptureImpl</Filter>
+    </ClInclude>
+    <ClInclude Include="CSJMFCaptureHeader.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CSJMediaCaptureDefine.h">
+      <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

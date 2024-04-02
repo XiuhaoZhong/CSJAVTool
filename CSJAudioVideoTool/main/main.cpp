@@ -41,6 +41,10 @@ void MainThread::Init() {
 	ui::GlobalManager::Startup(themeDir + L"resources\\", ui::CreateControlCallback(), false);
 #else
 #endif 
+    HRESULT hr = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE);
+    if (FAILED(hr)) {
+        // Com initialize failed;
+    }
 
 	ToolWindow* window = new ToolWindow();
 	window->Create(NULL, window->kClassName.c_str(), WS_OVERLAPPEDWINDOW & ~WS_MAXIMIZEBOX, 0);
@@ -48,10 +52,13 @@ void MainThread::Init() {
 	window->ShowWindow();
 
 	window->createRenderWindow();
+
+    
 }
 
 void MainThread::Cleanup() {
 	ui::GlobalManager::Shutdown();
 	SetThreadWasQuitProperly(true);
 	nbase::ThreadManager::UnregisterThread();
+    CoUninitialize();
 }
