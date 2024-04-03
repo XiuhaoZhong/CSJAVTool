@@ -228,6 +228,8 @@ void CSJMFCaptureImpl::stopCapture() {
         return ;
     }
 
+    m_isStop = true;
+    /*
     if (m_videoCapMS) {
         m_videoCapMS->Shutdown();
     }
@@ -235,8 +237,7 @@ void CSJMFCaptureImpl::stopCapture() {
     if (m_audioCapMS) {
         m_audioCapMS->Shutdown();
     }
-
-    m_status = CSJMF_CAPTURE_STOP;
+    */
 }
 
 void CSJMFCaptureImpl::startCaptureWithSourceReader() {
@@ -248,9 +249,15 @@ void CSJMFCaptureImpl::startCaptureWithSourceReader() {
         // 设置输出格式
         hr = pReader->SetCurrentMediaType((DWORD) MF_SOURCE_READER_FIRST_VIDEO_STREAM, NULL, m_selMediaType);
         if (SUCCEEDED(hr)) {
+            m_isStop = false;
+            m_status = CSJMF_CAPTURE_CAPTURING;
+
             // 读取帧
             while (SUCCEEDED(hr)) {
-                //IMFMediaBuffer *pBuffer = NULL;
+                if (m_isStop) {
+                    break;
+                }
+
                 IMFSample *pBuffer = NULL;
                 DWORD dwStreamIndex, dwStreamFlags;
                 LONGLONG llTimeStamp;
@@ -276,6 +283,8 @@ void CSJMFCaptureImpl::startCaptureWithSourceReader() {
                         }
                     }
 
+                    // TODO: invoke a delegate function to diliver the video data and timestamp to render.
+
                     SafeRelease(&pBuffer);
                 }
             }
@@ -285,6 +294,8 @@ void CSJMFCaptureImpl::startCaptureWithSourceReader() {
     m_selMediaType->Release();
     // pReader release 之后，会调用mediaSource的shutdown()方法
     SafeRelease(&pReader);
+    m_isStop = false;
+    m_status = CSJMF_CAPTURE_STOP;
 }
 
 void CSJMFCaptureImpl::loadVideoDeviceInfos() {

@@ -112,10 +112,8 @@ private:
     WCHAR           *m_szAudioDevSymlink;   // current audio device's symlink, identifier a device.
 
     CSJMFCaptureStatus m_status;            // current capture status.
-
     IMFMediaType *m_selMediaType;
-
-    
+    bool            m_isStop;               // a flag indicates should stop capture or not.
 };
 
 #endif // __CSJMFCAPTUREIMPL_H__
