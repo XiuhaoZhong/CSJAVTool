@@ -30,14 +30,27 @@ typedef enum {
     CSJMF_CAPTURE_PAUSE
 } CSJMFCaptureStatus;
 
+/*
+*  Hold a capture format, a video capture device at least has a CSJVideoFmtInfo.
+*/
 typedef struct {
-    GUID sub_type;
-    UINT32 width;
-    UINT32 height;
-    UINT32 frameRate;
-} CSJCameraInfo;
+    GUID        sub_type;
+    UINT32      width;
+    UINT32      height;
+    UINT32      frameRate;
+    std::string fmt_name;
+} CSJVideoFmtInfo;
 
-using CSJCemeraInfoList = std::vector<CSJCameraInfo>;
+using CSJVideoCapureFmtList = std::vector<CSJVideoFmtInfo>;
+
+/*
+*  The detail information of a video capture device.
+*/
+typedef struct {
+    std::wstring            device_name;
+    std::wstring            device_symlink;
+    CSJVideoCapureFmtList   fmtList;
+} CSJVideoDeviceInfo;
 
 /**
  * This class provides the media capture functionalities
@@ -85,6 +98,8 @@ public:
     virtual bool startCapture() = 0;
 
     virtual void pauseCapture() = 0;
+
+    virtual void resumeCapture() = 0;
 
     virtual void stopCapture() = 0;
 

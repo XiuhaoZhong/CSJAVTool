@@ -8,6 +8,29 @@
 
 #include "CSJMFCaptureHeader.h"
 
+static std::string SubTypeToString(GUID& subtype) {
+    WCHAR buffer[128];
+    StringFromGUID2(subtype, buffer, sizeof(buffer));
+
+    //3231564E-0000 - 0010 - 8000 - 00AA00389B71 NV12
+    //47504A4D - 0000 - 0010 - 8000 - 00AA00389B71 MJPG
+    //32595559 - 0000 - 0010 - 8000 - 00AA00389B71 YV12
+
+    std::string res = "";
+
+    std::wstring st(buffer);
+    if (st.compare(L"{3231564E-0000-0010-8000-00AA00389B71}") == 0) {
+        res = "NV12";
+    } else if (st.compare(L"{47504A4D-0000-0010-8000-00AA00389B71}") == 0) {
+        res = "MJPG";
+    } else if (st.compare(L"{32595559-0000-0010-8000-00AA00389B71}") == 0) {
+        res = "YV12";
+    }
+
+    //delete[] buffer;
+    return res;
+}
+
 std::string wstring2string(std::wstring &wstr) {
     std::string res;
     int len = WideCharToMultiByte(CP_ACP, 0, wstr.c_str(), wstr.size(), NULL, 0, NULL, NULL);
@@ -61,7 +84,7 @@ CSJSharedCapture CSJMFCapture::getMFCapture() {
 CSJMFCaptureImpl::CSJMFCaptureImpl() {
     m_videoDevicesCnt = 0;
     m_videoDevices = NULL;
-    m_szVideoDevSymlink = NULL;
+    m_szCurCaptureSymlink = NULL;
 
     m_audioDevicesCnt = 0;
     m_audioDevices = NULL;
@@ -71,17 +94,20 @@ CSJMFCaptureImpl::CSJMFCaptureImpl() {
 CSJMFCaptureImpl::~CSJMFCaptureImpl() {
     finalize();
 
-    CoTaskMemFree(m_szVideoDevSymlink);
-    m_szVideoDevSymlink = NULL;
+    CoTaskMemFree(m_szCurCaptureSymlink);
+    m_szCurCaptureSymlink = NULL;
+    SafeRelease(&m_videoCapMS);
 
     CoTaskMemFree(m_szAudioDevSymlink);
     m_szAudioDevSymlink = NULL;
 }
 
 bool CSJMFCaptureImpl::initializeCapture() {
-    getVideoDevices();
+    loadVideoDeviceInfos();
 
-    if (m_videoDevicesCnt == 0) {
+    loadAudioDeviceInfos();
+
+    if (m_videoDevicesCnt == 0 && m_audioDevicesCnt == 0) {
         return false;
     }
 
@@ -103,9 +129,9 @@ void CSJMFCaptureImpl::selectedCamera(int camera_index) {
     }
 
     // Free the old device symlink;
-    CoTaskMemFree(m_szVideoDevSymlink);
+    CoTaskMemFree(m_szCurCaptureSymlink);
     // Save the new device symlink;
-    m_szVideoDevSymlink = symlink;
+    m_szCurCaptureSymlink = symlink;
 
     if (m_status != CSJMF_CAPTURE_CAPTURING) {
         return ;
@@ -150,124 +176,72 @@ bool CSJMFCaptureImpl::startCapture() {
         return false;
     }
 
-    if (!m_videoCapMS) {
+    IMFPresentationDescriptor *descriptor = NULL;
+    if (!setVideoCaptureParam(m_videoCapMS)) {
         return false;
     }
+    
 
-    IMFPresentationDescriptor *descriptor;
-    HRESULT hr = m_videoCapMS->CreatePresentationDescriptor(&descriptor);
-    if (FAILED(hr)) {
-        return false;
-    }
-
-    DWORD streamCnt = 0;
-    hr = descriptor->GetStreamDescriptorCount(&streamCnt);
-    if (FAILED(hr)) {
-        return false;
-    }
-
-    IMFStreamDescriptor *streamDescriptor;
-    for (DWORD i = 0; i < streamCnt; i++) {
-        BOOL isSelected = FALSE;
-        hr = descriptor->GetStreamDescriptorByIndex(i, &isSelected, &streamDescriptor);
-        if (FAILED(hr)) {
-            continue ;
-        }
-
-        IMFMediaTypeHandler *typeHandler;
-        hr = streamDescriptor->GetMediaTypeHandler(&typeHandler);
-        if (FAILED(hr)) {
-            continue ;
-        }
-
-        DWORD mediaTypeCnt;
-        hr = typeHandler->GetMediaTypeCount(&mediaTypeCnt);
-        if (FAILED(hr)) {
-            continue ;
-        }
-
-        for (DWORD i = 0; i < mediaTypeCnt; i++) {
-            IMFMediaType *mediaType;
-            hr = typeHandler->GetMediaTypeByIndex(i, &mediaType);
-            if (FAILED(hr)) {
-                continue;
-            }
-
-            BOOL isCompressedFMT = FALSE;
-            hr = mediaType->IsCompressedFormat(&isCompressedFMT);
-            if (FAILED(hr)) {
-                continue ;
-            }
-
-            if (isCompressedFMT) {
-                std::cout << "compressed fmt" << std::endl;
-            } 
-
-            MFMediaType_Video;
-            MFVideoFormat_420O;
-            MFVideoFormat_RGB8;
-            WCHAR buffer[128];
-
-            MFVideoFormat_AI44;
-            
-            GUID majorType;
-            hr = mediaType->GetMajorType(&majorType);
-            if (FAILED(hr)) {
-                std::cout << "get major type failed." << std::endl;
-            }
-            StringFromGUID2(majorType, buffer, sizeof(buffer));
-            std::wstring mt(buffer);
-
-            std::string realMT = wstring2string(mt);
-            if (realMT.size() > 0) {
-                std::cout << realMT << std::endl;
-            }
-
-            GUID subtype = { 0 };
-            UINT32 frameRate = 0;
-            UINT32 denominator = 0;
-            UINT32 width = 0, height = 0;
-            UINT32 frameRateMin = 0, frameRateMax = 0;
-
-            hr = mediaType->GetGUID(MF_MT_SUBTYPE, &subtype);
-            hr = MFGetAttributeSize(mediaType, MF_MT_FRAME_SIZE, &width, &height);
-            hr = MFGetAttributeRatio(mediaType, MF_MT_FRAME_RATE, &frameRate, &denominator);
-            hr = MFGetAttributeRatio(mediaType, MF_MT_FRAME_RATE_RANGE_MIN, &frameRateMin, &denominator);
-            hr = MFGetAttributeRatio(mediaType, MF_MT_FRAME_RATE_RANGE_MAX, &frameRateMax, &denominator);
-            if (FAILED(hr)) {
-                std::cout << frameRate << ", " << denominator << std::endl;
-            }
-
-            CSJCameraInfo cameraInfo;
-            cameraInfo.sub_type = subtype;
-            cameraInfo.width = width;
-            cameraInfo.height = height;
-            cameraInfo.frameRate = frameRate;
-
-            m_cameraInfoList.push_back(cameraInfo);
-            // 通过m_cameraInfoList记录下来了一个摄像头支持的采集格式，帧率以及画面尺寸
-            // 但是采集格式是GUID，目前还没有转换成字符串，这个问题还没解决
-            // 下一步就是设置摄像头采集格式和尺寸，然后得到采集数据 2024/04/02
-        }
-
-    }
-
+    HRESULT hr = S_OK;
     hr = m_videoCapMS->Start(descriptor, NULL, NULL);
+
+    hr = m_audioCapMS->Start(NULL, NULL, NULL);
+
+    if (SUCCEEDED(hr)) {
+        m_status = CSJMF_CAPTURE_CAPTURING;
+    }
+
     return false;
 }
 
 void CSJMFCaptureImpl::pauseCapture() {
+    if (m_status != CSJMF_CAPTURE_CAPTURING) {
+        return;
+    }
 
+    if (m_videoCapMS) {
+        m_videoCapMS->Pause();
+    }
+
+    if (m_audioCapMS) {
+        m_audioCapMS->Pause();
+    }
+
+    m_status = CSJMF_CAPTURE_PAUSE;
+}
+
+void CSJMFCaptureImpl::resumeCapture() {
+    if (m_status != CSJMF_CAPTURE_PAUSE) {
+        return ;
+    }
+
+    if (m_videoCapMS) {
+        
+    }
+
+    m_status = CSJMF_CAPTURE_CAPTURING;
 }
 
 void CSJMFCaptureImpl::stopCapture() {
+    if (m_status == CSJMF_CAPTURE_STOP) {
+        return ;
+    }
+
+    if (m_videoCapMS) {
+        m_videoCapMS->Shutdown();
+    }
+
+    if (m_audioCapMS) {
+        m_audioCapMS->Shutdown();
+    }
+
+    m_status = CSJMF_CAPTURE_STOP;
 }
 
-void CSJMFCaptureImpl::getVideoDevices() {
+void CSJMFCaptureImpl::loadVideoDeviceInfos() {
     releaseVideoDeviceInfo();
 
     IMFAttributes *pAttributes = NULL;
-
     do {
         HRESULT hr = MFCreateAttributes(&pAttributes, 1);
         if (FAILED(hr)) {
@@ -298,6 +272,22 @@ void CSJMFCaptureImpl::getVideoDevices() {
 
             std::wstring devName(szFriendlyName);
             m_videoDevs.push_back(devName);
+
+            WCHAR *devSymlink;
+            UINT32 cchSymlink;
+            hr = m_videoDevices[i]->GetAllocatedString(MF_DEVSOURCE_ATTRIBUTE_SOURCE_TYPE_VIDCAP_SYMBOLIC_LINK,
+                                                       &devSymlink,
+                                                       &cchSymlink);
+
+            CSJVideoDeviceInfo deviceInfo;
+            deviceInfo.device_name = szFriendlyName;
+            deviceInfo.device_symlink = devSymlink;
+
+            IMFMediaSource *pSource = NULL;
+            hr = m_videoDevices[i]->ActivateObject(IID_PPV_ARGS(&pSource));
+            loadVideoMediaSourceInfos(pSource, deviceInfo);
+            m_videoDeivceInfos.insert({ deviceInfo.device_symlink, deviceInfo });
+            SafeRelease(&pSource);
         }
     } while (FALSE);
 
@@ -305,7 +295,86 @@ void CSJMFCaptureImpl::getVideoDevices() {
     pAttributes = NULL;
 }
 
-void CSJMFCaptureImpl::getAudioDevices() {
+void CSJMFCaptureImpl::loadVideoMediaSourceInfos(IMFMediaSource * mediaSource, CSJVideoDeviceInfo& deviceInfo) {
+    if (!mediaSource) {
+        return ;
+    }
+
+    IMFPresentationDescriptor *descriptor;
+    HRESULT hr = mediaSource->CreatePresentationDescriptor(&descriptor);
+    if (FAILED(hr)) {
+        return ;
+    }
+
+    DWORD streamCnt = 0;
+    hr = descriptor->GetStreamDescriptorCount(&streamCnt);
+    if (FAILED(hr)) {
+        return ;
+    }
+
+    IMFStreamDescriptor *streamDescriptor;
+    for (DWORD i = 0; i < streamCnt; i++) {
+        BOOL isSelected = FALSE;
+        hr = descriptor->GetStreamDescriptorByIndex(i, &isSelected, &streamDescriptor);
+        if (FAILED(hr)) {
+            continue;
+        }
+
+        IMFMediaTypeHandler *typeHandler;
+        hr = streamDescriptor->GetMediaTypeHandler(&typeHandler);
+        if (FAILED(hr)) {
+            continue;
+        }
+
+        DWORD mediaTypeCnt;
+        hr = typeHandler->GetMediaTypeCount(&mediaTypeCnt);
+        if (FAILED(hr)) {
+            continue;
+        }
+
+        for (DWORD i = 0; i < mediaTypeCnt; i++) {
+            IMFMediaType *mediaType;
+            hr = typeHandler->GetMediaTypeByIndex(i, &mediaType);
+            if (FAILED(hr)) {
+                continue;
+            }
+
+            BOOL isCompressedFMT = FALSE;
+            hr = mediaType->IsCompressedFormat(&isCompressedFMT);
+            if (FAILED(hr)) {
+                continue;
+            }
+
+            if (isCompressedFMT) {
+                std::cout << "compressed fmt" << std::endl;
+            }
+
+            GUID subtype = { 0 };
+            UINT32 frameRate = 0;
+            UINT32 denominator = 0;
+            UINT32 width = 0, height = 0;
+            UINT32 frameRateMin = 0, frameRateMax = 0;
+
+            hr = mediaType->GetGUID(MF_MT_SUBTYPE, &subtype);
+            hr = MFGetAttributeSize(mediaType, MF_MT_FRAME_SIZE, &width, &height);
+            hr = MFGetAttributeRatio(mediaType, MF_MT_FRAME_RATE, &frameRate, &denominator);
+            hr = MFGetAttributeRatio(mediaType, MF_MT_FRAME_RATE_RANGE_MIN, &frameRateMin, &denominator);
+            hr = MFGetAttributeRatio(mediaType, MF_MT_FRAME_RATE_RANGE_MAX, &frameRateMax, &denominator);
+
+            CSJVideoFmtInfo cameraInfo;
+            cameraInfo.sub_type = subtype;
+            cameraInfo.fmt_name = SubTypeToString(subtype);
+            cameraInfo.width = width;
+            cameraInfo.height = height;
+            cameraInfo.frameRate = frameRate;
+
+            deviceInfo.fmtList.push_back(cameraInfo);
+        }
+
+    }
+}
+
+void CSJMFCaptureImpl::loadAudioDeviceInfos() {
     releaseAudioDeviceInfo();
 
     IMFAttributes *pAttributes = NULL;
@@ -342,9 +411,43 @@ void CSJMFCaptureImpl::getAudioDevices() {
             m_audioDevs.push_back(devName);
         }
     } while (FALSE);
-
+    
     SafeRelease(&pAttributes);
     pAttributes = NULL;
+}
+
+bool CSJMFCaptureImpl::createAudioMediaSource() {
+    IMFAttributes *pAttributes = NULL;
+
+    bool res = false;
+    do {
+        // Set the device type to audio.
+        HRESULT hr = MFCreateAttributes(&pAttributes, 2);
+        hr = pAttributes->SetGUID(MF_DEVSOURCE_ATTRIBUTE_SOURCE_TYPE,
+                                  MF_DEVSOURCE_ATTRIBUTE_SOURCE_TYPE_AUDCAP_GUID);
+        if (FAILED(hr)) {
+            break;
+        }
+
+        WCHAR *pszEndPointID = NULL;
+        // Set the endpoint ID.
+        hr = pAttributes->SetString(MF_DEVSOURCE_ATTRIBUTE_SOURCE_TYPE_AUDCAP_ENDPOINT_ID,
+            (LPCWSTR) pszEndPointID);
+        if (FAILED(hr)) {
+            break;
+        }
+       
+        hr = MFCreateDeviceSource(pAttributes, &m_audioCapMS);
+        if (FAILED(hr)) {
+            break;
+        }
+        
+        m_audioCapMS->AddRef();
+        res = true;
+    } while (false);
+
+    SafeRelease(&pAttributes);
+    return false;
 }
 
 void CSJMFCaptureImpl::releaseVideoDeviceInfo() {
@@ -393,7 +496,7 @@ bool CSJMFCaptureImpl::isSameVideoDevice(int index, WCHAR **symlink) {
             break;
         }
 
-        if (m_szVideoDevSymlink &&  _wcsicmp(devSymlink, m_szVideoDevSymlink) == 0) {
+        if (m_szCurCaptureSymlink &&  _wcsicmp(devSymlink, m_szCurCaptureSymlink) == 0) {
             res = true;
             break;
         }
@@ -419,7 +522,6 @@ bool CSJMFCaptureImpl::createVideoCaptureSource() {
 
 bool CSJMFCaptureImpl::createVideoCaptureSourceWithSymlink() {
     IMFAttributes *pAttributes = NULL;
-    IMFMediaSource *pSource = NULL;
 
     bool res = false;
     do {
@@ -436,7 +538,7 @@ bool CSJMFCaptureImpl::createVideoCaptureSourceWithSymlink() {
 
         // Set the symbolic link.
         hr = pAttributes->SetString(MF_DEVSOURCE_ATTRIBUTE_SOURCE_TYPE_VIDCAP_SYMBOLIC_LINK,
-                                    (LPCWSTR)m_szVideoDevSymlink);
+                                    (LPCWSTR)m_szCurCaptureSymlink);
 
         if (FAILED(hr)) {
             break;
@@ -447,10 +549,104 @@ bool CSJMFCaptureImpl::createVideoCaptureSourceWithSymlink() {
             break;
         }
 
+        m_videoCapMS->AddRef();
         res = true;
     } while (FALSE);
 
     SafeRelease(&pAttributes);
+    return res;
+}
+
+bool CSJMFCaptureImpl::setVideoCaptureParam(IMFMediaSource * media_source) {
+    if (!media_source) {
+        return false;
+    }
+
+    IMFPresentationDescriptor *pPD = NULL;
+    IMFStreamDescriptor *pSD = NULL;
+    IMFMediaTypeHandler *pHandler = NULL;
+    IMFMediaType *selMediaType = NULL;
+
+    std::string selFmt = "NV12";
+    DWORD resolutionIndex = 0;
+
+    std::wstring device_symlink(m_szCurCaptureSymlink);
+    CSJVideoDeviceInfo deviceInfo = m_videoDeivceInfos[device_symlink];
+    
+    GUID fmtGuid;
+    DWORD selWidth = 0, selHeight = 0;
+    CSJVideoCapureFmtList fmtList = deviceInfo.fmtList;
+    auto it = fmtList.begin();
+    while (it != fmtList.end()) {
+        if (it->fmt_name == selFmt) {
+            fmtGuid = it->sub_type;
+            selWidth = it->width;
+            selHeight = it->height;
+        }
+    }
+
+    bool res = false;
+    HRESULT hr = S_OK;
+    do {
+        hr = media_source->CreatePresentationDescriptor(&pPD);
+        if (FAILED(hr)) {
+            break;
+        }
+
+        BOOL fSelected;
+        hr = pPD->GetStreamDescriptorByIndex(0, &fSelected, &pSD);
+        if (FAILED(hr)) {
+            break;
+        }
+
+        hr = pSD->GetMediaTypeHandler(&pHandler);
+        if (FAILED(hr)) {
+            break;
+        }
+
+        DWORD mediaTypeCnt;
+        hr = pHandler->GetMediaTypeCount(&mediaTypeCnt);
+        if (FAILED(hr)) {
+            break;
+        }
+
+        for (int i = 0; i < mediaTypeCnt; i++) {
+            IMFMediaType *pType = NULL;
+            hr = pHandler->GetMediaTypeByIndex(i, &pType);
+            if (FAILED(hr)) {
+                continue;
+            }
+
+            GUID subtype = { 0 };
+            UINT32 denominator = 0;
+            UINT32 width = 0, height = 0;
+
+            hr = pType->GetGUID(MF_MT_SUBTYPE, &subtype);
+            hr = MFGetAttributeSize(pType, MF_MT_FRAME_SIZE, &width, &height);
+            if (subtype == fmtGuid && selWidth == width && selHeight == height) {
+                selMediaType = pType;
+                SafeRelease(&pType);
+                break;
+            }
+
+            SafeRelease(&pType);
+        }
+
+        if (!selMediaType) {
+            break;
+        }
+
+        hr = pHandler->SetCurrentMediaType(selMediaType);
+        if (SUCCEEDED(hr)) {
+            res = true;
+            break;
+        }
+    } while (false);
+
+    SafeRelease(&pPD);
+    SafeRelease(&pSD);
+    SafeRelease(&pHandler);
+    
     return res;
 }
 
