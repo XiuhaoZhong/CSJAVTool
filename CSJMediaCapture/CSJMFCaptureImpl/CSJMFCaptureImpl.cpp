@@ -181,15 +181,16 @@ bool CSJMFCaptureImpl::startCapture() {
         return false;
     }
     
+    startCaptureWithSourceReader();
 
-    HRESULT hr = S_OK;
-    hr = m_videoCapMS->Start(descriptor, NULL, NULL);
+    ///*HRESULT hr = S_OK;
+    //hr = m_videoCapMS->Start(descriptor, NULL, NULL);
 
-    hr = m_audioCapMS->Start(NULL, NULL, NULL);
+    //hr = m_audioCapMS->Start(NULL, NULL, NULL);
 
-    if (SUCCEEDED(hr)) {
-        m_status = CSJMF_CAPTURE_CAPTURING;
-    }
+    //if (SUCCEEDED(hr)) {
+    //    m_status = CSJMF_CAPTURE_CAPTURING;
+    //}*/
 
     return false;
 }
@@ -236,6 +237,54 @@ void CSJMFCaptureImpl::stopCapture() {
     }
 
     m_status = CSJMF_CAPTURE_STOP;
+}
+
+void CSJMFCaptureImpl::startCaptureWithSourceReader() {
+    IMFSourceReader *pReader = NULL;
+    HRESULT hr = S_OK;
+
+    hr = MFCreateSourceReaderFromMediaSource(m_videoCapMS, NULL, &pReader);
+    if (SUCCEEDED(hr)) {
+        // 设置输出格式
+        hr = pReader->SetCurrentMediaType((DWORD) MF_SOURCE_READER_FIRST_VIDEO_STREAM, NULL, m_selMediaType);
+        if (SUCCEEDED(hr)) {
+            // 读取帧
+            while (SUCCEEDED(hr)) {
+                //IMFMediaBuffer *pBuffer = NULL;
+                IMFSample *pBuffer = NULL;
+                DWORD dwStreamIndex, dwStreamFlags;
+                LONGLONG llTimeStamp;
+
+                hr = pReader->ReadSample((DWORD) MF_SOURCE_READER_FIRST_VIDEO_STREAM, 0, &dwStreamIndex, &dwStreamFlags, &llTimeStamp, &pBuffer);
+                if (SUCCEEDED(hr)) {
+                    // 第一帧可能是为空，需要做一个判断;
+                    if (pBuffer == NULL) {
+                        continue;
+                    }
+                    DWORD sampleLen = 0;
+                    pBuffer->GetBufferCount(&sampleLen);
+
+                    IMFMediaBuffer *buf;
+                    pBuffer->GetBufferByIndex(0, &buf);
+                    if (buf) {
+
+                        BYTE *buffer = NULL;
+                        DWORD maxLen;
+                        hr = buf->Lock(&buffer, &maxLen, &sampleLen);
+                        if (FAILED(hr)) {
+                            std::cout << "lock sample failed." << std::endl;
+                        }
+                    }
+
+                    SafeRelease(&pBuffer);
+                }
+            }
+        }
+    }
+
+    m_selMediaType->Release();
+    // pReader release 之后，会调用mediaSource的shutdown()方法
+    SafeRelease(&pReader);
 }
 
 void CSJMFCaptureImpl::loadVideoDeviceInfos() {
@@ -583,6 +632,8 @@ bool CSJMFCaptureImpl::setVideoCaptureParam(IMFMediaSource * media_source) {
             selWidth = it->width;
             selHeight = it->height;
         }
+
+        it++;
     }
 
     bool res = false;
@@ -635,7 +686,8 @@ bool CSJMFCaptureImpl::setVideoCaptureParam(IMFMediaSource * media_source) {
         if (!selMediaType) {
             break;
         }
-
+        m_selMediaType = selMediaType;
+        m_selMediaType->AddRef();
         hr = pHandler->SetCurrentMediaType(selMediaType);
         if (SUCCEEDED(hr)) {
             res = true;

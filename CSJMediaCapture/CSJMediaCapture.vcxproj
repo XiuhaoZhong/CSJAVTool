@@ -99,7 +99,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>Mfuuid.lib;Mfplat.lib;Mf.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Mfuuid.lib;Mfplat.lib;Mf.lib;Mfreadwrite.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>Xcopy /y $(ProjectDir)CSJMediaCaptureDefine.h $(SolutionDir)Include\$(ProjectName)\

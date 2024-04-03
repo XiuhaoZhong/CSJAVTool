@@ -27,6 +27,9 @@ public:
     void stopCapture() override;
 
 protected:
+    void startCaptureWithSourceReader();
+
+protected:
     /**
     *  Release all the members are relative the media devices.
     */
@@ -109,6 +112,8 @@ private:
     WCHAR           *m_szAudioDevSymlink;   // current audio device's symlink, identifier a device.
 
     CSJMFCaptureStatus m_status;            // current capture status.
+
+    IMFMediaType *m_selMediaType;
 
     
 };
