@@ -3,6 +3,7 @@
 #include "main.h"
 
 #include <string>
+#include <mfapi.h>
 
 #include "duilib/UIlib.h"
 
@@ -23,10 +24,10 @@ int APIENTRY wWinMain( _In_ HINSTANCE hInstance,
 					  _In_opt_ HINSTANCE hPrevInstance, 
 					  _In_ LPWSTR lpCmdLine, 
 					  _In_ int nShowCmd ) {
-	// ´´½¨Ö÷Ïß³Ì;
+	// åˆ›å»ºä¸»çº¿ç¨‹;
 	MainThread thread;
 
-	// Ö´ÐÐÖ÷Ïß³ÌÑ­»·;
+	// æ‰§è¡Œä¸»çº¿ç¨‹å¾ªçŽ¯;
 	thread.RunOnCurrentThreadWithLoop(nbase::MessageLoop::kUIMessageLoop);
 
 	return 0;
@@ -46,19 +47,23 @@ void MainThread::Init() {
         // Com initialize failed;
     }
 
+    HRESULT hr = MFStartup(MF_VERSION);
+    if (FAILED(hr)) {
+       // MFStartup initialize failed.
+    }
+
 	ToolWindow* window = new ToolWindow();
 	window->Create(NULL, window->kClassName.c_str(), WS_OVERLAPPEDWINDOW & ~WS_MAXIMIZEBOX, 0);
 	window->CenterWindow();
 	window->ShowWindow();
 
 	window->createRenderWindow();
-
-    
 }
 
 void MainThread::Cleanup() {
 	ui::GlobalManager::Shutdown();
 	SetThreadWasQuitProperly(true);
 	nbase::ThreadManager::UnregisterThread();
+    MFShutdown();
     CoUninitialize();
 }
