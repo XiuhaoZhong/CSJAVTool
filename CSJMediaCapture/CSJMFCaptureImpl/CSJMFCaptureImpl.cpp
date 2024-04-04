@@ -22,7 +22,6 @@ static std::string SubTypeToString(GUID& subtype) {
         res = "YV12";
     }
 
-    //delete[] buffer;
     return res;
 }
 
@@ -48,7 +47,10 @@ CSJMFCaptureImpl::CSJMFCaptureImpl() {
 
     m_audioDevicesCnt = 0;
     m_audioDevices = NULL;
-    m_szAudioDevSymlink = NULL;
+    m_szAudioEndpointID = NULL;
+    m_audioCapMS = NULL;
+
+    m_delegate = nullptr;
 }
 
 CSJMFCaptureImpl::~CSJMFCaptureImpl() {
@@ -58,18 +60,18 @@ CSJMFCaptureImpl::~CSJMFCaptureImpl() {
     m_szCurCaptureSymlink = NULL;
     SafeRelease(&m_videoCapMS);
 
-    CoTaskMemFree(m_szAudioDevSymlink);
-    m_szAudioDevSymlink = NULL;
+    CoTaskMemFree(m_szAudioEndpointID);
+    m_szAudioEndpointID = NULL;
 }
 
 bool CSJMFCaptureImpl::initializeCapture() {
-    loadVideoDeviceInfos();
+    //loadVideoDeviceInfos();
 
     loadAudioDeviceInfos();
 
-    if (m_videoDevicesCnt == 0 && m_audioDevicesCnt == 0) {
+    /*if (m_videoDevicesCnt == 0 && m_audioDevicesCnt == 0) {
         return false;
-    }
+    }*/
 
     return true;
 }
@@ -200,6 +202,10 @@ void CSJMFCaptureImpl::stopCapture() {
     */
 }
 
+void CSJMFCaptureImpl::setDelegate(CSJMFCapture::Delegate * delegate) {
+    m_delegate = delegate;
+}
+
 void CSJMFCaptureImpl::startCaptureWithSourceReader() {
     IMFSourceReader *pReader = NULL;
     HRESULT hr = S_OK;
@@ -208,7 +214,7 @@ void CSJMFCaptureImpl::startCaptureWithSourceReader() {
     hr = MFCreateSourceReaderFromMediaSource(m_videoCapMS, NULL, &pReader);
     if (SUCCEEDED(hr)) {
         // 设置输出格式
-        hr = pReader->SetCurrentMediaType((DWORD) MF_SOURCE_READER_FIRST_VIDEO_STREAM, NULL, m_selMediaType);
+        hr = pReader->SetCurrentMediaType((DWORD) MF_SOURCE_READER_FIRST_VIDEO_STREAM, NULL, m_selVideoMediaType);
         if (SUCCEEDED(hr)) {
             m_isStop = false;
             m_status = CSJMF_CAPTURE_CAPTURING;
@@ -252,7 +258,7 @@ void CSJMFCaptureImpl::startCaptureWithSourceReader() {
         }
     }
 
-    m_selMediaType->Release();
+    m_selVideoMediaType->Release();
     // pReader release 之后，会调用mediaSource的shutdown()方法
     SafeRelease(&pReader);
     m_isStop = false;
@@ -306,6 +312,10 @@ void CSJMFCaptureImpl::loadVideoDeviceInfos() {
 
             IMFMediaSource *pSource = NULL;
             hr = m_videoDevices[i]->ActivateObject(IID_PPV_ARGS(&pSource));
+            if (FAILED(hr)) {
+                break;
+            }
+
             loadVideoMediaSourceInfos(pSource, deviceInfo);
             m_videoDeivceInfos.insert({ deviceInfo.device_symlink, deviceInfo });
             SafeRelease(&pSource);
@@ -417,9 +427,9 @@ void CSJMFCaptureImpl::loadAudioDeviceInfos() {
             break;
         }
 
-        WCHAR *szFriendlyName = NULL;
-        UINT32 ccName;
         for (DWORD i = 0; i < m_audioDevicesCnt; i++) {
+            WCHAR *szFriendlyName = NULL;
+            UINT32 ccName;
             // 获取设备的名称，不是唯一，因此不能用来作为判断选择设备的依据.
             hr = m_audioDevices[i]->GetAllocatedString(MF_DEVSOURCE_ATTRIBUTE_FRIENDLY_NAME,
                                                        &szFriendlyName,
@@ -430,6 +440,20 @@ void CSJMFCaptureImpl::loadAudioDeviceInfos() {
 
             std::wstring devName(szFriendlyName);
             m_audioDevs.push_back(devName);
+
+            IMFMediaSource *pSource = NULL;
+            hr = m_audioDevices[i]->ActivateObject(IID_PPV_ARGS(&pSource));
+            if (FAILED(hr)) {
+                break;
+            }
+
+            /*if (!createAudioMediaSource()) {
+                break;
+            }*/
+
+            CSJVideoDeviceInfo deviceInfo;
+            loadAudioMediaSourceInfos(pSource, deviceInfo);
+
         }
     } while (FALSE);
     
@@ -450,14 +474,14 @@ bool CSJMFCaptureImpl::createAudioMediaSource() {
             break;
         }
 
-        WCHAR *pszEndPointID = NULL;
+        //WCHAR *pszEndPointID = NULL;
         // Set the endpoint ID.
         hr = pAttributes->SetString(MF_DEVSOURCE_ATTRIBUTE_SOURCE_TYPE_AUDCAP_ENDPOINT_ID,
-            (LPCWSTR) pszEndPointID);
+                                    (LPCWSTR) m_szAudioEndpointID);
         if (FAILED(hr)) {
             break;
         }
-       
+        
         hr = MFCreateDeviceSource(pAttributes, &m_audioCapMS);
         if (FAILED(hr)) {
             break;
@@ -493,6 +517,97 @@ void CSJMFCaptureImpl::releaseAudioDeviceInfo() {
     }
 
     m_audioDevicesCnt = 0;
+}
+
+void CSJMFCaptureImpl::loadAudioMediaSourceInfos(IMFMediaSource * mediaSource, CSJVideoDeviceInfo & deviceInfo) {
+    if (!mediaSource) {
+        return;
+    }
+
+    IMFPresentationDescriptor *descriptor;
+    HRESULT hr = mediaSource->CreatePresentationDescriptor(&descriptor);
+    if (FAILED(hr)) {
+        return;
+    }
+
+    DWORD streamCnt = 0;
+    hr = descriptor->GetStreamDescriptorCount(&streamCnt);
+    if (FAILED(hr)) {
+        return;
+    }
+
+    IMFStreamDescriptor *streamDescriptor;
+    for (DWORD i = 0; i < streamCnt; i++) {
+        BOOL isSelected = FALSE;
+        hr = descriptor->GetStreamDescriptorByIndex(i, &isSelected, &streamDescriptor);
+        if (FAILED(hr)) {
+            continue;
+        }
+
+        IMFMediaTypeHandler *typeHandler;
+        hr = streamDescriptor->GetMediaTypeHandler(&typeHandler);
+        if (FAILED(hr)) {
+            continue;
+        }
+
+        DWORD mediaTypeCnt;
+        hr = typeHandler->GetMediaTypeCount(&mediaTypeCnt);
+        if (FAILED(hr)) {
+            continue;
+        }
+
+        for (DWORD i = 0; i < mediaTypeCnt; i++) {
+            IMFMediaType *mediaType;
+            hr = typeHandler->GetMediaTypeByIndex(i, &mediaType);
+            if (FAILED(hr)) {
+                continue;
+            }
+
+            BOOL isCompressedFMT = FALSE;
+            hr = mediaType->IsCompressedFormat(&isCompressedFMT);
+            if (FAILED(hr)) {
+                continue;
+            }
+
+            if (isCompressedFMT) {
+                std::cout << "compressed fmt" << std::endl;
+            }
+
+            GUID subtype = { 0 };
+            /*UINT32 frameRate = 0;
+            UINT32 denominator = 0;
+            UINT32 width = 0, height = 0;
+            UINT32 frameRateMin = 0, frameRateMax = 0;*/
+
+            
+           /* hr = MFGetAttributeSize(mediaType, MF_MT_FRAME_SIZE, &width, &height);
+            hr = MFGetAttributeRatio(mediaType, MF_MT_FRAME_RATE, &frameRate, &denominator);
+            hr = MFGetAttributeRatio(mediaType, MF_MT_FRAME_RATE_RANGE_MIN, &frameRateMin, &denominator);
+            hr = MFGetAttributeRatio(mediaType, MF_MT_FRAME_RATE_RANGE_MAX, &frameRateMax, &denominator);*/
+
+            UINT32 channels = 0;
+            UINT32 sampleRate = 0;
+            UINT32 bitsPerSample = 0;
+
+            hr = mediaType->GetGUID(MF_MT_SUBTYPE, &subtype);
+            channels = MFGetAttributeUINT32(mediaType, MF_MT_AUDIO_NUM_CHANNELS, channels);
+            sampleRate = MFGetAttributeUINT32(mediaType, MF_MT_AUDIO_SAMPLES_PER_SECOND, sampleRate);
+            bitsPerSample = MFGetAttributeUINT32(mediaType, MF_MT_AUDIO_BITS_PER_SAMPLE, bitsPerSample);
+
+            if (FAILED(hr)) {
+                std::cout << "get Attributes failed!" << std::endl;
+            }
+           /* CSJVideoFmtInfo cameraInfo;
+            cameraInfo.sub_type = subtype;
+            cameraInfo.fmt_name = SubTypeToString(subtype);
+            cameraInfo.width = width;
+            cameraInfo.height = height;
+            cameraInfo.frameRate = frameRate;
+
+            deviceInfo.fmtList.push_back(cameraInfo);*/
+        }
+
+    }
 }
 
 void CSJMFCaptureImpl::finalize() {
@@ -658,8 +773,8 @@ bool CSJMFCaptureImpl::setVideoCaptureParam(IMFMediaSource * media_source) {
         if (!selMediaType) {
             break;
         }
-        m_selMediaType = selMediaType;
-        m_selMediaType->AddRef();
+        m_selVideoMediaType = selMediaType;
+        m_selVideoMediaType->AddRef();
         hr = pHandler->SetCurrentMediaType(selMediaType);
         if (SUCCEEDED(hr)) {
             res = true;

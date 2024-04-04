@@ -43,7 +43,7 @@ void ToolWindow::InitWindow() {
     //extractMediaData();
     //extractVideoData();
     //transformMedia();
-    //loadMFCapture();
+    loadMFCapture();
 }
 
 LRESULT ToolWindow::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam) {

@@ -26,6 +26,8 @@ public:
     void resumeCapture() override;
     void stopCapture() override;
 
+    void setDelegate(CSJMFCapture::Delegate *delegate) override;
+
 protected:
     void startCaptureWithSourceReader();
 
@@ -88,6 +90,8 @@ protected:
     */
     void releaseAudioDeviceInfo();
 
+    void loadAudioMediaSourceInfos(IMFMediaSource *mediaSource, CSJVideoDeviceInfo& deviceInfo);
+
     /**
     *  Create the capture sink, which can get the capture data.
     */
@@ -109,11 +113,16 @@ private:
     CSJMFDeviceList m_audioDevs;            // audio devices's name list;
     IMFActivate     **m_audioDevices;
     UINT32          m_audioDevicesCnt;
-    WCHAR           *m_szAudioDevSymlink;   // current audio device's symlink, identifier a device.
+    WCHAR           *m_szAudioEndpointID;   // current audio device's symlink, identifier a device.
 
-    CSJMFCaptureStatus m_status;            // current capture status.
-    IMFMediaType *m_selMediaType;
-    bool            m_isStop;               // a flag indicates should stop capture or not.
+    CSJMFCaptureStatus m_status;               // current capture status.
+    IMFMediaType       *m_selVideoMediaType;
+    IMFMediaType       *m_selAudioMedaiType;
+
+
+    bool               m_isStop;               // a flag indicates should stop capture or not.
+
+    CSJMFCapture::Delegate *m_delegate;
 };
 
 #endif // __CSJMFCAPTUREIMPL_H__

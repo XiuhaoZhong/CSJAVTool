@@ -61,6 +61,36 @@ public:
     CSJMFCapture() = default;
     virtual ~CSJMFCapture() {};
 
+    /**
+    * This class provides a series interfaces for receiving capture data and 
+    * status.
+    */
+    class Delegate {
+    public:
+        Delegate() = default;
+        ~Delegate() = default;
+
+        /**
+        *  The video data arrived.
+        */
+        virtual void onVideDataArrive() = 0;
+
+        /**
+        *  The audio data arrived.
+        */
+        virtual void onAudioDataArrive() = 0;
+
+        /**
+        *  Occurs errors during the capturing.
+        */
+        virtual void onErrorOccurs() = 0;
+
+        /**
+        *  Capturing status changed.
+        */
+        virtual void onStatusChanged() = 0;
+    };
+
     static CSJSharedCapture getMFCapture();
 
     /*
@@ -102,6 +132,11 @@ public:
     virtual void resumeCapture() = 0;
 
     virtual void stopCapture() = 0;
+
+    /**
+    *  Set the delegate which could deliver capture data, error, status to external.
+    */
+    virtual void setDelegate(CSJMFCapture::Delegate *delegate) = 0;
 
 };
 #endif // __CSJMFCAPTURE_H__
