@@ -12,12 +12,7 @@ static std::string SubTypeToString(GUID& subtype) {
     WCHAR buffer[128];
     StringFromGUID2(subtype, buffer, sizeof(buffer));
 
-    //3231564E-0000 - 0010 - 8000 - 00AA00389B71 NV12
-    //47504A4D - 0000 - 0010 - 8000 - 00AA00389B71 MJPG
-    //32595559 - 0000 - 0010 - 8000 - 00AA00389B71 YV12
-
     std::string res = "";
-
     std::wstring st(buffer);
     if (st.compare(L"{3231564E-0000-0010-8000-00AA00389B71}") == 0) {
         res = "NV12";
@@ -41,41 +36,6 @@ std::string wstring2string(std::wstring &wstr) {
     delete[] buffer;
     return res;
 }
-
-// 在网上发现的从摄像头读取数据的方法，后面试试是否有效 2024/04/02
-/*
-void ReadDataFromCamera() {
-    IMFSourceReader *pReader = NULL;
-    IMFMediaSource *pSource = NULL;
-    HRESULT hr = S_OK;
-
-    hr = MFCreateSourceReaderFromMediaSource(pSource, NULL, &pReader);
-    if (SUCCEEDED(hr)) {
-        // 设置输出格式
-        hr = pReader->SetCurrentMediaType((DWORD) MF_SOURCE_READER_FIRST_VIDEO_STREAM, NULL, NULL);
-        if (SUCCEEDED(hr)) {
-            // 读取帧
-            while (SUCCEEDED(hr)) {
-                IMFMediaBuffer *pBuffer = NULL;
-                DWORD dwStreamIndex, dwStreamFlags;
-                LONGLONG llTimeStamp;
-
-                //hr = pReader->ReadSample((DWORD) MF_SOURCE_READER_FIRST_VIDEO_STREAM, 0, &dwStreamIndex, &dwStreamFlags, &llTimeStamp, &pBuffer);
-                if (SUCCEEDED(hr)) {
-                    // 处理帧
-                    // ...
-
-                    SafeRelease(&pBuffer);
-                }
-            }
-        }
-    }
-
-    SafeRelease(&pReader);
-    SafeRelease(&pSource);
-}
-*/
-
 
 CSJSharedCapture CSJMFCapture::getMFCapture() {
     return std::make_shared<CSJMFCaptureImpl>();
@@ -244,6 +204,7 @@ void CSJMFCaptureImpl::startCaptureWithSourceReader() {
     IMFSourceReader *pReader = NULL;
     HRESULT hr = S_OK;
 
+    // 已经验证，此方法好用，可以读取到摄像头数据
     hr = MFCreateSourceReaderFromMediaSource(m_videoCapMS, NULL, &pReader);
     if (SUCCEEDED(hr)) {
         // 设置输出格式

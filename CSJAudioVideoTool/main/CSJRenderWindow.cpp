@@ -49,9 +49,9 @@ std::wstring CSJRenderWindow::GetSkinFile() {
 
 HWND CSJRenderWindow::createRenderWindow(HWND hwndParent,
                                          const ui::UiRect& rc) {
-    if (!registerWindowClass()) {
-      return NULL;
-    }
+    //if (!registerWindowClass()) {
+    //  return NULL;
+    //}
 
     std::wstring className = GetWindowClassName();
 
