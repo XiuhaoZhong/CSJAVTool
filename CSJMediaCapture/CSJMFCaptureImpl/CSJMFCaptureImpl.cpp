@@ -51,7 +51,6 @@ CSJMFCaptureImpl::CSJMFCaptureImpl() {
     m_audioDevicesCnt = 0;
     m_audioDevices = NULL;
     m_szAudioEndpointID = NULL;
-    //m_audioCapMS = NULL;
 
     m_delegate = nullptr;
 }
@@ -61,7 +60,6 @@ CSJMFCaptureImpl::~CSJMFCaptureImpl() {
 
     CoTaskMemFree(m_szCurCaptureSymlink);
     m_szCurCaptureSymlink = NULL;
-    //SafeRelease(&m_videoCapMS);
 
     CoTaskMemFree(m_szAudioEndpointID);
     m_szAudioEndpointID = NULL;
