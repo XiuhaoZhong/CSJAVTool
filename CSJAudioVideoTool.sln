@@ -5,9 +5,6 @@ VisualStudioVersion = 15.0.28307.1231
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CSJAudioVideoTool", "CSJAudioVideoTool\CSJAudioVideoTool.vcxproj", "{D086BC3B-9155-4395-9AF2-D211F115334A}"
 	ProjectSection(ProjectDependencies) = postProject
-		{0149BA6E-3C0A-426D-AA0A-0B9EC7742F19} = {0149BA6E-3C0A-426D-AA0A-0B9EC7742F19}
-		{8D9A6595-717A-41C8-B468-0011A72BE3D1} = {8D9A6595-717A-41C8-B468-0011A72BE3D1}
-		{E106ACD7-4E53-4AEE-942B-D0DD426DB34E} = {E106ACD7-4E53-4AEE-942B-D0DD426DB34E}
 		{1071DAEF-FE47-4E34-AB4F-5463B65FD197} = {1071DAEF-FE47-4E34-AB4F-5463B65FD197}
 	EndProjectSection
 EndProject
@@ -24,6 +21,8 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ui_components", "DuiLib\ui_components\ui_components.vcxproj", "{0149BA6E-3C0A-426D-AA0A-0B9EC7742F19}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Dui", "Dui", "{BDB060E7-C89E-4AB5-8BF2-FF0A0AA7FFCB}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CSJCommonTools", "CSJCommonTools\CSJCommonTools.vcxproj", "{B29E13AC-00AF-4F84-AA5C-19DF661FB945}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -89,6 +88,14 @@ Global
 		{0149BA6E-3C0A-426D-AA0A-0B9EC7742F19}.Release|x64.Build.0 = Release|x64
 		{0149BA6E-3C0A-426D-AA0A-0B9EC7742F19}.Release|x86.ActiveCfg = Release|Win32
 		{0149BA6E-3C0A-426D-AA0A-0B9EC7742F19}.Release|x86.Build.0 = Release|Win32
+		{B29E13AC-00AF-4F84-AA5C-19DF661FB945}.Debug|x64.ActiveCfg = Debug|x64
+		{B29E13AC-00AF-4F84-AA5C-19DF661FB945}.Debug|x64.Build.0 = Debug|x64
+		{B29E13AC-00AF-4F84-AA5C-19DF661FB945}.Debug|x86.ActiveCfg = Debug|Win32
+		{B29E13AC-00AF-4F84-AA5C-19DF661FB945}.Debug|x86.Build.0 = Debug|Win32
+		{B29E13AC-00AF-4F84-AA5C-19DF661FB945}.Release|x64.ActiveCfg = Release|x64
+		{B29E13AC-00AF-4F84-AA5C-19DF661FB945}.Release|x64.Build.0 = Release|x64
+		{B29E13AC-00AF-4F84-AA5C-19DF661FB945}.Release|x86.ActiveCfg = Release|Win32
+		{B29E13AC-00AF-4F84-AA5C-19DF661FB945}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -8,6 +8,7 @@
 #include <fstream>
 
 #include "CSJMFCaptureHeader.h"
+#include "CSJStringTool/CSJStringTool.h"
 
 static std::string SubTypeToString(GUID& subtype) {
     WCHAR buffer[128];
@@ -25,17 +26,6 @@ static std::string SubTypeToString(GUID& subtype) {
         res = "MFAudioFormat_Float";
     }
 
-    return res;
-}
-
-std::string wstring2string(std::wstring &wstr) {
-    std::string res;
-    int len = WideCharToMultiByte(CP_ACP, 0, wstr.c_str(), wstr.size(), NULL, 0, NULL, NULL);
-    char* buffer = new char[len + 1];
-    WideCharToMultiByte(CP_ACP, 0, wstr.c_str(), wstr.size(), buffer, len, NULL, NULL);
-    buffer[len] = '\0';
-    res.append(buffer);
-    delete[] buffer;
     return res;
 }
 

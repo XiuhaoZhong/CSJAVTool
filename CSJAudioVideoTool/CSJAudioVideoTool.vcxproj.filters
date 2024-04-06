@@ -1,10 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="资源文件">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
     <Filter Include="main">
       <UniqueIdentifier>{3d9522a1-d977-433d-bf6a-ee0fdaaeb979}</UniqueIdentifier>
     </Filter>
@@ -16,6 +12,10 @@
     </Filter>
     <Filter Include="CommonData">
       <UniqueIdentifier>{1163cc04-7f01-46b2-a4bb-9cf465514fd4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="main\资源文件">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -99,6 +99,8 @@
     <ClCompile Include="RenderTools\TextureBlitter.cpp">
       <Filter>RenderTools</Filter>
     </ClCompile>
-    <ClCompile Include="main\main.cpp" />
+    <ClCompile Include="main\main.cpp">
+      <Filter>main</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

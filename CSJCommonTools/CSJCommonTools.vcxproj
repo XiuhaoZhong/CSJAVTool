@@ -18,69 +18,39 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="CommonData\CSJDataManager.h" />
-    <ClInclude Include="CommonData\CSJLogManager.h" />
-    <ClInclude Include="main\CSJRenderWindow.h" />
-    <ClInclude Include="main\stdafx.h" />
-    <ClInclude Include="main\targetver.h" />
-    <ClInclude Include="main\ToolWindow.h" />
-    <ClInclude Include="main\main.h" />
-    <ClInclude Include="RenderTools\GLRenderImpl.h" />
-    <ClInclude Include="RenderTools\Render.h" />
-    <ClInclude Include="RenderData\CSJOutVideoBuf.h" />
-    <ClInclude Include="RenderData\graphics.h" />
-    <ClInclude Include="RenderData\gl_display.h" />
-    <ClInclude Include="RenderTools\RenderManager.h" />
-    <ClInclude Include="RenderTools\SceneRenderer.h" />
-    <ClInclude Include="RenderTools\TextureBlitter.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="CommonData\CSJDataManager.cpp" />
-    <ClCompile Include="CommonData\CSJLogManager.cpp" />
-    <ClCompile Include="main\CSJRenderWindow.cpp" />
-    <ClCompile Include="main\main.cpp" />
-    <ClCompile Include="main\ToolWindow.cpp" />
-    <ClCompile Include="RenderTools\GLRenderImpl.cpp" />
-    <ClCompile Include="RenderTools\Render.cpp" />
-    <ClCompile Include="RenderData\CSJOutVideoBuf.cpp" />
-    <ClCompile Include="RenderData\graphics.cpp" />
-    <ClCompile Include="RenderTools\RenderManager.cpp" />
-    <ClCompile Include="RenderTools\SceneRenderer.cpp" />
-    <ClCompile Include="RenderTools\TextureBlitter.cpp" />
-  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
-    <ProjectGuid>{D086BC3B-9155-4395-9AF2-D211F115334A}</ProjectGuid>
-    <RootNamespace>CSJAudioVideoTool</RootNamespace>
+    <ProjectGuid>{B29E13AC-00AF-4F84-AA5C-19DF661FB945}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>CSJCommonTools</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v141</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
-    <CharacterSet>MultiByte</CharacterSet>
+    <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v141</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
-    <CharacterSet>MultiByte</CharacterSet>
+    <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -101,79 +71,115 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <ExecutablePath>$(ExecutablePath)</ExecutablePath>
-    <IncludePath>E:\technology\Projects\CSJAudioVideoTool\CSJAudioVideoTool\CSJAudioVideoTool\third_part\DuiLib_projects;E:\technology\Projects\CSJAudioVideoTool\CSJAudioVideoTool\CSJAudioVideoTool\main;$(IncludePath)</IncludePath>
+    <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)build\$(ProjectName)\$(platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)build\$(ProjectName)\$(platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;CSJCOMMONTOOLS_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;GLEW_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
-      <AdditionalIncludeDirectories>$(ProjectDir)RenderData;$(ProjectDir)RenderTools;$(ProjectDir)CommonData;$(ProjectDir);$(ProjectDir)third_part\glew-2.1.0\include;$(ProjectDir)third_part\glfw-3.3.3\include;$(ProjectDir)third_part\log4cpp\include;$(SolutionDir)Include\CSJMediaPegTools;$(SolutionDir)Duilib\;$(SolutionDir)Include\CSJMediaCapture;$(SolutionDir)Include\CSJCommonTools\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <AdditionalLibraryDirectories>$(SolutionDir)Lib\$(platform)\$(configuration);$(ProjectDir)third_part\glew-2.1.0\Lib\Win32;$(ProjectDir)third_part\glfw-3.3.3\Lib\$(platform);$(ProjectDir)third_part\log4cpp\lib\$(platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>base_d.lib;duilib_d.lib;ui_components_d.lib;opengl32.lib;glew32sd.lib;glfw3d.lib;GLTool.lib;log4cpp.lib;CSJMediaPegTools.lib;CSJMediaCapture.lib;Mfplat.lib;CSJCommonTools.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
     </Link>
     <PostBuildEvent>
-      <Command>Xcopy /y $(SolutionDir)Dlls\*.dll $(SolutionDir)bin\$(Configuration)\
-$(SolutionDir)copy_file.bat $(SolutionDir) $(ProjectName) $(TargetName) $(TargetExt) $(Platform) $(Configuration)
-</Command>
+      <Command>Xcopy /y $(ProjectDir)CSJCommonToolsDefine.h $(SolutionDir)Include\$(ProjectName)\
+Xcopy /y $(ProjectDir)CSJStringTool\CSJStringTool.h $(SolutionDir)Include\$(ProjectName)\CSJStringTool\
+$(SolutionDir)copy_file.bat $(SolutionDir) $(ProjectName) $(TargetName) $(TargetExt) $(Platform) $(Configuration)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;CSJCOMMONTOOLS_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)RenderData;$(ProjectDir)RenderTools;$(ProjectDir)CommonData;$(ProjectDir);$(ProjectDir)third_part\Duilib_Projects;$(ProjectDir)third_part\glew-2.1.0\include;$(ProjectDir)third_part\glfw-3.3.3\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_WINDOWS;GLEW_STATIC;_UNICODE;UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <AdditionalLibraryDirectories>$(ProjectDir)third_part\glfw-3.3.3\Lib\$(platform);$(ProjectDir)third_part\glew-2.1.0\lib\$(platform);$(ProjectDir)third_part\log4cpp\Lib\$(platform);$(SolutionDir)libs\$(platform)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>base_d.lib;duilib_d.lib;ui_components.lib;opengl32.lib;glew32sd.lib;glfw3d.lib;GLTool.lib;log4cpp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;CSJCOMMONTOOLS_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;CSJCOMMONTOOLS_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
     </Link>
   </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="CSJStringTool\CSJStringTool.h" />
+    <ClInclude Include="framework.h" />
+    <ClInclude Include="pch.h" />
+    <ClInclude Include="CSJCommonToolsDefine.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="CSJStringTool\CSJStringTool.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="pch.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
