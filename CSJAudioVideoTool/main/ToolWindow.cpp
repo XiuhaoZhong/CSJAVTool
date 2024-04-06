@@ -172,6 +172,7 @@ void ToolWindow::transformMedia() {
     }
 }
 
+static CSJSharedCapture spCapture = nullptr;
 void ToolWindow::loadMFCapture() {
     CSJSharedCapture mfCapture = CSJMFCapture::getMFCapture();
     if (!mfCapture) {
@@ -185,6 +186,8 @@ void ToolWindow::loadMFCapture() {
     }
 
     mfCapture->selectedCamera(0);
+    mfCapture->selectedMicrophone(0);
 
     mfCapture->startCapture();
+    spCapture = mfCapture;
 }

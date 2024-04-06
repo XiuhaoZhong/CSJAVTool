@@ -31,7 +31,7 @@ typedef enum {
 } CSJMFCaptureStatus;
 
 /*
-*  Hold a capture format, a video capture device at least has a CSJVideoFmtInfo.
+*  Video capture format param.
 */
 typedef struct {
     GUID        sub_type;
@@ -43,14 +43,36 @@ typedef struct {
 
 using CSJVideoCapureFmtList = std::vector<CSJVideoFmtInfo>;
 
-/*
-*  The detail information of a video capture device.
+/**
+*  Video capture device params.
 */
 typedef struct {
     std::wstring            device_name;
     std::wstring            device_symlink;
     CSJVideoCapureFmtList   fmtList;
 } CSJVideoDeviceInfo;
+
+/**
+*  Audio capture format params.
+*/
+typedef struct {
+    GUID        sub_type;       // audio capture format guid.
+    UINT32      channels;       
+    UINT32      sampleRate;
+    UINT32      bitsPerSample;  // audio capture format name.
+    std::string fmt_name;
+} CSJAudioFmtInfo;
+
+using CSJAudioCaptureFmtList = std::vector<CSJAudioFmtInfo>;
+
+/**
+*  Audio capture device params.
+*/
+typedef struct {
+    std::wstring            device_name;
+    std::wstring            device_endPintID;
+    CSJAudioCaptureFmtList  fmtList;
+} CSJAudioDeviceInfo;
 
 /**
  * This class provides the media capture functionalities

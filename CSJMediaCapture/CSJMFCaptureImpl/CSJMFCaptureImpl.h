@@ -3,6 +3,8 @@
 
 #include "CSJMFCapture.h"
 
+#include <thread>
+
 /**
  * This class inplements CSJMFCapture interfaces.
  */
@@ -29,7 +31,15 @@ public:
     void setDelegate(CSJMFCapture::Delegate *delegate) override;
 
 protected:
-    void startCaptureWithSourceReader();
+    /**
+    *  Starts Video capture with seleted video meida type.
+    */
+    void startVideoCapWithSourceReader();
+
+    /**
+    *  Start Audio capture with selected audio media type.
+    */
+    void startAudioCapWithSourceReader();
 
 protected:
     /**
@@ -61,19 +71,24 @@ protected:
     /**
     *  Create the video capture media source with device symbolic.
     */
-    bool createVideoCaptureSourceWithSymlink();
+    IMFMediaSource* createVideoCaptureSourceWithSymlink();
 
     /**
-    *  Set the video capture param. 
+    *  Get selected video capture type.
+    *  
+    *  @param media_source, the selected media source which will capture video.
+    *
+    *  @return IMFMediaType, the media type which the video capturing wants.
     */
-    bool setVideoCaptureParam(IMFMediaSource *media_source);
+    IMFMediaType* getSelectedVideoMediaType(IMFMediaSource *media_source);
 
     /**
     *  Check the selected index is same as the current audio device.
     *
     *  @param index, the index of the selected item.
+    *  @param endpointID[out], return the selected endpointID if Needed. 
     */
-    bool isSameAudioDevice(int index);
+    bool isSameAudioDevice(int index, WCHAR **endpointID = NULL);
 
     /**
     *  Load all the audio devices and their infos.
@@ -81,16 +96,25 @@ protected:
     void loadAudioDeviceInfos();
 
     /**
-    *  Create a audio capture media source.
+    *  Create the audio media source with the selected endpoint;
     */
-    bool createAudioMediaSource();
+    IMFMediaSource* createAudioCaptureSourceWithEndPoint();
+
+    /**
+    *  Get selected audio media type which will be used to indicate the capture's info.
+    *
+    *  @param audio_source, the audio media source which will capture audio.
+    *
+    *  @return IMFMediaType, the media type which the audio caputring wants.
+    */
+    IMFMediaType* getSelectedAudioMediaType(IMFMediaSource *audio_source);
 
     /**
     *  Release all the memebers are relative audio device. 
     */
     void releaseAudioDeviceInfo();
 
-    void loadAudioMediaSourceInfos(IMFMediaSource *mediaSource, CSJVideoDeviceInfo& deviceInfo);
+    void loadAudioMediaSourceInfos(IMFMediaSource *mediaSource, CSJAudioDeviceInfo& deviceInfo);
 
     /**
     *  Create the capture sink, which can get the capture data.
@@ -98,31 +122,25 @@ protected:
     bool createVideoCaptureSink();
 
 private:
-    CSJMFDeviceList m_videoDevs;            // video devices's name list;
-    IMFActivate     **m_videoDevices;       // holding the active object for the device.
-    UINT32          m_videoDevicesCnt;      // the count of video devices.
-    WCHAR           *m_szCurCaptureSymlink; // current video device's symlink, identifier a device.
-    IMFMediaSource  *m_videoCapMS;          // video capture media source.
-
-    std::map<std::wstring, CSJVideoDeviceInfo> m_videoDeivceInfos; // <device symlink, device infos>.
-
-
-    std::map<std::wstring, CSJAudioDeviceInfo> m_audioDeviceInfos; // <device endpointID, device infos>.
-    WCHAR               *m_szAudioEndpointID;   // current audio device's symlink, identifier a device.
-    IMFMediaSource      *m_audioCapMS;          // audio capture media, as the audio capturing use the default
-                                                // audio device, so the following members for audio device are
-                                                // not used. I will use these if needed in the future.
+    CSJMFDeviceList     m_videoDevs;            // video devices's name list;
+    IMFActivate         **m_videoDevices;       // holding the active object for the device.
+    UINT32              m_videoDevicesCnt;      // the count of video devices.
+    WCHAR               *m_szCurCaptureSymlink; // current video device's symlink, identifier a device.
+    IMFMediaType        *m_selVideoMediaType;
 
     CSJMFDeviceList     m_audioDevs;            // audio devices's name list;
     IMFActivate         **m_audioDevices;
     UINT32              m_audioDevicesCnt;
-    
-
-    CSJMFCaptureStatus  m_status;               // current capture status.
-    IMFMediaType        *m_selVideoMediaType;
+    WCHAR               *m_szAudioEndpointID;   // current audio device's symlink, identifier a device.
     IMFMediaType        *m_selAudioMedaiType;
 
+    std::thread         m_videoCapThread;
+    std::thread         m_audioCapThread;
 
+    std::map<std::wstring, CSJVideoDeviceInfo> m_videoDeivceInfos; // <device symlink, device infos>.
+    std::map<std::wstring, CSJAudioDeviceInfo> m_audioDeviceInfos; // <device endpointID, device infos>.
+
+    CSJMFCaptureStatus  m_status;               // current capture status.
     bool               m_isStop;               // a flag indicates should stop capture or not.
 
     CSJMFCapture::Delegate *m_delegate;
