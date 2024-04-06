@@ -66,9 +66,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main\main.cpp">
-      <Filter>main</Filter>
-    </ClCompile>
     <ClCompile Include="main\ToolWindow.cpp">
       <Filter>main</Filter>
     </ClCompile>
@@ -102,5 +99,6 @@
     <ClCompile Include="RenderTools\TextureBlitter.cpp">
       <Filter>RenderTools</Filter>
     </ClCompile>
+    <ClCompile Include="main\main.cpp" />
   </ItemGroup>
 </Project>

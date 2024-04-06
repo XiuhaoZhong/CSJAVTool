@@ -574,37 +574,15 @@ void CSJMFCaptureImpl::loadAudioMediaSourceInfos(IMFMediaSource * mediaSource, C
             }
 
             GUID subtype = { 0 };
-            /*UINT32 frameRate = 0;
-            UINT32 denominator = 0;
-            UINT32 width = 0, height = 0;
-            UINT32 frameRateMin = 0, frameRateMax = 0;*/
-
-            
-           /* hr = MFGetAttributeSize(mediaType, MF_MT_FRAME_SIZE, &width, &height);
-            hr = MFGetAttributeRatio(mediaType, MF_MT_FRAME_RATE, &frameRate, &denominator);
-            hr = MFGetAttributeRatio(mediaType, MF_MT_FRAME_RATE_RANGE_MIN, &frameRateMin, &denominator);
-            hr = MFGetAttributeRatio(mediaType, MF_MT_FRAME_RATE_RANGE_MAX, &frameRateMax, &denominator);*/
-
             UINT32 channels = 0;
             UINT32 sampleRate = 0;
             UINT32 bitsPerSample = 0;
 
+            MFAudioFormat_Float;
             hr = mediaType->GetGUID(MF_MT_SUBTYPE, &subtype);
             channels = MFGetAttributeUINT32(mediaType, MF_MT_AUDIO_NUM_CHANNELS, channels);
             sampleRate = MFGetAttributeUINT32(mediaType, MF_MT_AUDIO_SAMPLES_PER_SECOND, sampleRate);
             bitsPerSample = MFGetAttributeUINT32(mediaType, MF_MT_AUDIO_BITS_PER_SAMPLE, bitsPerSample);
-
-            if (FAILED(hr)) {
-                std::cout << "get Attributes failed!" << std::endl;
-            }
-           /* CSJVideoFmtInfo cameraInfo;
-            cameraInfo.sub_type = subtype;
-            cameraInfo.fmt_name = SubTypeToString(subtype);
-            cameraInfo.width = width;
-            cameraInfo.height = height;
-            cameraInfo.frameRate = frameRate;
-
-            deviceInfo.fmtList.push_back(cameraInfo);*/
         }
 
     }

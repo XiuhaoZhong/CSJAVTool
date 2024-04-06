@@ -16,6 +16,9 @@
 #include "ToolWindow.h"
 
 
+void ProcessInitialization();
+void ProcessUninitialization();
+
 enum Thread {
 	kThreadUI
 };
@@ -24,11 +27,15 @@ int APIENTRY wWinMain( _In_ HINSTANCE hInstance,
 					  _In_opt_ HINSTANCE hPrevInstance, 
 					  _In_ LPWSTR lpCmdLine, 
 					  _In_ int nShowCmd ) {
+
+    ProcessInitialization();
 	// 创建主线程;
 	MainThread thread;
 
 	// 执行主线程循环;
 	thread.RunOnCurrentThreadWithLoop(nbase::MessageLoop::kUIMessageLoop);
+
+    ProcessUninitialization();
 
 	return 0;
 }
@@ -47,11 +54,6 @@ void MainThread::Init() {
         // Com initialize failed;
     }
 
-    HRESULT hr = MFStartup(MF_VERSION);
-    if (FAILED(hr)) {
-       // MFStartup initialize failed.
-    }
-
 	ToolWindow* window = new ToolWindow();
 	window->Create(NULL, window->kClassName.c_str(), WS_OVERLAPPEDWINDOW & ~WS_MAXIMIZEBOX, 0);
 	window->CenterWindow();
@@ -64,6 +66,16 @@ void MainThread::Cleanup() {
 	ui::GlobalManager::Shutdown();
 	SetThreadWasQuitProperly(true);
 	nbase::ThreadManager::UnregisterThread();
-    MFShutdown();
     CoUninitialize();
+}
+
+void ProcessInitialization() {
+    HRESULT hr = MFStartup(MF_VERSION);
+    if (FAILED(hr)) {
+        // MFStartup initialize failed.
+    }
+}
+
+void ProcessUninitialization() {
+    MFShutdown();
 }

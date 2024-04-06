@@ -104,20 +104,23 @@ private:
     WCHAR           *m_szCurCaptureSymlink; // current video device's symlink, identifier a device.
     IMFMediaSource  *m_videoCapMS;          // video capture media source.
 
-    std::map<std::wstring, CSJVideoDeviceInfo> m_videoDeivceInfos; // <device symlink, device infos>;
+    std::map<std::wstring, CSJVideoDeviceInfo> m_videoDeivceInfos; // <device symlink, device infos>.
 
-    IMFMediaSource *m_audioCapMS;           // audio capture media, as the audio capturing use the default
-                                            // audio device, so the following members for audio device are
-                                            // not used. I will use these if needed in the future.
 
-    CSJMFDeviceList m_audioDevs;            // audio devices's name list;
-    IMFActivate     **m_audioDevices;
-    UINT32          m_audioDevicesCnt;
-    WCHAR           *m_szAudioEndpointID;   // current audio device's symlink, identifier a device.
+    std::map<std::wstring, CSJAudioDeviceInfo> m_audioDeviceInfos; // <device endpointID, device infos>.
+    WCHAR               *m_szAudioEndpointID;   // current audio device's symlink, identifier a device.
+    IMFMediaSource      *m_audioCapMS;          // audio capture media, as the audio capturing use the default
+                                                // audio device, so the following members for audio device are
+                                                // not used. I will use these if needed in the future.
 
-    CSJMFCaptureStatus m_status;               // current capture status.
-    IMFMediaType       *m_selVideoMediaType;
-    IMFMediaType       *m_selAudioMedaiType;
+    CSJMFDeviceList     m_audioDevs;            // audio devices's name list;
+    IMFActivate         **m_audioDevices;
+    UINT32              m_audioDevicesCnt;
+    
+
+    CSJMFCaptureStatus  m_status;               // current capture status.
+    IMFMediaType        *m_selVideoMediaType;
+    IMFMediaType        *m_selAudioMedaiType;
 
 
     bool               m_isStop;               // a flag indicates should stop capture or not.
