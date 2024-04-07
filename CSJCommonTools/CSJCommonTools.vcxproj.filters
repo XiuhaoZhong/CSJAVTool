@@ -39,6 +39,9 @@
     <ClInclude Include="CSJStringTool\CSJStringTool.h">
       <Filter>CSJStringTool</Filter>
     </ClInclude>
+    <ClInclude Include="CSJImageTool\CSJImageTool.h">
+      <Filter>CSJImageTool</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -49,6 +52,9 @@
     </ClCompile>
     <ClCompile Include="CSJStringTool\CSJStringTool.cpp">
       <Filter>CSJStringTool</Filter>
+    </ClCompile>
+    <ClCompile Include="CSJImageTool\CSJImageTool.cpp">
+      <Filter>CSJImageTool</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
