@@ -87,25 +87,26 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;CSJMFMEDIATOOLS_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)CSJMFCapture;$(SolutionDir)Include\CSJCommonTools\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)CSJMFCapture;$(SolutionDir)Include\CSJCommonTools\;$(ProjectDir)CSJAudioPlayer\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>Mfuuid.lib;Mfplat.lib;Mf.lib;Mfreadwrite.lib;CSJCommonTools.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Mfuuid.lib;Mfplat.lib;Mf.lib;Mfreadwrite.lib;dsound.lib;CSJCommonTools.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)Lib\$(platform)\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>Xcopy /y $(ProjectDir)CSJMFMediaToolsDefine.h $(SolutionDir)Include\$(ProjectName)\
 Xcopy /y $(ProjectDir)CSJMFCapture\CSJMFCapture.h $(SolutionDir)Include\$(ProjectName)\CSJMFCapture\
+Xcopy /y $(ProjectDir)CSJAudioPlayer\CSJAudioPlayer.h $(SolutionDir)Include\$(ProjectName)\CSJAudioPlayer\
 $(SolutionDir)copy_file.bat $(SolutionDir) $(ProjectName) $(TargetName) $(TargetExt) $(Platform) $(Configuration)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -166,6 +167,8 @@ $(SolutionDir)copy_file.bat $(SolutionDir) $(ProjectName) $(TargetName) $(Target
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="CSJAudioPlayerImpl\CSJAudioPlayerDSImpl.h" />
+    <ClInclude Include="CSJAudioPlayer\CSJAudioPlayer.h" />
     <ClInclude Include="CSJMFMediaToolsDefine.h" />
     <ClInclude Include="CSJMFMediaHeader.h" />
     <ClInclude Include="CSJMFCaptureImpl\CSJMFCaptureImpl.h" />
@@ -174,6 +177,8 @@ $(SolutionDir)copy_file.bat $(SolutionDir) $(ProjectName) $(TargetName) $(Target
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CSJAudioPlayer.cpp" />
+    <ClCompile Include="CSJAudioPlayerImpl\CSJAudioPlayerDSImpl.cpp" />
     <ClCompile Include="CSJMFCaptureImpl\CSJMFCaptureImpl.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>

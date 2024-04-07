@@ -231,6 +231,7 @@ void CSJMFCaptureImpl::startVideoCapWithSourceReader() {
                         if (FAILED(hr)) {
                             std::cout << "lock sample failed." << std::endl;
                         }
+
                     }
 
                     // TODO: invoke a delegate function to diliver the video data and timestamp to render.
@@ -305,6 +306,12 @@ void CSJMFCaptureImpl::startAudioCapWithSourceReader() {
                         if (FAILED(hr)) {
                             std::cout << "lock sample failed." << std::endl;
                         }
+
+                        CSJMFAudioData *audioData = new CSJMFAudioData(buffer, sampleLen);
+                        if (m_delegate) {
+                            m_delegate->onAudioDataArrive(audioData);
+                        }
+                        delete audioData;
                     }
 
                     // TODO: invoke a delegate function to diliver the video data and timestamp to render.

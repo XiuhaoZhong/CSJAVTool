@@ -19,6 +19,12 @@
     <Filter Include="CSJMFCaptureImpl">
       <UniqueIdentifier>{327d6020-3522-4079-93e2-c8459c07bec8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="CSJAudioPlayer">
+      <UniqueIdentifier>{9a76485b-0a0d-48d1-957f-5876bd2026e4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CSJAudioPlayerImpl">
+      <UniqueIdentifier>{6e2247d0-de19-4e96-9edb-242ae45be5b4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -39,6 +45,12 @@
     <ClInclude Include="CSJMFMediaHeader.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="CSJAudioPlayer\CSJAudioPlayer.h">
+      <Filter>CSJAudioPlayer</Filter>
+    </ClInclude>
+    <ClInclude Include="CSJAudioPlayerImpl\CSJAudioPlayerDSImpl.h">
+      <Filter>CSJAudioPlayerImpl</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -49,6 +61,12 @@
     </ClCompile>
     <ClCompile Include="CSJMFCaptureImpl\CSJMFCaptureImpl.cpp">
       <Filter>CSJMFCaptureImpl</Filter>
+    </ClCompile>
+    <ClCompile Include="CSJAudioPlayerImpl\CSJAudioPlayerDSImpl.cpp">
+      <Filter>CSJAudioPlayerImpl</Filter>
+    </ClCompile>
+    <ClCompile Include="CSJAudioPlayer.cpp">
+      <Filter>CSJAudioPlayer</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

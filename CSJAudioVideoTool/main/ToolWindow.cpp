@@ -11,6 +11,8 @@
 #include "CSJMediaTransformer/CSJMediaTransformer.h"
 #include "CSJMFCapture/CSJMFCapture.h"
 
+#include "CSJAVAudioHandler.h"
+
 const std::wstring ToolWindow::kClassName = L"Basic";
 
 ToolWindow::ToolWindow() {
@@ -172,22 +174,12 @@ void ToolWindow::transformMedia() {
     }
 }
 
-static CSJSharedCapture spCapture = nullptr;
+static std::shared_ptr<CSJAVAudioHandler> audioHandler;
 void ToolWindow::loadMFCapture() {
-    CSJSharedCapture mfCapture = CSJMFCapture::getMFCapture();
-    if (!mfCapture) {
-        // create media foundation capture failed.
-        return ;
-    }
+    audioHandler = std::make_shared<CSJAVAudioHandler>();
+    
+    audioHandler->init();
 
-    if (!mfCapture->initializeCapture()) {
-        // media foundation capture init failed.
-        return ;
-    }
-
-    mfCapture->selectedCamera(0);
-    mfCapture->selectedMicrophone(0);
-
-    mfCapture->startCapture();
-    spCapture = mfCapture;
+    audioHandler->startCapture();
+   
 }

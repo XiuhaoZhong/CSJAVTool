@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClInclude Include="CommonData\CSJDataManager.h" />
     <ClInclude Include="CommonData\CSJLogManager.h" />
+    <ClInclude Include="CSJAVAudioHandler.h" />
     <ClInclude Include="main\CSJRenderWindow.h" />
     <ClInclude Include="main\stdafx.h" />
     <ClInclude Include="main\targetver.h" />
@@ -38,6 +39,7 @@
   <ItemGroup>
     <ClCompile Include="CommonData\CSJDataManager.cpp" />
     <ClCompile Include="CommonData\CSJLogManager.cpp" />
+    <ClCompile Include="CSJAVAudioHandler.cpp" />
     <ClCompile Include="main\CSJRenderWindow.cpp" />
     <ClCompile Include="main\main.cpp" />
     <ClCompile Include="main\ToolWindow.cpp" />

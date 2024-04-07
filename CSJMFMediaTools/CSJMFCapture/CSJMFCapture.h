@@ -100,7 +100,7 @@ public:
         /**
         *  The audio data arrived.
         */
-        virtual void onAudioDataArrive() = 0;
+        virtual void onAudioDataArrive(CSJMFAudioData *audioData) = 0;
 
         /**
         *  Occurs errors during the capturing.

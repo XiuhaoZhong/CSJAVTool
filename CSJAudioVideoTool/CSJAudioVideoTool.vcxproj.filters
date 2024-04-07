@@ -64,6 +64,9 @@
     <ClInclude Include="main\targetver.h">
       <Filter>main</Filter>
     </ClInclude>
+    <ClInclude Include="CSJAVAudioHandler.h">
+      <Filter>main</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main\ToolWindow.cpp">
@@ -100,6 +103,9 @@
       <Filter>RenderTools</Filter>
     </ClCompile>
     <ClCompile Include="main\main.cpp">
+      <Filter>main</Filter>
+    </ClCompile>
+    <ClCompile Include="CSJAVAudioHandler.cpp">
       <Filter>main</Filter>
     </ClCompile>
   </ItemGroup>
