@@ -33,10 +33,10 @@
     <ClInclude Include="CSJMFCaptureImpl\CSJMFCaptureImpl.h">
       <Filter>CSJMFCaptureImpl</Filter>
     </ClInclude>
-    <ClInclude Include="CSJMFCaptureHeader.h">
+    <ClInclude Include="CSJMFMediaToolsDefine.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="CSJMediaCaptureDefine.h">
+    <ClInclude Include="CSJMFMediaHeader.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

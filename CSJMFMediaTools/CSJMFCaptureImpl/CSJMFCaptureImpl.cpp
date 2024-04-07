@@ -7,7 +7,7 @@
 #include <iostream>
 #include <fstream>
 
-#include "CSJMFCaptureHeader.h"
+#include "CSJMFMediaHeader.h"
 #include "CSJStringTool/CSJStringTool.h"
 
 static std::string SubTypeToString(GUID& subtype) {

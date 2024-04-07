@@ -24,6 +24,7 @@
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>CSJMediaCapture</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
+    <ProjectName>CSJMFMediaTools</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -90,7 +91,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_DEBUG;CSJMEDIACAPTURE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;CSJMFMEDIATOOLS_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)CSJMFCapture;$(SolutionDir)Include\CSJCommonTools\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -103,7 +104,7 @@
       <AdditionalLibraryDirectories>$(SolutionDir)Lib\$(platform)\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
-      <Command>Xcopy /y $(ProjectDir)CSJMediaCaptureDefine.h $(SolutionDir)Include\$(ProjectName)\
+      <Command>Xcopy /y $(ProjectDir)CSJMFMediaToolsDefine.h $(SolutionDir)Include\$(ProjectName)\
 Xcopy /y $(ProjectDir)CSJMFCapture\CSJMFCapture.h $(SolutionDir)Include\$(ProjectName)\CSJMFCapture\
 $(SolutionDir)copy_file.bat $(SolutionDir) $(ProjectName) $(TargetName) $(TargetExt) $(Platform) $(Configuration)</Command>
     </PostBuildEvent>
@@ -165,8 +166,8 @@ $(SolutionDir)copy_file.bat $(SolutionDir) $(ProjectName) $(TargetName) $(Target
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="CSJMediaCaptureDefine.h" />
-    <ClInclude Include="CSJMFCaptureHeader.h" />
+    <ClInclude Include="CSJMFMediaToolsDefine.h" />
+    <ClInclude Include="CSJMFMediaHeader.h" />
     <ClInclude Include="CSJMFCaptureImpl\CSJMFCaptureImpl.h" />
     <ClInclude Include="CSJMFCapture\CSJMFCapture.h" />
     <ClInclude Include="framework.h" />

@@ -12,7 +12,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GLTool", "CSJAudioVideoTool
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CSJMediaPegTools", "CSJMediaPegTools\CSJMediaPegTools.vcxproj", "{F01AD5A0-BD00-4362-88C7-4EC88ED0A21C}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CSJMediaCapture", "CSJMediaCapture\CSJMediaCapture.vcxproj", "{659F922D-D4A8-4565-8059-EF7FF0FA7605}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CSJMFMediaTools", "CSJMFMediaTools\CSJMFMediaTools.vcxproj", "{659F922D-D4A8-4565-8059-EF7FF0FA7605}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "base", "DuiLib\base\base.vcxproj", "{8D9A6595-717A-41C8-B468-0011A72BE3D1}"
 EndProject

@@ -1,7 +1,7 @@
 #ifndef __CSJMFCAPTURE_H__
 #define __CSJMFCAPTURE_H__
 
-#include "CSJMediaCaptureDefine.h"
+#include "CSJMFMediaToolsDefine.h"
 
 #include <vector>
 #include <string>
@@ -78,7 +78,7 @@ typedef struct {
  * This class provides the media capture functionalities
  * based on Media Foundation.
  */
-class CSJMEDIACAPTURE_API CSJMFCapture {
+class CSJMFMEDIATOOLS_API CSJMFCapture {
 public:
     CSJMFCapture() = default;
     virtual ~CSJMFCapture() {};
