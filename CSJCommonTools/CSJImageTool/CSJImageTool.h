@@ -3,10 +3,14 @@
 
 #include "CSJCommonToolsDefine.h"
 
+#include <windows.h>
+
 class CSJCOMMONTOOLS_API CSJImageTool {
 public:
     CSJImageTool() = default;
     ~CSJImageTool() = default;
+
+    static void SaveToImage(BYTE* imageData);
 };
 
 #endif
