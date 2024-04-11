@@ -12,48 +12,31 @@
 
 class CSJMFAudioData {
 public:
-    CSJMFAudioData() :
-        m_data(nullptr), 
-        m_length(0) {
+    CSJMFAudioData() : m_sample(NULL) {
     
     }
-    CSJMFAudioData(BYTE* data, DWORD length) {
-        m_data = new BYTE[length];
-        memcpy(m_data, data, length);
-        m_length = length;
+    CSJMFAudioData(IMFSample *sample) : m_sample(sample) {
+        m_sample->AddRef();
     }
     ~CSJMFAudioData() {
-        if (m_data) {
-            delete m_data;
-            m_data = nullptr;
+        if (m_sample) {
+            m_sample->Release();
         }
     }
 
     CSJMFAudioData(CSJMFAudioData&& audioData) {
-        m_data = audioData.m_data;
-        m_length = audioData.m_length;
-
-        audioData.m_data = nullptr;
+        m_sample = audioData.m_sample;
     }
 
     CSJMFAudioData& operator=(CSJMFAudioData&& audioData) {
-        m_data = audioData.m_data;
-        m_length = audioData.m_length;
-
-        audioData.m_data = nullptr;
-
+        m_sample = audioData.m_sample;
         return *this;
     }
 
-    BYTE* getData() {
-        return m_data;
-    }
-
-    DWORD getLength() {
-        return m_length;
+    IMFSample* getData() {
+        return m_sample;
     }
 
 private:
-    BYTE *m_data;
-    DWORD m_length;
+    IMFSample *m_sample;
 };

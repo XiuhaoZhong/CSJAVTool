@@ -51,6 +51,9 @@
     <ClInclude Include="CSJAudioPlayerImpl\CSJAudioPlayerDSImpl.h">
       <Filter>CSJAudioPlayerImpl</Filter>
     </ClInclude>
+    <ClInclude Include="CSJAudioPlayerImpl\CSJAudioPlayerCAImpl.h">
+      <Filter>CSJAudioPlayerImpl</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -67,6 +70,9 @@
     </ClCompile>
     <ClCompile Include="CSJAudioPlayer.cpp">
       <Filter>CSJAudioPlayer</Filter>
+    </ClCompile>
+    <ClCompile Include="CSJAudioPlayerImpl\CSJAudioPlayerCAImpl.cpp">
+      <Filter>CSJAudioPlayerImpl</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

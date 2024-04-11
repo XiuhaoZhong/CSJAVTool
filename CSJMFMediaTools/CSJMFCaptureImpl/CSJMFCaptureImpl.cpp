@@ -3,6 +3,8 @@
 #include <windows.h>
 #include <mfidl.h>
 #include <mfapi.h>
+#include <mmdeviceapi.h>
+
 
 #include <iostream>
 #include <fstream>
@@ -130,7 +132,6 @@ void CSJMFCaptureImpl::selectedMicrophone(int microphone_index) {
 bool CSJMFCaptureImpl::startCapture() {    
     //m_videoCapThread = std::thread(&CSJMFCaptureImpl::startVideoCapWithSourceReader, this);
     m_audioCapThread = std::thread(&CSJMFCaptureImpl::startAudioCapWithSourceReader, this);
-
     return true;
 }
 
@@ -268,7 +269,20 @@ void CSJMFCaptureImpl::startAudioCapWithSourceReader() {
     IMFSourceReader *pReader = NULL;
     HRESULT hr = S_OK;
 
-    // 已经验证，此方法好用，可以读取到摄像头数据
+    //IMFMediaSink *mediaSink = createAudioStreamRenderer();
+    //if (!mediaSink) {
+    //    return;
+    //}
+
+    //IMFSinkWriter *sinkWriter = NULL;
+    //hr = MFCreateSinkWriterFromMediaSink(mediaSink, NULL, &sinkWriter);
+    //if (FAILED(hr)) {
+    //    return;
+    //}
+
+    //sinkWriter->BeginWriting();
+
+    // 为麦克风采集创建相应的SourceReader.
     hr = MFCreateSourceReaderFromMediaSource(mediaSource, NULL, &pReader);
     if (SUCCEEDED(hr)) {
         // 设置输出格式
@@ -277,7 +291,10 @@ void CSJMFCaptureImpl::startAudioCapWithSourceReader() {
             m_isStop = false;
             m_status = CSJMF_CAPTURE_CAPTURING;
 
+            LONGLONG time1 = 0;
             // 读取帧
+            std::fstream outFile;
+            outFile.open("capture.txt", std::ios::out);
             while (SUCCEEDED(hr)) {
                 if (m_isStop) {
                     break;
@@ -286,7 +303,6 @@ void CSJMFCaptureImpl::startAudioCapWithSourceReader() {
                 IMFSample *pBuffer = NULL;
                 DWORD dwStreamIndex, dwStreamFlags;
                 LONGLONG llTimeStamp;
-
                 hr = pReader->ReadSample((DWORD) MF_SOURCE_READER_FIRST_AUDIO_STREAM, 0, &dwStreamIndex, &dwStreamFlags, &llTimeStamp, &pBuffer);
                 if (SUCCEEDED(hr)) {
                     // 第一帧可能是为空，需要做一个判断;
@@ -296,6 +312,8 @@ void CSJMFCaptureImpl::startAudioCapWithSourceReader() {
                     DWORD sampleLen = 0;
                     pBuffer->GetBufferCount(&sampleLen);
 
+                    time1 = llTimeStamp;
+            
                     IMFMediaBuffer *buf;
                     pBuffer->GetBufferByIndex(0, &buf);
                     if (buf) {
@@ -307,11 +325,19 @@ void CSJMFCaptureImpl::startAudioCapWithSourceReader() {
                             std::cout << "lock sample failed." << std::endl;
                         }
 
-                        CSJMFAudioData *audioData = new CSJMFAudioData(buffer, sampleLen);
+                        // TODO: curLength为76800，下面的audioClient中buffer的大小为48000，记得先测试播放，在处理数据大小问题
+                        // 2024/04/09
+                        DWORD curLength;
+                        hr = buf->GetCurrentLength(&curLength);
+                        if (FAILED(hr)) {
+                            std::cout << "" << std::endl;
+                        }
+
+                        /*CSJMFAudioData *audioData = new CSJMFAudioData(pBuffer);
                         if (m_delegate) {
                             m_delegate->onAudioDataArrive(audioData);
                         }
-                        delete audioData;
+                        delete audioData;*/
                     }
 
                     // TODO: invoke a delegate function to diliver the video data and timestamp to render.
@@ -978,6 +1004,135 @@ IMFMediaType* CSJMFCaptureImpl::getSelectedVideoMediaType(IMFMediaSource * media
     return selMediaType;
 }
 
-bool CSJMFCaptureImpl::createVideoCaptureSink() {
-    return false;
+const CLSID CLSID_MMDeviceEnumerator = __uuidof(MMDeviceEnumerator);
+const IID IID_IMMDeviceEnumerator = __uuidof(IMMDeviceEnumerator);
+const IID IID_IAudioClient = __uuidof(IAudioClient);
+const IID IID_IAudioRenderClient = __uuidof(IAudioRenderClient);
+
+/*
+#define REFTIMES_PER_SEC  10000000
+#define REFTIMES_PER_MILLISEC  10000
+
+#define EXIT_ON_ERROR(hres)  \
+              if (FAILED(hres)) { goto Exit; }
+#define SAFE_RELEASE(punk)  \
+              if ((punk) != NULL)  \
+                { (punk)->Release(); (punk) = NULL; }
+
+const CLSID CLSID_MMDeviceEnumerator = __uuidof(MMDeviceEnumerator);
+const IID IID_IMMDeviceEnumerator = __uuidof(IMMDeviceEnumerator);
+const IID IID_IAudioClient = __uuidof(IAudioClient);
+const IID IID_IAudioRenderClient = __uuidof(IAudioRenderClient);
+
+HRESULT PlayAudioStream(MyAudioSource *pMySource) {
+    HRESULT hr;
+    REFERENCE_TIME hnsRequestedDuration = REFTIMES_PER_SEC;
+    REFERENCE_TIME hnsActualDuration;
+    IMMDeviceEnumerator *pEnumerator = NULL;
+    IMMDevice *pDevice = NULL;
+    IAudioClient *pAudioClient = NULL;
+    IAudioRenderClient *pRenderClient = NULL;
+    WAVEFORMATEX *pwfx = NULL;
+    UINT32 bufferFrameCount;
+    UINT32 numFramesAvailable;
+    UINT32 numFramesPadding;
+    BYTE *pData;
+    DWORD flags = 0;
+
+    hr = CoCreateInstance(
+        CLSID_MMDeviceEnumerator, NULL,
+        CLSCTX_ALL, IID_IMMDeviceEnumerator,
+        (void**) &pEnumerator);
+    EXIT_ON_ERROR(hr)
+
+        hr = pEnumerator->GetDefaultAudioEndpoint(
+            eRender, eConsole, &pDevice);
+    EXIT_ON_ERROR(hr)
+
+        hr = pDevice->Activate(
+            IID_IAudioClient, CLSCTX_ALL,
+            NULL, (void**) &pAudioClient);
+    EXIT_ON_ERROR(hr)
+
+        hr = pAudioClient->GetMixFormat(&pwfx);
+    EXIT_ON_ERROR(hr)
+
+        hr = pAudioClient->Initialize(
+            AUDCLNT_SHAREMODE_SHARED,
+            0,
+            hnsRequestedDuration,
+            0,
+            pwfx,
+            NULL);
+    EXIT_ON_ERROR(hr)
+
+        // Tell the audio source which format to use.
+        hr = pMySource->SetFormat(pwfx);
+    EXIT_ON_ERROR(hr)
+
+        // Get the actual size of the allocated buffer.
+        hr = pAudioClient->GetBufferSize(&bufferFrameCount);
+    EXIT_ON_ERROR(hr)
+
+        hr = pAudioClient->GetService(
+            IID_IAudioRenderClient,
+            (void**) &pRenderClient);
+    EXIT_ON_ERROR(hr)
+
+        // Grab the entire buffer for the initial fill operation.
+        hr = pRenderClient->GetBuffer(bufferFrameCount, &pData);
+    EXIT_ON_ERROR(hr)
+
+        // Load the initial data into the shared buffer.
+        hr = pMySource->LoadData(bufferFrameCount, pData, &flags);
+    EXIT_ON_ERROR(hr)
+
+        hr = pRenderClient->ReleaseBuffer(bufferFrameCount, flags);
+    EXIT_ON_ERROR(hr)
+
+        // Calculate the actual duration of the allocated buffer.
+        hnsActualDuration = (double) REFTIMES_PER_SEC *
+        bufferFrameCount / pwfx->nSamplesPerSec;
+
+    hr = pAudioClient->Start();  // Start playing.
+    EXIT_ON_ERROR(hr)
+
+        // Each loop fills about half of the shared buffer.
+        while (flags != AUDCLNT_BUFFERFLAGS_SILENT) {
+            // Sleep for half the buffer duration.
+            Sleep((DWORD) (hnsActualDuration / REFTIMES_PER_MILLISEC / 2));
+
+            // See how much buffer space is available.
+            hr = pAudioClient->GetCurrentPadding(&numFramesPadding);
+            EXIT_ON_ERROR(hr)
+
+                numFramesAvailable = bufferFrameCount - numFramesPadding;
+
+            // Grab all the available space in the shared buffer.
+            hr = pRenderClient->GetBuffer(numFramesAvailable, &pData);
+            EXIT_ON_ERROR(hr)
+
+                // Get next 1/2-second of data from the audio source.
+                hr = pMySource->LoadData(numFramesAvailable, pData, &flags);
+            EXIT_ON_ERROR(hr)
+
+                hr = pRenderClient->ReleaseBuffer(numFramesAvailable, flags);
+            EXIT_ON_ERROR(hr)
+        }
+
+    // Wait for last data in buffer to play before stopping.
+    Sleep((DWORD) (hnsActualDuration / REFTIMES_PER_MILLISEC / 2));
+
+    hr = pAudioClient->Stop();  // Stop playing.
+    EXIT_ON_ERROR(hr)
+
+        Exit:
+    CoTaskMemFree(pwfx);
+    SAFE_RELEASE(pEnumerator)
+        SAFE_RELEASE(pDevice)
+        SAFE_RELEASE(pAudioClient)
+        SAFE_RELEASE(pRenderClient)
+
+        return hr;
 }
+*/

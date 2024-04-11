@@ -1,5 +1,7 @@
 #include "CSJAudioPlayerDSImpl.h"
 
+#include <mmdeviceapi.h>
+
 CSJAudioPlayerDSImpl::CSJAudioPlayerDSImpl()
     : m_nChannel(0)
     , m_nSampleRate(0)
@@ -65,6 +67,7 @@ bool CSJAudioPlayerDSImpl::isPause() {
     return m_playerStatus == CSJAUDIOPLAYER_PAUSE;
 }
 
+/*
 void CSJAudioPlayerDSImpl::playAudio() {
     LPDIRECTSOUND8 pDSound = nullptr;
     HRESULT hr = S_OK;
@@ -84,7 +87,7 @@ void CSJAudioPlayerDSImpl::playAudio() {
         waveFmt.wFormatTag = WAVE_FORMAT_PCM;
         waveFmt.nChannels = m_nChannel;
         waveFmt.nSamplesPerSec = m_nSampleRate;
-        waveFmt.wBitsPerSample = 16;//m_nBitsPerSample;
+        waveFmt.wBitsPerSample = m_nBitsPerSample;
         waveFmt.nBlockAlign = waveFmt.nChannels * waveFmt.wBitsPerSample / 8;
         waveFmt.nAvgBytesPerSec = waveFmt.nSamplesPerSec * waveFmt.nBlockAlign;
         waveFmt.cbSize = 0;
@@ -151,4 +154,105 @@ void CSJAudioPlayerDSImpl::playAudio() {
     } while (FALSE);
 
     pDSound->Release();
+}
+*/
+
+void CSJAudioPlayerDSImpl::playAudio() {
+    IMFMediaSink *mediaSink = createAudioStreamRenderer();
+    if (!mediaSink) {
+        return ;
+    }
+
+    IMFSinkWriter *sinkWriter = NULL;
+    HRESULT hr = MFCreateSinkWriterFromMediaSink(mediaSink, NULL, &sinkWriter);
+    if (FAILED(hr)) {
+        return ;
+    }
+
+    sinkWriter->BeginWriting();
+
+    while (true) {
+        sinkWriter->SendStreamTick(0, 1);
+        CSJMFAudioData audioData;
+        if (m_delegate) {
+            m_delegate->getSampleFromMemory(audioData);
+        }
+
+        if (audioData.getData()) {
+            hr = sinkWriter->WriteSample(0, audioData.getData());
+        }
+    }
+
+    sinkWriter->Finalize();
+
+    SafeRelease(&sinkWriter);
+}
+
+IMFMediaSink* CSJAudioPlayerDSImpl::createAudioStreamRenderer() {
+    HRESULT hr = S_OK;
+
+    IMMDeviceEnumerator *pEnum = NULL;      // Audio device enumerator.
+    IMMDeviceCollection *pDevices = NULL;   // Audio device collection.
+    IMMDevice *pDevice = NULL;              // An audio device.
+    IMFAttributes *pAttributes = NULL;      // Attribute store.
+    IMFMediaSink *pSink = NULL;             // Streaming audio renderer (SAR)
+    LPWSTR wstrID = NULL;                   // Device ID.
+
+    do {
+        // Create the device enumerator.
+        hr = CoCreateInstance(__uuidof(MMDeviceEnumerator),
+                              NULL,
+                              CLSCTX_ALL,
+                              __uuidof(IMMDeviceEnumerator),
+                              (void**) &pEnum);
+
+        if (FAILED(hr)) {
+            break;
+        }
+
+        // Enumerate the rendering devices.
+        hr = pEnum->EnumAudioEndpoints(eRender, DEVICE_STATE_ACTIVE, &pDevices);
+        if (FAILED(hr)) {
+            break;
+        }
+
+        // Get ID of the first device in the list.
+        hr = pDevices->Item(0, &pDevice);
+        if (FAILED(hr)) {
+            break;
+        }
+
+        hr = pDevice->GetId(&wstrID);
+        if (FAILED(hr)) {
+            break;
+        }
+
+        // Create an attribute store and set the device ID attribute.
+        hr = MFCreateAttributes(&pAttributes, 2);
+        if (FAILED(hr)) {
+            break;
+        }
+
+        hr = pAttributes->SetString(MF_AUDIO_RENDERER_ATTRIBUTE_ENDPOINT_ID,
+                                    wstrID);
+        if (FAILED(hr)) {
+            break;
+        }
+
+        // Create the audio renderer.
+        hr = MFCreateAudioRenderer(pAttributes, &pSink);
+        if (FAILED(hr)) {
+            break;
+        }
+
+        pSink->AddRef();
+    } while (FALSE);
+
+    SafeRelease(&pEnum);
+    SafeRelease(&pDevices);
+    SafeRelease(&pDevice);
+    SafeRelease(&pAttributes);
+    CoTaskMemFree(wstrID);
+
+    return pSink;
 }

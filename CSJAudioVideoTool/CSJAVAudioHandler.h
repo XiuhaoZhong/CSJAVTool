@@ -33,6 +33,8 @@ public:
 
     void startCapture();
 
+    void testPlayer();
+
 private:
     CSJSharedCapture        m_mediaCapture;
     CSJSharedAudioPlayer    m_audioPlayer;

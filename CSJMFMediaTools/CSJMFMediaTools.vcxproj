@@ -167,6 +167,7 @@ $(SolutionDir)copy_file.bat $(SolutionDir) $(ProjectName) $(TargetName) $(Target
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="CSJAudioPlayerImpl\CSJAudioPlayerCAImpl.h" />
     <ClInclude Include="CSJAudioPlayerImpl\CSJAudioPlayerDSImpl.h" />
     <ClInclude Include="CSJAudioPlayer\CSJAudioPlayer.h" />
     <ClInclude Include="CSJMFMediaToolsDefine.h" />
@@ -178,6 +179,7 @@ $(SolutionDir)copy_file.bat $(SolutionDir) $(ProjectName) $(TargetName) $(Target
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CSJAudioPlayer.cpp" />
+    <ClCompile Include="CSJAudioPlayerImpl\CSJAudioPlayerCAImpl.cpp" />
     <ClCompile Include="CSJAudioPlayerImpl\CSJAudioPlayerDSImpl.cpp" />
     <ClCompile Include="CSJMFCaptureImpl\CSJMFCaptureImpl.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>

@@ -3,6 +3,9 @@
 
 #include "CSJMFMediaToolsDefine.h"
 
+//#include "CSJMFMediaHeader.h"
+#include <windows.h>
+
 #include <string>
 
 class CSJAudioPlayer;
@@ -13,7 +16,8 @@ using CSJSharedAudioPlayer = std::shared_ptr<CSJAudioPlayer>;
 */
 typedef enum {
     CSJAUDIOPLAYER_DSHOW = 0,   // audio player based dshow.
-    CSJAUDIOPLAYER_MF           // audio player based MeidaFoundation.
+    CSJAUDIOPLAYER_MF,          // audio player based MeidaFoundation.
+    CSJAUDIOPLAYER_CA,          // audio player based Core Audio API.
 } CSJAudioPlayerTpye;
 
 /**
@@ -46,11 +50,23 @@ public:
         *  @param audioData[in], represent the audio data will be played.
         */
         virtual void getSampleFromMemory(CSJMFAudioData &audioData) {}
+
+        /**
+        *  Write audio data into the buffer.
+        *
+        *  @param frames[in]  the number of samples need write.
+        *  @param pData[in]   the pointer of the buffer to write.
+        */
+        virtual void fillAudioSample(UINT32 frames, BYTE *pData) {}
     };
 
     static CSJSharedAudioPlayer getCSJAudioPlayer(CSJAudioPlayerTpye type = CSJAUDIOPLAYER_DSHOW);
     
     virtual void setDelegate(CSJAudioPlayer::Delegate *delegate) = 0;
+
+    virtual bool initPlayer() {
+        return true;
+    }
 
     /**
     *  Set the play mode. If the CSJAUDIOPLAYMODE_MEMORY is set, you must implement the 

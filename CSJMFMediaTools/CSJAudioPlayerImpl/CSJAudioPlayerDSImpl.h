@@ -3,6 +3,8 @@
 
 #include "CSJAudioPlayer.h"
 
+#include "CSJMFMediaHeader.h"
+
 #include <Windows.h>
 #include <dsound.h>
 #include <thread>
@@ -33,6 +35,8 @@ public:
 
 protected:
     void playAudio();
+
+    IMFMediaSink* createAudioStreamRenderer();
 
 private:
     DWORD m_nChannel;

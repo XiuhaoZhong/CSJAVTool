@@ -3,7 +3,10 @@
 
 #include "CSJMFCapture.h"
 
+#include <mutex>
 #include <thread>
+
+#include <Audioclient.h>
 
 /**
  * This class inplements CSJMFCapture interfaces.
@@ -29,6 +32,8 @@ public:
     void stopCapture() override;
 
     void setDelegate(CSJMFCapture::Delegate *delegate) override;
+
+    void CopyDataToPlayer();
 
 protected:
     /**
@@ -115,11 +120,6 @@ protected:
     void releaseAudioDeviceInfo();
 
     void loadAudioMediaSourceInfos(IMFMediaSource *mediaSource, CSJAudioDeviceInfo& deviceInfo);
-
-    /**
-    *  Create the capture sink, which can get the capture data.
-    */
-    bool createVideoCaptureSink();
 
 private:
     CSJMFDeviceList     m_videoDevs;            // video devices's name list;

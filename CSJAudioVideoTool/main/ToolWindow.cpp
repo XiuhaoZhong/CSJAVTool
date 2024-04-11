@@ -178,8 +178,8 @@ static std::shared_ptr<CSJAVAudioHandler> audioHandler;
 void ToolWindow::loadMFCapture() {
     audioHandler = std::make_shared<CSJAVAudioHandler>();
     
-    audioHandler->init();
+    //audioHandler->init();
 
-    audioHandler->startCapture();
-   
+    //audioHandler->startCapture();   
+    audioHandler->testPlayer();
 }
