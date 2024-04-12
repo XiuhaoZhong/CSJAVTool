@@ -12,10 +12,10 @@ bool CSJAVAudioHandler::init() {
     m_mediaCapture = CSJMFCapture::getMFCapture();
     m_mediaCapture->setDelegate(this);
 
-    m_audioPlayer = CSJAudioPlayer::getCSJAudioPlayer();
-    DWORD channel = 2;
-    m_audioPlayer->configAudioPlayer(channel, 44100, 16);
-    m_audioPlayer->setDelegate(this);
+    //m_audioPlayer = CSJAudioPlayer::getCSJAudioPlayer();
+    //DWORD channel = 2;
+    //m_audioPlayer->configAudioPlayer(channel, 44100, 16);
+    //m_audioPlayer->setDelegate(this);
     return true;
 }
 
@@ -47,7 +47,7 @@ void CSJAVAudioHandler::startCapture() {
     }
 
     m_mediaCapture->selectedCamera(0);
-    m_mediaCapture->selectedMicrophone(0);
+    //m_mediaCapture->selectedMicrophone(0);
 
     m_mediaCapture->startCapture();
 

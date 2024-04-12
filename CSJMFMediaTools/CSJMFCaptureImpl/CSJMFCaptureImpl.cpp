@@ -130,8 +130,8 @@ void CSJMFCaptureImpl::selectedMicrophone(int microphone_index) {
 }
 
 bool CSJMFCaptureImpl::startCapture() {    
-    //m_videoCapThread = std::thread(&CSJMFCaptureImpl::startVideoCapWithSourceReader, this);
-    m_audioCapThread = std::thread(&CSJMFCaptureImpl::startAudioCapWithSourceReader, this);
+    m_videoCapThread = std::thread(&CSJMFCaptureImpl::startVideoCapWithSourceReader, this);
+    //m_audioCapThread = std::thread(&CSJMFCaptureImpl::startAudioCapWithSourceReader, this);
     return true;
 }
 
@@ -165,7 +165,6 @@ void CSJMFCaptureImpl::setDelegate(CSJMFCapture::Delegate * delegate) {
 
 void CSJMFCaptureImpl::startVideoCapWithSourceReader() {
     IMFMediaSource *mediaSource = createVideoCaptureSourceWithSymlink();
-
     if (!mediaSource) {
         return ;
     }
@@ -188,39 +187,24 @@ void CSJMFCaptureImpl::startVideoCapWithSourceReader() {
             m_status = CSJMF_CAPTURE_CAPTURING;
 
             // 读取帧
-            std::ofstream outFile;
-            outFile.open("video_capture.txt", std::ios::out);
-
             IMFSample *pBuffer = NULL;
             DWORD dwStreamIndex, dwStreamFlags;
             LONGLONG llTimeStamp;
+            FILE *outYuvFile = fopen("capture.yuv", "wb+");
             while (true) {
                 if (m_isStop) {
                     break;
-                }
-
-                if (outFile.is_open()) {
-                    outFile << "start to ReadSample" << std::endl;
                 }
 
                 hr = pReader->ReadSample((DWORD) MF_SOURCE_READER_FIRST_VIDEO_STREAM, 0, &dwStreamIndex, &dwStreamFlags, &llTimeStamp, &pBuffer);
                 if (SUCCEEDED(hr)) {
                     // 第一帧可能是为空，需要做一个判断;
                     if (pBuffer == NULL) {
-                        if (outFile.is_open()) {
-                            outFile << "Read a empty sample from camera\n" << std::endl;
-                        }
                         continue;
                     }
 
-                    if (outFile.is_open()) {
-                        outFile << "Read a sample from camera\n" << std::endl;
-                    }
                     DWORD sampleLen = 0;
                     pBuffer->GetBufferCount(&sampleLen);
-                    /*if (outFile.is_open()) {
-                        outFile << "capture a video, legnth:" << sampleLen << std::endl;
-                    }*/
 
                     IMFMediaBuffer *buf;
                     pBuffer->GetBufferByIndex(0, &buf);
@@ -233,16 +217,16 @@ void CSJMFCaptureImpl::startVideoCapWithSourceReader() {
                             std::cout << "lock sample failed." << std::endl;
                         }
 
+                        if (outYuvFile) {
+                            fwrite(buffer, 1, sampleLen, outYuvFile);
+                            fflush(outYuvFile);
+                        }
                     }
 
                     // TODO: invoke a delegate function to diliver the video data and timestamp to render.
 
                     SafeRelease(&pBuffer);
                 }
-            }
-
-            if (outFile.is_open()) {
-                outFile << "video capture is exit" << std::endl;
             }
         }
     }
@@ -268,19 +252,6 @@ void CSJMFCaptureImpl::startAudioCapWithSourceReader() {
 
     IMFSourceReader *pReader = NULL;
     HRESULT hr = S_OK;
-
-    //IMFMediaSink *mediaSink = createAudioStreamRenderer();
-    //if (!mediaSink) {
-    //    return;
-    //}
-
-    //IMFSinkWriter *sinkWriter = NULL;
-    //hr = MFCreateSinkWriterFromMediaSink(mediaSink, NULL, &sinkWriter);
-    //if (FAILED(hr)) {
-    //    return;
-    //}
-
-    //sinkWriter->BeginWriting();
 
     // 为麦克风采集创建相应的SourceReader.
     hr = MFCreateSourceReaderFromMediaSource(mediaSource, NULL, &pReader);
@@ -933,6 +904,7 @@ IMFMediaType* CSJMFCaptureImpl::getSelectedVideoMediaType(IMFMediaSource * media
             fmtGuid = it->sub_type;
             selWidth = it->width;
             selHeight = it->height;
+            break;
         }
 
         it++;
