@@ -80,29 +80,6 @@ void CSJRenderWindow::InitWindow() {
     RenderManager::GetInstance()->initRenderEnv();
 }
 
-bool CSJRenderWindow::registerWindowClass() {
-    WNDCLASS wc = { 0 };
-    wc.style = 0;
-    wc.cbClsExtra = 0;
-    wc.cbWndExtra = 0;
-    wc.hIcon = NULL;
-    wc.lpfnWndProc = CSJRenderWindow::__WndProc;
-    wc.hInstance = ::GetModuleHandle(NULL);
-    wc.hCursor = ::LoadCursor(NULL, IDC_ARROW);
-    wc.hbrBackground = NULL;
-    wc.lpszMenuName = NULL;
-    std::wstring className = GetWindowClassName();
-    wc.lpszClassName = className.c_str();
-    ATOM ret = ::RegisterClass(&wc);
-    LONG errorCode = ::GetLastError();
-    if (errorCode == ERROR_CLASS_ALREADY_EXISTS) {
-        std::cout << "" << std::endl;
-    }
-
-    ASSERT(ret != NULL || ::GetLastError() == ERROR_CLASS_ALREADY_EXISTS);
-    return ret != NULL || ::GetLastError() == ERROR_CLASS_ALREADY_EXISTS;
-}
-
 void CSJRenderWindow::OnCreate() {
     ::ShowWindow(m_hWnd, true);
 
@@ -143,10 +120,3 @@ LRESULT CSJRenderWindow::OnClose(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& 
     ::DestroyWindow(m_hWnd);
     return 0;
 }
-
-/*
-LRESULT CSJRenderWindow::OnDestroy(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
-    ::PostQuitMessage(0);
-    return 0;
-}
-*/

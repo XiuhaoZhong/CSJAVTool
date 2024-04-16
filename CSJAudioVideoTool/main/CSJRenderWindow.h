@@ -24,17 +24,13 @@ public:
     CSJRenderWindow(const CSJRenderWindow& renderWindoe) = delete;
     CSJRenderWindow(CSJRenderWindow&& renderWindow) = delete;
 
-    // LRESULT HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam);
-
     static std::shared_ptr<CSJRenderWindow> getInstance();
 
     void initializePos(HWND pHwnd);
 
     virtual LRESULT OnClose(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled) override;
-    //virtual LRESULT OnDestroy(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled) override;
 
 protected:
-    bool registerWindowClass();
 
     void OnCreate();
 
@@ -52,8 +48,6 @@ protected:
 
  private:
     static std::shared_ptr<CSJRenderWindow> render_window_;
-
-    //HWND m_hWnd;
 
     std::wstring m_clsName;
 };
