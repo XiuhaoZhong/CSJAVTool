@@ -3,17 +3,16 @@
 #include <iostream>
 
 #include "CSJDataManager.h"
-#include "RenderManager.h"
 
 using namespace nim_comp;
 
-void testForPtr() {
-    std::unique_ptr<CSJDataManager> up;
-
-    std::shared_ptr<CSJDataManager> sp;
-
-    std::weak_ptr<CSJDataManager> wp;
-}
+//void testForPtr() {
+//    std::unique_ptr<CSJDataManager> up;
+//
+//    std::shared_ptr<CSJDataManager> sp;
+//
+//    std::weak_ptr<CSJDataManager> wp;
+//}
 
 std::shared_ptr<CSJRenderWindow> CSJRenderWindow::render_window_ = nullptr;
 
@@ -29,7 +28,9 @@ CSJRenderWindow::CSJRenderWindow() {
 
 }
 
-CSJRenderWindow::~CSJRenderWindow() {}
+CSJRenderWindow::~CSJRenderWindow() {
+    
+}
 
 std::wstring CSJRenderWindow::GetWindowClassName() const {
     return L"CSJRenderWindow";
@@ -67,7 +68,9 @@ HWND CSJRenderWindow::createRenderWindow(HWND hwndParent,
 }
 
 void CSJRenderWindow::CloseWindow() {
-    RenderManager::GetInstance()->stop();
+    if (m_renderMgr) {
+        m_renderMgr->stopRendering();
+    }
 }
 
 LONG CSJRenderWindow::GetStyle() {
@@ -76,15 +79,12 @@ LONG CSJRenderWindow::GetStyle() {
 }
 
 void CSJRenderWindow::InitWindow() {
-    CSJDataManager::GetInstance()->setRenderHwnd(m_hWnd);
-    RenderManager::GetInstance()->initRenderEnv();
+    m_renderMgr = CSJGLRenderManager::getDefaultRenderManager();
+    m_renderMgr->initGL(m_hWnd, 400, 300);
 }
 
 void CSJRenderWindow::OnCreate() {
     ::ShowWindow(m_hWnd, true);
-
-    CSJDataManager::GetInstance()->setRenderHwnd(m_hWnd);
-    RenderManager::GetInstance()->initRenderEnv();
 }
 
 void CSJRenderWindow::initializePos(HWND pHwnd) {
@@ -117,6 +117,10 @@ void CSJRenderWindow::initializePos(HWND pHwnd) {
 }
 
 LRESULT CSJRenderWindow::OnClose(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
+    if (m_renderMgr) {
+        m_renderMgr->stopRendering();
+    }
+
     ::DestroyWindow(m_hWnd);
     return 0;
 }

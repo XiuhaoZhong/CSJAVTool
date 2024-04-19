@@ -4,11 +4,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 15.0.28307.1231
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CSJAudioVideoTool", "CSJAudioVideoTool\CSJAudioVideoTool.vcxproj", "{D086BC3B-9155-4395-9AF2-D211F115334A}"
-	ProjectSection(ProjectDependencies) = postProject
-		{1071DAEF-FE47-4E34-AB4F-5463B65FD197} = {1071DAEF-FE47-4E34-AB4F-5463B65FD197}
-	EndProjectSection
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GLTool", "CSJAudioVideoTool\GLTool\GLTool.vcxproj", "{1071DAEF-FE47-4E34-AB4F-5463B65FD197}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CSJMediaPegTools", "CSJMediaPegTools\CSJMediaPegTools.vcxproj", "{F01AD5A0-BD00-4362-88C7-4EC88ED0A21C}"
 EndProject
@@ -23,6 +18,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Dui", "Dui", "{BDB060E7-C89E-4AB5-8BF2-FF0A0AA7FFCB}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CSJCommonTools", "CSJCommonTools\CSJCommonTools.vcxproj", "{B29E13AC-00AF-4F84-AA5C-19DF661FB945}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CSJGLFramework", "CSJGLFramework\CSJGLFramework.vcxproj", "{5D3EFB44-F306-477F-8876-2C3B4BBB4B36}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -40,14 +37,6 @@ Global
 		{D086BC3B-9155-4395-9AF2-D211F115334A}.Release|x64.Build.0 = Release|x64
 		{D086BC3B-9155-4395-9AF2-D211F115334A}.Release|x86.ActiveCfg = Release|Win32
 		{D086BC3B-9155-4395-9AF2-D211F115334A}.Release|x86.Build.0 = Release|Win32
-		{1071DAEF-FE47-4E34-AB4F-5463B65FD197}.Debug|x64.ActiveCfg = Debug|x64
-		{1071DAEF-FE47-4E34-AB4F-5463B65FD197}.Debug|x64.Build.0 = Debug|x64
-		{1071DAEF-FE47-4E34-AB4F-5463B65FD197}.Debug|x86.ActiveCfg = Debug|Win32
-		{1071DAEF-FE47-4E34-AB4F-5463B65FD197}.Debug|x86.Build.0 = Debug|Win32
-		{1071DAEF-FE47-4E34-AB4F-5463B65FD197}.Release|x64.ActiveCfg = Release|x64
-		{1071DAEF-FE47-4E34-AB4F-5463B65FD197}.Release|x64.Build.0 = Release|x64
-		{1071DAEF-FE47-4E34-AB4F-5463B65FD197}.Release|x86.ActiveCfg = Release|Win32
-		{1071DAEF-FE47-4E34-AB4F-5463B65FD197}.Release|x86.Build.0 = Release|Win32
 		{F01AD5A0-BD00-4362-88C7-4EC88ED0A21C}.Debug|x64.ActiveCfg = Debug|x64
 		{F01AD5A0-BD00-4362-88C7-4EC88ED0A21C}.Debug|x64.Build.0 = Debug|x64
 		{F01AD5A0-BD00-4362-88C7-4EC88ED0A21C}.Debug|x86.ActiveCfg = Debug|Win32
@@ -96,6 +85,14 @@ Global
 		{B29E13AC-00AF-4F84-AA5C-19DF661FB945}.Release|x64.Build.0 = Release|x64
 		{B29E13AC-00AF-4F84-AA5C-19DF661FB945}.Release|x86.ActiveCfg = Release|Win32
 		{B29E13AC-00AF-4F84-AA5C-19DF661FB945}.Release|x86.Build.0 = Release|Win32
+		{5D3EFB44-F306-477F-8876-2C3B4BBB4B36}.Debug|x64.ActiveCfg = Debug|x64
+		{5D3EFB44-F306-477F-8876-2C3B4BBB4B36}.Debug|x64.Build.0 = Debug|x64
+		{5D3EFB44-F306-477F-8876-2C3B4BBB4B36}.Debug|x86.ActiveCfg = Debug|Win32
+		{5D3EFB44-F306-477F-8876-2C3B4BBB4B36}.Debug|x86.Build.0 = Debug|Win32
+		{5D3EFB44-F306-477F-8876-2C3B4BBB4B36}.Release|x64.ActiveCfg = Release|x64
+		{5D3EFB44-F306-477F-8876-2C3B4BBB4B36}.Release|x64.Build.0 = Release|x64
+		{5D3EFB44-F306-477F-8876-2C3B4BBB4B36}.Release|x86.ActiveCfg = Release|Win32
+		{5D3EFB44-F306-477F-8876-2C3B4BBB4B36}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

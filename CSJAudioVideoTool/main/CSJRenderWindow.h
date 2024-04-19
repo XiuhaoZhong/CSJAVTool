@@ -3,6 +3,7 @@
 #include <memory.h>
 
 #include "ui_components/windows_manager/window_ex.h"
+#include "CSJGLRenderManager/CSJGLRenderManager.h"
 
 class CSJRenderWindow : public nim_comp::WindowEx {
 public:
@@ -50,6 +51,8 @@ protected:
     static std::shared_ptr<CSJRenderWindow> render_window_;
 
     std::wstring m_clsName;
+
+    CSJSharedRenderManger m_renderMgr;
 };
 
 using sharedRenderWidow = std::shared_ptr<CSJRenderWindow>;

@@ -34,31 +34,7 @@
     <ClInclude Include="CommonData\CSJLogManager.h">
       <Filter>CommonData</Filter>
     </ClInclude>
-    <ClInclude Include="RenderData\CSJOutVideoBuf.h">
-      <Filter>RenderData</Filter>
-    </ClInclude>
-    <ClInclude Include="RenderData\gl_display.h">
-      <Filter>RenderData</Filter>
-    </ClInclude>
-    <ClInclude Include="RenderData\graphics.h">
-      <Filter>RenderData</Filter>
-    </ClInclude>
-    <ClInclude Include="RenderTools\GLRenderImpl.h">
-      <Filter>RenderTools</Filter>
-    </ClInclude>
-    <ClInclude Include="RenderTools\Render.h">
-      <Filter>RenderTools</Filter>
-    </ClInclude>
-    <ClInclude Include="RenderTools\RenderManager.h">
-      <Filter>RenderTools</Filter>
-    </ClInclude>
-    <ClInclude Include="RenderTools\SceneRenderer.h">
-      <Filter>RenderTools</Filter>
-    </ClInclude>
     <ClInclude Include="main\stdafx.h">
-      <Filter>RenderTools</Filter>
-    </ClInclude>
-    <ClInclude Include="RenderTools\TextureBlitter.h">
       <Filter>RenderTools</Filter>
     </ClInclude>
     <ClInclude Include="main\targetver.h">
@@ -80,27 +56,6 @@
     </ClCompile>
     <ClCompile Include="CommonData\CSJLogManager.cpp">
       <Filter>CommonData</Filter>
-    </ClCompile>
-    <ClCompile Include="RenderData\CSJOutVideoBuf.cpp">
-      <Filter>RenderData</Filter>
-    </ClCompile>
-    <ClCompile Include="RenderData\graphics.cpp">
-      <Filter>RenderData</Filter>
-    </ClCompile>
-    <ClCompile Include="RenderTools\GLRenderImpl.cpp">
-      <Filter>RenderTools</Filter>
-    </ClCompile>
-    <ClCompile Include="RenderTools\Render.cpp">
-      <Filter>RenderTools</Filter>
-    </ClCompile>
-    <ClCompile Include="RenderTools\RenderManager.cpp">
-      <Filter>RenderTools</Filter>
-    </ClCompile>
-    <ClCompile Include="RenderTools\SceneRenderer.cpp">
-      <Filter>RenderTools</Filter>
-    </ClCompile>
-    <ClCompile Include="RenderTools\TextureBlitter.cpp">
-      <Filter>RenderTools</Filter>
     </ClCompile>
     <ClCompile Include="main\main.cpp">
       <Filter>main</Filter>
