@@ -4,7 +4,7 @@
 #include <mfidl.h>
 #include <mfapi.h>
 #include <mmdeviceapi.h>
-
+#include <atlcomcli.h>
 
 #include <iostream>
 #include <fstream>
@@ -206,7 +206,11 @@ void CSJMFCaptureImpl::startVideoCapWithSourceReader() {
                     DWORD sampleLen = 0;
                     pBuffer->GetBufferCount(&sampleLen);
 
-                    IMFMediaBuffer *buf;
+                    // Note: you must take the following operation on the buf
+                    // 1.Using CComptr on constraints the buf
+                    // 2.Using raw pointer on the buf, and SafeRelease the buf at the end of the circle.
+                    // or the ReadSample won't return in future.
+                    CComPtr<IMFMediaBuffer> buf;
                     pBuffer->GetBufferByIndex(0, &buf);
                     if (buf) {
 
@@ -222,8 +226,6 @@ void CSJMFCaptureImpl::startVideoCapWithSourceReader() {
                             fflush(outYuvFile);
                         }
                     }
-
-                    // TODO: invoke a delegate function to diliver the video data and timestamp to render.
 
                     SafeRelease(&pBuffer);
                 }
