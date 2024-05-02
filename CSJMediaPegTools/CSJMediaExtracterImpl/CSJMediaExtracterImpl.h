@@ -2,7 +2,6 @@
 #define __CSJMEDIAEXTRACTERIMPL_H__
 
 #include "CSJMediaExtracter.h"
-
 #include "CSJMediaPegHeader.h"
 
 /**

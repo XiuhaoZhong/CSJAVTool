@@ -79,8 +79,8 @@ LONG CSJRenderWindow::GetStyle() {
 }
 
 void CSJRenderWindow::InitWindow() {
-    m_renderMgr = CSJGLRenderManager::getDefaultRenderManager();
-    m_renderMgr->initGL(m_hWnd, 400, 300);
+    //m_renderMgr = CSJGLRenderManager::getDefaultRenderManager();
+    //m_renderMgr->initGL(m_hWnd, 400, 300);
 }
 
 void CSJRenderWindow::OnCreate() {

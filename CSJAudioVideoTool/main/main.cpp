@@ -59,7 +59,7 @@ void MainThread::Init() {
 	window->CenterWindow();
 	window->ShowWindow();
 
-	window->createRenderWindow();
+	//window->createRenderWindow();
 }
 
 void MainThread::Cleanup() {

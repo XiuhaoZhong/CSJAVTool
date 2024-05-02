@@ -94,7 +94,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(ProjectDir)CSJMediaExtracter;$(ProjectDir)dependencies\ffmpeg\include;$(ProjectDir);$(ProjectDir)CSJMediaUtils;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)CSJMediaExtracter;$(ProjectDir)dependencies\ffmpeg\include;$(ProjectDir);$(ProjectDir)CSJMediaUtils;$(SolutionDir)Include\MediaData;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -104,8 +104,9 @@
       <AdditionalDependencies>avformat.lib;avutil.lib;avcodec.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>Xcopy /y $(ProjectDir)$(ProjectName)\CSJMFCapture.h $(SolutionDir)Include\$(ProjectName)\CSJMFCapture\
+      <Command>Xcopy /y $(ProjectDir)CSJMediaExtracter\CSJMediaExtracter.h $(SolutionDir)Include\$(ProjectName)\CSJMediaExtracter\
 Xcopy /y $(ProjectDir)CSJMediaTransformer\CSJMediaTransformer.h $(SolutionDir)Include\$(ProjectName)\CSJMediaTransformer\
+Xcopy /y $(ProjectDir)CSJMediaEncoder\CSJMediaEncoder.h $(SolutionDir)Include\$(ProjectName)\CSJMediaEncoder\
 $(SolutionDir)copy_file.bat $(SolutionDir) $(ProjectName) $(TargetName) $(TargetExt) $(Platform) $(Configuration)
 </Command>
     </PostBuildEvent>
@@ -167,6 +168,8 @@ $(SolutionDir)copy_file.bat $(SolutionDir) $(ProjectName) $(TargetName) $(Target
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="CSJMediaEncoder\CSJMediaEncoder.h" />
+    <ClInclude Include="CSJMediaEncoder\CSJMediaEncoderImpl.h" />
     <ClInclude Include="CSJMediaExtracterImpl\CSJMediaExtracterImpl.h" />
     <ClInclude Include="CSJMediaExtracter\CSJMediaExtracter.h" />
     <ClInclude Include="CSJMediaPegHeader.h" />
@@ -179,6 +182,7 @@ $(SolutionDir)copy_file.bat $(SolutionDir) $(ProjectName) $(TargetName) $(Target
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CSJMediaEncoder\CSJMediaEncoderImpl.cpp" />
     <ClCompile Include="CSJMediaExtracterImpl\CSJMediaExtracterImpl.cpp" />
     <ClCompile Include="CSJMediaPlayer.cpp" />
     <ClCompile Include="CSJMediaTransformerImpl\CSJMediaTransformerImpl.cpp" />

@@ -4,18 +4,15 @@
     <Filter Include="main">
       <UniqueIdentifier>{3d9522a1-d977-433d-bf6a-ee0fdaaeb979}</UniqueIdentifier>
     </Filter>
-    <Filter Include="RenderTools">
-      <UniqueIdentifier>{a2f6358b-dac0-4358-b8c2-63afaf0ceba8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="RenderData">
-      <UniqueIdentifier>{6745e1d9-1cc7-4c2f-b1b2-edf84573adfc}</UniqueIdentifier>
-    </Filter>
     <Filter Include="CommonData">
       <UniqueIdentifier>{1163cc04-7f01-46b2-a4bb-9cf465514fd4}</UniqueIdentifier>
     </Filter>
     <Filter Include="main\资源文件">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="CSJMediaHandlers">
+      <UniqueIdentifier>{8afe1d9f-b895-4660-ade7-780b53cb8c0e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -34,14 +31,17 @@
     <ClInclude Include="CommonData\CSJLogManager.h">
       <Filter>CommonData</Filter>
     </ClInclude>
-    <ClInclude Include="main\stdafx.h">
-      <Filter>RenderTools</Filter>
-    </ClInclude>
     <ClInclude Include="main\targetver.h">
       <Filter>main</Filter>
     </ClInclude>
     <ClInclude Include="CSJAVAudioHandler.h">
       <Filter>main</Filter>
+    </ClInclude>
+    <ClInclude Include="CSJMediaHandlers\CSJMediaHandlerBase.h">
+      <Filter>CSJMediaHandlers</Filter>
+    </ClInclude>
+    <ClInclude Include="CSJMediaHandlers\CSJMediaLiveHandler.h">
+      <Filter>CSJMediaHandlers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -62,6 +62,12 @@
     </ClCompile>
     <ClCompile Include="CSJAVAudioHandler.cpp">
       <Filter>main</Filter>
+    </ClCompile>
+    <ClCompile Include="CSJMediaHandlers\CSJMediaHandlerBase.cpp">
+      <Filter>CSJMediaHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="CSJMediaHandlers\CSJMediaLiveHandler.cpp">
+      <Filter>CSJMediaHandlers</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
