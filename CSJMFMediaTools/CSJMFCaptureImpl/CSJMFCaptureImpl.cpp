@@ -62,10 +62,6 @@ bool CSJMFCaptureImpl::initializeCapture() {
 
     loadAudioDeviceInfos();
 
-    /*if (m_videoDevicesCnt == 0 && m_audioDevicesCnt == 0) {
-        return false;
-    }*/
-
     return true;
 }
 
@@ -161,6 +157,22 @@ void CSJMFCaptureImpl::stopCapture() {
 
 void CSJMFCaptureImpl::setDelegate(CSJMFCapture::Delegate * delegate) {
     m_delegate = delegate;
+}
+
+std::vector<CSJDeviceIdentifier> CSJMFCaptureImpl::getDeviceIdentifiers(CSJMFDeviceType device_type) {
+    if (device_type == CSJMF_DEVICE_VIDEO) {
+        return m_videoDeviceIdentifiers;
+    } else {
+        return m_audioDeviceIdentifiers;
+    }
+}
+
+CSJVideoDeviceInfo CSJMFCaptureImpl::getVideoDeviceInfo(std::wstring identify) {
+    return m_videoDeviceInfos[identify];
+}
+
+CSJAudioDeviceInfo CSJMFCaptureImpl::getAudioDeviceInfo(std::wstring identify) {
+    return m_audioDeviceInfos[identify];
 }
 
 void CSJMFCaptureImpl::startVideoCapWithSourceReader() {
@@ -369,9 +381,15 @@ void CSJMFCaptureImpl::loadVideoDeviceInfos() {
                                                        &devSymlink,
                                                        &cchSymlink);
 
+            CSJVideoSubTypeInfos subTypeInfos;
+            subTypeInfos.device_name = szFriendlyName;
+            subTypeInfos.device_symlink = devSymlink;
+
+            m_videoDeviceIdentifiers.push_back({ szFriendlyName, devSymlink });
+
             CSJVideoDeviceInfo deviceInfo;
             deviceInfo.device_name = szFriendlyName;
-            deviceInfo.device_symlink = devSymlink;
+            deviceInfo.device_link = devSymlink;
 
             IMFMediaSource *pSource = NULL;
             hr = m_videoDevices[i]->ActivateObject(IID_PPV_ARGS(&pSource));
@@ -379,8 +397,8 @@ void CSJMFCaptureImpl::loadVideoDeviceInfos() {
                 break;
             }
 
-            loadVideoMediaSourceInfos(pSource, deviceInfo);
-            m_videoDeivceInfos.insert({ deviceInfo.device_symlink, deviceInfo });
+            loadVideoMediaSourceInfos(pSource, subTypeInfos, deviceInfo);
+            m_videoSubTypeInfos.insert({ subTypeInfos.device_symlink, subTypeInfos });
             SafeRelease(&pSource);
         }
     } while (FALSE);
@@ -389,7 +407,9 @@ void CSJMFCaptureImpl::loadVideoDeviceInfos() {
     pAttributes = NULL;
 }
 
-void CSJMFCaptureImpl::loadVideoMediaSourceInfos(IMFMediaSource * mediaSource, CSJVideoDeviceInfo& deviceInfo) {
+void CSJMFCaptureImpl::loadVideoMediaSourceInfos(IMFMediaSource * mediaSource, 
+                                                 CSJVideoSubTypeInfos& subTypeInfo, 
+                                                 CSJVideoDeviceInfo &deviceInfo) {
     if (!mediaSource) {
         return ;
     }
@@ -455,14 +475,31 @@ void CSJMFCaptureImpl::loadVideoMediaSourceInfos(IMFMediaSource * mediaSource, C
             hr = MFGetAttributeRatio(mediaType, MF_MT_FRAME_RATE_RANGE_MIN, &frameRateMin, &denominator);
             hr = MFGetAttributeRatio(mediaType, MF_MT_FRAME_RATE_RANGE_MAX, &frameRateMax, &denominator);
 
-            CSJVideoFmtInfo cameraInfo;
+            std::string fmt_name = SubTypeToString(subtype);
+
+            CSJVideoCaptureSubTypeInfo cameraInfo;
             cameraInfo.sub_type = subtype;
-            cameraInfo.fmt_name = SubTypeToString(subtype);
+            cameraInfo.fmt_name = fmt_name;
             cameraInfo.width = width;
             cameraInfo.height = height;
             cameraInfo.frameRate = frameRate;
 
-            deviceInfo.fmtList.push_back(cameraInfo);
+            subTypeInfo.fmtList.push_back(cameraInfo);
+
+            std::vector<std::string> &fmts = deviceInfo.formats;
+            bool fmtExist = false;
+            for (auto format : fmts) {
+                if (format.compare(fmt_name) == 0) {
+                    fmtExist = true;
+                    break;
+                }
+            }
+
+            if (!fmtExist) {
+                fmts.push_back(fmt_name);
+            }
+
+            deviceInfo.resolutionMap[fmt_name].push_back({(int)width, (int)height});
         }
     }
 }
@@ -517,6 +554,8 @@ void CSJMFCaptureImpl::loadAudioDeviceInfos() {
             if (FAILED(hr)) {
                 continue ;
             }
+
+            m_audioDeviceIdentifiers.push_back({ szFriendlyName, devEndPoint });
             
             std::wstring endPointID(devEndPoint);
             CSJAudioDeviceInfo deviceInfo;
@@ -895,11 +934,11 @@ IMFMediaType* CSJMFCaptureImpl::getSelectedVideoMediaType(IMFMediaSource * media
     DWORD resolutionIndex = 0;
 
     std::wstring device_symlink(m_szCurCaptureSymlink);
-    CSJVideoDeviceInfo deviceInfo = m_videoDeivceInfos[device_symlink];
+    CSJVideoSubTypeInfos deviceInfo = m_videoSubTypeInfos[device_symlink];
     
     GUID fmtGuid;
     DWORD selWidth = 0, selHeight = 0;
-    CSJVideoCapureFmtList fmtList = deviceInfo.fmtList;
+    CSJVideoSubTypeList fmtList = deviceInfo.fmtList;
     auto it = fmtList.begin();
     while (it != fmtList.end()) {
         if (it->fmt_name == selFmt) {

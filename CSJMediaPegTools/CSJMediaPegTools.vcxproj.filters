@@ -31,6 +31,9 @@
     <Filter Include="CSJMediaTransformer">
       <UniqueIdentifier>{af2ac490-afe5-40c4-8b0e-138b90613844}</UniqueIdentifier>
     </Filter>
+    <Filter Include="CSJMediaEncoder">
+      <UniqueIdentifier>{446936c7-cb2b-46da-9a4a-d8dc49e8eb73}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -63,6 +66,12 @@
     <ClInclude Include="CSJMediaTransformerImpl\CSJMediaTransformerImpl.h">
       <Filter>CSJMediaTransformerImpl</Filter>
     </ClInclude>
+    <ClInclude Include="CSJMediaEncoder\CSJMediaEncoder.h">
+      <Filter>CSJMediaEncoder</Filter>
+    </ClInclude>
+    <ClInclude Include="CSJMediaEncoder\CSJMediaEncoderImpl.h">
+      <Filter>CSJMediaEncoder</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -82,6 +91,9 @@
     </ClCompile>
     <ClCompile Include="CSJMediaTransformerImpl\CSJMediaTransformerImpl.cpp">
       <Filter>CSJMediaTransformerImpl</Filter>
+    </ClCompile>
+    <ClCompile Include="CSJMediaEncoder\CSJMediaEncoderImpl.cpp">
+      <Filter>CSJMediaEncoder</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

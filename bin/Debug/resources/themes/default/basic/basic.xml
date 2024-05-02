@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Window size="800,600" caption="0,0,0,35">
+<Window size="900,600" caption="0,0,0,35">
   <VBox bkcolor="bk_wnd_darkcolor">
-    <HBox width="stretch" height="35" bkcolor="bk_wnd_lightcolor">
+    <HBox width="stretch" height="35" bkcolor="bk_wnd_darkcolor">
       <Control />
       <Button class="btn_wnd_min" name="minbtn" margin="4,6,0,0"/>
       <Box width="21" margin="4,6,0,0">
@@ -10,10 +10,41 @@
       </Box>
       <Button class="btn_wnd_close" name="closebtn" margin="4,6,8,0"/>
     </HBox>
-    <Box>
-      <!--VBox margin="0,0,0,0" valign="center" halign="center" width="auto" height="auto">
-        <Label name="tooltip" text="一个简单窗口，带有标题栏和常规按钮。"/>
-      </VBox-->
+    <Box width="900" height="600" bkcolor="bk_wnd_lightcolor" padding="0,0,0,0">
+	  <VBox name="MainFrameBox" width="900" height="600" bkcolor="bk_wnd_lightcolor" padding="0,0,0,0" childmargin="10">
+	    <VBox name="TitleImageBox" width="900" height="100" bkcolor="bk_topitem_normal">
+	    </VBox>
+	    <VBox childmargin="10">
+		  <Button name="CaptureBtn" width="100" height="30" halign="center" pushedcolor="gray" bkcolor="light_gray" borderround="2,2" normaltextcolor="color_palette2" text="CaptureView" />
+		  <Button name="PlayerBtn" width="100" height="30"  halign="center" pushedcolor="gray" bkcolor="light_gray" borderround="2,2" normaltextcolor="color_palette2" text="PlayerView"/>
+		  <Button name="TransCodeBtn" width="100" height="30" halign="center" pushedcolor="gray" bkcolor="light_gray" borderround="2,2" normaltextcolor="color_palette2" text="TransCodeView"/>
+		</VBox>
+	  </VBox>
+	  <HBox name="CaptureBox" width="900" height="600" bkcolor="bk_wnd_lightcolor" padding="0,0,0,0" visible="false">
+	    <VBox name="CaptureLeftBox" width="150" height="400" bkcolor="green">
+		  <Button name="CaptureReturnBtn" width="50" height="20" halign="left" pushedcolor="gray" bkcolor="light_gray" borderround="2,2" normaltextcolor="color_palette2" text="Back" />
+		</VBox>
+		<Box name="CaptureCenterBox" width="550" height="600" bkcolor="red">
+		  <Box bkcolor="blue" width="550" height="150" valign="bottom">
+		    
+		  </Box>
+		</Box>
+		<VBox bkcolor="gray" width="200" height="600" padding="5,10,10,5" childmargin="5">
+		  <HBox width="180" height="30" bkcolor="red">
+		    <Label text="摄像头:" width="60" height="20" valign="center"/>
+			<Combo name="CameraDeviceCombo" width="100" height="20" valign="center" vscrollbar="true" visible="true" dropboxsize="100,60" bkcolor="white"/>
+		  </HBox>
+		  <HBox width="180" height="30" bkcolor="red">
+		    <Label text="格   式:" width="60" height="20" valign="center" />
+			<Combo name="CameraFmtCombo" width="100" height="20" valign="center" vscrollbar="true" visible="true" dropboxsize="100,60" bkcolor="white"/>
+		  </HBox>
+		  <HBox width="180" height="30" bkcolor="red">
+		    <Label text="分辨率:" width="60" height="20" valign="center" />
+			<Combo name="CameraResolutionCombo" width="100" height="20" valign="center" vscrollbar="true" visible="true" dropboxsize="100,60" bkcolor="white"/>
+		  </HBox>
+		</VBox>
+	  </HBox>
+>>>>>>> b44ba5eed354183bd3b5941a22a7317be69a5c50
     </Box>
   </VBox>
 </Window>

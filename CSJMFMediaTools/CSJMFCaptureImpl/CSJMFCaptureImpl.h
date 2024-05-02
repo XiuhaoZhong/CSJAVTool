@@ -8,6 +8,28 @@
 
 #include <Audioclient.h>
 
+/*
+*  This struct is used to choose a subtype of video capture.
+*/
+typedef struct {
+    GUID        sub_type;
+    UINT32      width;
+    UINT32      height;
+    UINT32      frameRate;
+    std::string fmt_name;
+} CSJVideoCaptureSubTypeInfo;
+
+using CSJVideoSubTypeList = std::vector<CSJVideoCaptureSubTypeInfo>;
+
+/**
+*  Video capture device params.
+*/
+typedef struct {
+    std::wstring        device_name;
+    std::wstring        device_symlink;
+    CSJVideoSubTypeList fmtList;
+} CSJVideoSubTypeInfos;
+
 /**
  * This class inplements CSJMFCapture interfaces.
  */
@@ -32,6 +54,12 @@ public:
     void stopCapture() override;
 
     void setDelegate(CSJMFCapture::Delegate *delegate) override;
+
+    virtual std::vector<CSJDeviceIdentifier> getDeviceIdentifiers(CSJMFDeviceType device_type) override;
+
+    virtual CSJVideoDeviceInfo getVideoDeviceInfo(std::wstring identify) override;
+
+    virtual CSJAudioDeviceInfo getAudioDeviceInfo(std::wstring identify) override;
 
     void CopyDataToPlayer();
 
@@ -66,7 +94,7 @@ protected:
     *  @param mediaSource the IMFMediaSouce object, represent a camera device.
     *  @param deviceInfo  the video capture device info, fill the fmtList.
     */
-    void loadVideoMediaSourceInfos(IMFMediaSource *mediaSource, CSJVideoDeviceInfo& deviceInfo);
+    void loadVideoMediaSourceInfos(IMFMediaSource *mediaSource, CSJVideoSubTypeInfos& subTypeInfo, CSJVideoDeviceInfo &deviceInfo);
 
     /**
     *  Create the media capture source.
@@ -137,11 +165,16 @@ private:
     std::thread         m_videoCapThread;
     std::thread         m_audioCapThread;
 
-    std::map<std::wstring, CSJVideoDeviceInfo> m_videoDeivceInfos; // <device symlink, device infos>.
-    std::map<std::wstring, CSJAudioDeviceInfo> m_audioDeviceInfos; // <device endpointID, device infos>.
+    std::vector<CSJDeviceIdentifier>             m_videoDeviceIdentifiers;
+    std::vector<CSJDeviceIdentifier>             m_audioDeviceIdentifiers;
+
+    std::map<std::wstring, CSJVideoSubTypeInfos> m_videoSubTypeInfos; // <device symlink, device infos>.
+    std::map<std::wstring, CSJVideoDeviceInfo>   m_videoDeviceInfos;
+
+    std::map<std::wstring, CSJAudioDeviceInfo>   m_audioDeviceInfos; // <device endpointID, device infos>.
 
     CSJMFCaptureStatus  m_status;               // current capture status.
-    bool               m_isStop;               // a flag indicates should stop capture or not.
+    bool                m_isStop;               // a flag indicates should stop capture or not.
 
     CSJMFCapture::Delegate *m_delegate;
 };

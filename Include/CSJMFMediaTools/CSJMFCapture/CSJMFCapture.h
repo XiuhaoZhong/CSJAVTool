@@ -22,6 +22,16 @@ typedef enum {
 } CSJMFDeviceType;
 
 /**
+ * identify a capture device. For video capture device,
+ * the device_identity is symlink, for audio capture device,
+ * the device_identity is endpoint.
+ */
+typedef struct {
+    std::wstring device_name;
+    std::wstring device_identity; 
+} CSJDeviceIdentifier;
+
+/**
 *  The capture status
 */
 typedef enum {
@@ -30,26 +40,19 @@ typedef enum {
     CSJMF_CAPTURE_PAUSE
 } CSJMFCaptureStatus;
 
-/*
-*  Video capture format param.
-*/
 typedef struct {
-    GUID        sub_type;
-    UINT32      width;
-    UINT32      height;
-    UINT32      frameRate;
-    std::string fmt_name;
-} CSJVideoFmtInfo;
-
-using CSJVideoCapureFmtList = std::vector<CSJVideoFmtInfo>;
+    int width;
+    int height;
+} CSJVideoResolution;
 
 /**
-*  Video capture device params.
-*/
+ * Video capture format param.
+ */
 typedef struct {
-    std::wstring            device_name;
-    std::wstring            device_symlink;
-    CSJVideoCapureFmtList   fmtList;
+    std::wstring device_name;
+    std::wstring device_link;
+    std::vector<std::string> formats;
+    std::map<std::string, std::vector<CSJVideoResolution>> resolutionMap;
 } CSJVideoDeviceInfo;
 
 /**
@@ -159,6 +162,27 @@ public:
     *  Set the delegate which could deliver capture data, error, status to external.
     */
     virtual void setDelegate(CSJMFCapture::Delegate *delegate) = 0;
+
+    /**
+     * @brief Get the device identifier.
+     *
+     * @param[in] device_type device type.
+     */
+    virtual std::vector<CSJDeviceIdentifier> getDeviceIdentifiers(CSJMFDeviceType device_type) = 0;
+
+    /**
+     * @brief Get the device info.
+     *
+     * @param[in] identify  it is the symlink.
+     */
+    virtual CSJVideoDeviceInfo getVideoDeviceInfo(std::wstring identify) = 0;
+
+    /**
+     * @brief Get the device info.
+     *
+     * @param[in] identify  it is endpoint.
+     */
+    virtual CSJAudioDeviceInfo getAudioDeviceInfo(std::wstring identify) = 0;
 
 };
 #endif // __CSJMFCAPTURE_H__

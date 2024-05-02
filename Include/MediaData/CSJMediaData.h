@@ -37,7 +37,7 @@ public:
         }
     }
 
-    CSJVideoData(const CSJVideoData && videoData)
+    CSJVideoData(CSJVideoData && videoData)
         : m_fmtType(videoData.m_fmtType)
         , m_data(videoData.m_data)
         , m_width(videoData.m_width)
@@ -49,7 +49,7 @@ public:
         videoData.m_height = 0;
     }
 
-    CSJVideoData& operator=(const CSJVideoData && videoData) {
+    CSJVideoData& operator=(CSJVideoData && videoData) {
         m_fmtType = videoData.m_fmtType;
         m_data = videoData.m_data;
         m_width = videoData.m_width;
@@ -112,7 +112,7 @@ public:
         }
     }
 
-    CSJAudioData(const CSJAudioData && audioData)
+    CSJAudioData(CSJAudioData && audioData)
         : m_fmtType(audioData.m_fmtType)
         , m_data(audioData.m_data)
         , m_sampleRate(audioData.m_sampleRate)
@@ -126,7 +126,7 @@ public:
         audioData.m_bitsPerSample = 0;
     }
 
-    CSJAudioData& operator=(const CSJAudioData && audioData) {
+    CSJAudioData& operator=(CSJAudioData && audioData) {
         m_fmtType = audioData.m_fmtType;
         m_data = audioData.m_data;
         m_sampleRate = audioData.m_sampleRate;
