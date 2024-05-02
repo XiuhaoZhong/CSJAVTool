@@ -1,5 +1,7 @@
 #include "CSJGLRenderManagerImpl.h"
 
+#include <iostream>
+
 #include "gl/glew.h"
 
 std::shared_ptr<CSJGLRenderManagerImpl> CSJGLRenderManagerImpl::spRenderManager = nullptr;
@@ -143,6 +145,8 @@ void CSJGLRenderManagerImpl::render() {
             break;
         }
 
+        DWORD time1 = GetTickCount();
+
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         //setProjectionMatrix(0, w_, 0, h_, -100.0f, 100.0f);
@@ -155,7 +159,12 @@ void CSJGLRenderManagerImpl::render() {
         composite();
 
         context->swapLayerBuffer(&m_device_info);
-
+        
+        DWORD time2 = GetTickCount();
+        DWORD diff = time2 - time1;
+        if (diff > 0) {
+            std::cout << "diff time is: " << diff << std::endl;
+        }
         context->leaveGLContext(&m_device_info);
     }
 
