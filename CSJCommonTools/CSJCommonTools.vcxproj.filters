@@ -13,17 +13,14 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="CSJFileTool">
-      <UniqueIdentifier>{b66225e8-1394-4ccc-b369-d50ff602d799}</UniqueIdentifier>
-    </Filter>
     <Filter Include="CSJImageTool">
       <UniqueIdentifier>{34f059fd-0299-4fc7-9f94-8a7ea91df611}</UniqueIdentifier>
     </Filter>
-    <Filter Include="CSJPathTool">
-      <UniqueIdentifier>{0d63d8a6-2cf3-4237-a89a-d12b2fc4440c}</UniqueIdentifier>
-    </Filter>
     <Filter Include="CSJStringTool">
       <UniqueIdentifier>{46bf6a5f-367f-44e1-b24b-f4b955d127ed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CSJCommonTool">
+      <UniqueIdentifier>{b66225e8-1394-4ccc-b369-d50ff602d799}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -42,6 +39,9 @@
     <ClInclude Include="CSJImageTool\CSJImageTool.h">
       <Filter>CSJImageTool</Filter>
     </ClInclude>
+    <ClInclude Include="CSJCommonTool\CSJCommonTool.h">
+      <Filter>CSJCommonTool</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -55,6 +55,9 @@
     </ClCompile>
     <ClCompile Include="CSJImageTool\CSJImageTool.cpp">
       <Filter>CSJImageTool</Filter>
+    </ClCompile>
+    <ClCompile Include="CSJCommonTool\CSJCommonTool.cpp">
+      <Filter>CSJCommonTool</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

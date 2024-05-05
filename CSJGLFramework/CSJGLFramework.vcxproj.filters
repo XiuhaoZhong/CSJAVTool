@@ -19,6 +19,9 @@
     <Filter Include="CSJGLRenderManager">
       <UniqueIdentifier>{206d1359-d989-4271-bddb-428878effa68}</UniqueIdentifier>
     </Filter>
+    <Filter Include="CSJGLComponents">
+      <UniqueIdentifier>{531477e6-7e24-48ae-9cec-2e88f960ca7d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -42,6 +45,12 @@
     <ClInclude Include="CSJGLRenderer\CSJGLRendererNode.h">
       <Filter>CSJGLRenderer</Filter>
     </ClInclude>
+    <ClInclude Include="CSJGLComponents\CSJGLFrameBuffer.h">
+      <Filter>CSJGLComponents</Filter>
+    </ClInclude>
+    <ClInclude Include="CSJGLComponents\CSJGLProgram.h">
+      <Filter>CSJGLComponents</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -58,6 +67,12 @@
     </ClCompile>
     <ClCompile Include="CSJGLRenderManager\CSJGLRenderManagerImpl.cpp">
       <Filter>CSJGLRenderManager</Filter>
+    </ClCompile>
+    <ClCompile Include="CSJGLComponents\CSJGLFrameBuffer.cpp">
+      <Filter>CSJGLComponents</Filter>
+    </ClCompile>
+    <ClCompile Include="CSJGLComponents\CSJGLProgram.cpp">
+      <Filter>CSJGLComponents</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

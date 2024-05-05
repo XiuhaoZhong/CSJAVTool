@@ -10,7 +10,8 @@ public:
     CSJStringTool() = default;
     ~CSJStringTool() = default;
 
-    static std::string wstring2string(std::wstring);
+    static std::string wstring2string(std::wstring wstr);
+    static std::wstring string2wstring(std::string str);
 
 };
 

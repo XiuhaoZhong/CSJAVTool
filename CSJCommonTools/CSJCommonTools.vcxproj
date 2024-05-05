@@ -93,7 +93,7 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;CSJCOMMONTOOLS_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)\CSJStringTool;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -104,6 +104,7 @@
       <Command>Xcopy /y $(ProjectDir)CSJCommonToolsDefine.h $(SolutionDir)Include\$(ProjectName)\
 Xcopy /y $(ProjectDir)CSJStringTool\CSJStringTool.h $(SolutionDir)Include\$(ProjectName)\CSJStringTool\
 Xcopy /y $(ProjectDir)CSJImageTool\CSJImageTool.h $(SolutionDir)Include\$(ProjectName)\CSJImageTool\
+Xcopy /y $(ProjectDir)CSJCommonTool\CSJCommonTool.h $(SolutionDir)Include\$(ProjectName)\CSJCommonTool\
 $(SolutionDir)copy_file.bat $(SolutionDir) $(ProjectName) $(TargetName) $(TargetExt) $(Platform) $(Configuration)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -164,6 +165,7 @@ $(SolutionDir)copy_file.bat $(SolutionDir) $(ProjectName) $(TargetName) $(Target
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="CSJCommonTool\CSJCommonTool.h" />
     <ClInclude Include="CSJImageTool\CSJImageTool.h" />
     <ClInclude Include="CSJStringTool\CSJStringTool.h" />
     <ClInclude Include="framework.h" />
@@ -171,6 +173,7 @@ $(SolutionDir)copy_file.bat $(SolutionDir) $(ProjectName) $(TargetName) $(Target
     <ClInclude Include="CSJCommonToolsDefine.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CSJCommonTool\CSJCommonTool.cpp" />
     <ClCompile Include="CSJImageTool\CSJImageTool.cpp" />
     <ClCompile Include="CSJStringTool\CSJStringTool.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>

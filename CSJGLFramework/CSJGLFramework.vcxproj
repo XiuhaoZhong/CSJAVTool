@@ -93,14 +93,14 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;CSJGLFRAMEWORK_EXPORTS;_WINDOWS;_USRDLL;GLEW_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)ThirdPart\glew-2.1.0\include\;$(ProjectDir)ThirdPart\glfw-3.3.3\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)ThirdPart\glew-2.1.0\include\;$(ProjectDir)ThirdPart\glfw-3.3.3\include\;$(SolutionDir)Include\CSJCommonTools\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalLibraryDirectories>$(ProjectDir)ThirdPart\glew-2.1.0\Lib\$(Platform)\;$(ProjectDir)ThirdPart\glfw-3.3.3\Lib\$(Platform)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glfw3d.lib;glew32sd.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)ThirdPart\glew-2.1.0\Lib\$(Platform)\;$(ProjectDir)ThirdPart\glfw-3.3.3\Lib\$(Platform)\;$(SolutionDir)Lib\$(platform)\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glfw3d.lib;glew32sd.lib;opengl32.lib;CSJCommonTools.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>Xcopy /y $(ProjectDir)CSJGLFrameworkDefine.h $(SolutionDir)Include\$(ProjectName)\
@@ -166,6 +166,8 @@ $(SolutionDir)copy_file.bat $(SolutionDir) $(ProjectName) $(TargetName) $(Target
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="CSJGLComponents\CSJGLFrameBuffer.h" />
+    <ClInclude Include="CSJGLComponents\CSJGLProgram.h" />
     <ClInclude Include="CSJGLFrameworkDefine.h" />
     <ClInclude Include="CSJGLRenderer\CSJGLRendererNode.h" />
     <ClInclude Include="CSJGLRenderManager\CSJGLContext.h" />
@@ -175,6 +177,8 @@ $(SolutionDir)copy_file.bat $(SolutionDir) $(ProjectName) $(TargetName) $(Target
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CSJGLComponents\CSJGLFrameBuffer.cpp" />
+    <ClCompile Include="CSJGLComponents\CSJGLProgram.cpp" />
     <ClCompile Include="CSJGLRenderManager\CSJGLContext.cpp" />
     <ClCompile Include="CSJGLRenderManager\CSJGLRenderManager.cpp" />
     <ClCompile Include="CSJGLRenderManager\CSJGLRenderManagerImpl.cpp" />
