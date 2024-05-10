@@ -20,7 +20,7 @@
 		  <Button name="TransCodeBtn" width="100" height="30" halign="center" pushedcolor="gray" bkcolor="light_gray" borderround="2,2" normaltextcolor="color_palette2" text="TransCodeView"/>
 		</VBox>
 	  </VBox>
-	  <HBox name="CaptureBox" width="900" height="600" bkcolor="bk_wnd_lightcolor" padding="0,0,0,0" visible="false">
+	  <HBox name="CaptureBox" width="900" height="600" bkcolor="bk_wnd_lightcolor" visible="false">
 	    <VBox name="CaptureLeftBox" width="150" height="400" bkcolor="green">
 		  <Button name="CaptureReturnBtn" width="50" height="20" halign="left" pushedcolor="gray" bkcolor="light_gray" borderround="2,2" normaltextcolor="color_palette2" text="Back" />
 		</VBox>

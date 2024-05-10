@@ -4,6 +4,8 @@
 
 #include "gl/glew.h"
 
+#include "CSJGLRenderer\CSJGLRGBARendererNode.h"
+
 std::shared_ptr<CSJGLRenderManagerImpl> CSJGLRenderManagerImpl::spRenderManager = nullptr;
 
 CSJGLRenderManagerImpl::CSJGLRenderManagerImpl()
@@ -31,6 +33,10 @@ CSJGLRenderManagerImpl::~CSJGLRenderManagerImpl() {
         CloseHandle(m_glUninitEvent);
         m_glUninitEvent = NULL;
     }
+
+    if (m_rendererNodes.size() > 0) {
+        m_rendererNodes.clear();
+    }
 }
 
 std::shared_ptr<CSJGLRenderManagerImpl> CSJGLRenderManagerImpl::getInstance() {
@@ -44,8 +50,8 @@ std::shared_ptr<CSJGLRenderManagerImpl> CSJGLRenderManagerImpl::getInstance() {
 bool CSJGLRenderManagerImpl::initGL(HWND hwnd, int width, int height) {
     bool res = false;
 
-    m_width = width / 2;
-    m_height = height / 2;
+    m_width = width;
+    m_height = height;
     m_hWnd = hwnd;
 
     m_renderThread = std::thread(&CSJGLRenderManagerImpl::excuteRender, this);
@@ -67,6 +73,9 @@ bool CSJGLRenderManagerImpl::startRendering() {
     return true;
 }
 
+void CSJGLRenderManagerImpl::updateVideo(uint8_t * videoData, DWORD timestamp) {
+}
+
 void CSJGLRenderManagerImpl::stopRendering() {
     if (m_stopEvent) {
         SetEvent(m_stopEvent);
@@ -74,15 +83,27 @@ void CSJGLRenderManagerImpl::stopRendering() {
 
     WaitForSingleObject(m_stopEvent, INFINITE);
     CSJGLContext::destoryWindowInfo(m_window_info);
-    //CSJGLContext::destroyDeviceInfo(m_device_info);
 }
 
-bool CSJGLRenderManagerImpl::pushRendererNode(CSJGLRendererNodeBase * rendererNode) {
-    return false;
+bool CSJGLRenderManagerImpl::pushRendererNode(CSJSharedRendererNode rendererNode) {
+    std::lock_guard<std::mutex> lockGuard(m_RenderArrayMtx);
+    bool isExist = false;
+    for (auto node : m_rendererNodes) {
+        if (node == rendererNode) {
+            isExist = true;
+            break;
+        }
+    }
+
+    if (!isExist) {
+        m_rendererNodes.push_back(rendererNode);
+    }
+
+    return true;
 }
 
-void CSJGLRenderManagerImpl::removeRendererNode(CSJGLRendererNodeBase * rendererNode) {
-
+void CSJGLRenderManagerImpl::removeRendererNode(CSJSharedRendererNode rendererNode) {
+    std::lock_guard<std::mutex> lockGuard(m_RenderArrayMtx);
 }
 
 bool CSJGLRenderManagerImpl::initOpenGL() {
@@ -116,6 +137,13 @@ void CSJGLRenderManagerImpl::excuteRender() {
     }
 
     SetEvent(m_glInitEvent);
+
+    m_spDefaultFramebuffer = std::make_shared<CSJGLFrameBuffer>();
+
+    std::shared_ptr<CSJGLRGBARenererNode> rgbaRenderer = std::make_shared<CSJGLRGBARenererNode>();
+    if (rgbaRenderer->init()) {
+        pushRendererNode(rgbaRenderer);
+    }
 
     /**
      * Start rendering.
@@ -152,7 +180,7 @@ void CSJGLRenderManagerImpl::render() {
         //setProjectionMatrix(0, w_, 0, h_, -100.0f, 100.0f);
         //	transform_pipeline_.SetMatrixStacks(model_view_matrix_, projection_matrix_);
 
-        glClearColor(0, 0, 1.0, 1.0);
+        glClearColor(0.2, 0.3, 0.3, 1.0);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glViewport(0, 0, m_width, m_height);
 
@@ -173,11 +201,17 @@ void CSJGLRenderManagerImpl::render() {
 }
 
 void CSJGLRenderManagerImpl::composite() {
+    std::lock_guard<std::mutex> lockGuard(m_RenderArrayMtx);
     if (m_rendererNodes.empty()) {
         return;
     }
 
     /**
-     * TODO: traverse the rendererNodes, and excute its draw function.
+     * traverse the rendererNodes, and excute its draw function.
      */
+    for (auto rendererNode : m_rendererNodes) {
+        rendererNode->setDefaultFramebuffer(m_spDefaultFramebuffer);
+        rendererNode->updateRenderPos(m_width, m_height);
+        rendererNode->draw();
+    }
 }

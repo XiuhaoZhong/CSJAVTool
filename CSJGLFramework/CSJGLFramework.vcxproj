@@ -105,6 +105,9 @@
     <PostBuildEvent>
       <Command>Xcopy /y $(ProjectDir)CSJGLFrameworkDefine.h $(SolutionDir)Include\$(ProjectName)\
 Xcopy /y $(ProjectDir)CSJGLRenderManager\CSJGLRenderManager.h $(SolutionDir)Include\$(ProjectName)\CSJGLRenderManager\
+Xcopy /y $(ProjectDir)CSJGLComponents\CSJGLProgram.h $(SolutionDir)Include\$(ProjectName)\CSJGLComponents\
+Xcopy /y $(ProjectDir)CSJGLComponents\CSJGLFrameBuffer.h $(SolutionDir)Include\$(ProjectName)\CSJGLComponents\
+Xcopy /y $(ProjectDir)CSJGLRenderer\CSJGLRendererNode.h $(SolutionDir)Include\$(ProjectName)\CSJGLRenderer\
 $(SolutionDir)copy_file.bat $(SolutionDir) $(ProjectName) $(TargetName) $(TargetExt) $(Platform) $(Configuration)
 </Command>
     </PostBuildEvent>
@@ -170,6 +173,7 @@ $(SolutionDir)copy_file.bat $(SolutionDir) $(ProjectName) $(TargetName) $(Target
     <ClInclude Include="CSJGLComponents\CSJGLProgram.h" />
     <ClInclude Include="CSJGLFrameworkDefine.h" />
     <ClInclude Include="CSJGLRenderer\CSJGLRendererNode.h" />
+    <ClInclude Include="CSJGLRenderer\CSJGLRGBARendererNode.h" />
     <ClInclude Include="CSJGLRenderManager\CSJGLContext.h" />
     <ClInclude Include="CSJGLRenderManager\CSJGLRenderManager.h" />
     <ClInclude Include="CSJGLRenderManager\CSJGLRenderManagerImpl.h" />
@@ -179,6 +183,7 @@ $(SolutionDir)copy_file.bat $(SolutionDir) $(ProjectName) $(TargetName) $(Target
   <ItemGroup>
     <ClCompile Include="CSJGLComponents\CSJGLFrameBuffer.cpp" />
     <ClCompile Include="CSJGLComponents\CSJGLProgram.cpp" />
+    <ClCompile Include="CSJGLRenderer\CSJGLRGBARendererNode.cpp" />
     <ClCompile Include="CSJGLRenderManager\CSJGLContext.cpp" />
     <ClCompile Include="CSJGLRenderManager\CSJGLRenderManager.cpp" />
     <ClCompile Include="CSJGLRenderManager\CSJGLRenderManagerImpl.cpp" />

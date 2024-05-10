@@ -7,6 +7,8 @@
 
 #include <memory>
 
+#include "CSJGLRenderer/CSJGLRendererNode.h"
+
 class CSJGLRenderManager;
 using CSJSharedRenderManger = std::shared_ptr<CSJGLRenderManager>;
 
@@ -43,6 +45,16 @@ public:
     virtual bool startRendering() = 0;
 
     /**
+     * @brief update video data.
+     * 
+     * @param[in] videoData     the video will be renderered.
+     * @param[in] timestamp     the timestamp of current video data,
+                                if the current timestamp is equal to 
+                                last timestamp, so it shouldn't renderer.
+     */
+    virtual void updateVideo(uint8_t *videoData, DWORD timestamp) = 0;
+
+    /**
      * @brief stop rendering.
      */
     virtual void stopRendering() = 0;
@@ -55,14 +67,14 @@ public:
         
      * @return success return true, or return false.
      */
-    virtual bool pushRendererNode(CSJGLRendererNodeBase* rendererNode) = 0;
+    virtual bool pushRendererNode(CSJSharedRendererNode rendererNode) = 0;
 
     /**
      * @brief Remove a renderer node from the pipeline.
      *
      * @param[in] rendererMode the renderer node which will be removed.
      */
-    virtual void removeRendererNode(CSJGLRendererNodeBase* rendererNode) = 0;
+    virtual void removeRendererNode(CSJSharedRendererNode rendererNode) = 0;
 };
 
 #endif // __CSJGLRENDERMANAGER_H__

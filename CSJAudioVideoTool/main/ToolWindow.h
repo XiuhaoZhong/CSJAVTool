@@ -38,6 +38,8 @@ public:
 protected:
     void updateRenderWindowPos();
 
+    void showRenderWindow(bool bShow);
+
     void extractMediaData();
 
     void extractVideoData();

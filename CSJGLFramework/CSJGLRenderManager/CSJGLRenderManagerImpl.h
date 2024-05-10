@@ -5,10 +5,11 @@
 
 #include <vector>
 #include <thread>
+#include <mutex>
 
 #include "CSJGLContext.h"
 
-using RendererNodesArray = std::vector<CSJGLRendererNodeBase *>;
+using RendererNodesArray = std::vector<CSJSharedRendererNode>;
 
 class CSJGLRenderManagerImpl : public CSJGLRenderManager {
 public:
@@ -21,10 +22,11 @@ public:
     void unInitGL() override;
 
     bool startRendering() override;
+    void updateVideo(uint8_t *videoData, DWORD timestamp) override;
     void stopRendering() override;
 
-    bool pushRendererNode(CSJGLRendererNodeBase* rendererNode) override;
-    void removeRendererNode(CSJGLRendererNodeBase *rendererNode) override;
+    bool pushRendererNode(CSJSharedRendererNode rendererNode) override;
+    void removeRendererNode(CSJSharedRendererNode rendererNode) override;
 
 protected:
     bool initOpenGL();
@@ -38,8 +40,10 @@ protected:
 private:
     static std::shared_ptr<CSJGLRenderManagerImpl> spRenderManager;
 
+    std::mutex         m_RenderArrayMtx;
     RendererNodesArray m_rendererNodes;
     std::thread        m_renderThread;
+    CSJSpFrameBuffer   m_spDefaultFramebuffer = nullptr;
 
     int                m_width;
     int                m_height;

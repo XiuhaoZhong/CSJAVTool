@@ -47,7 +47,6 @@ void ToolWindow::InitWindow() {
     //transformMedia();
     //loadMFCapture();
 
-    
     m_pMainFrameView = dynamic_cast<ui::Box *>((FindControl(L"MainFrameBox")));
     m_pCaptureBtn = dynamic_cast<ui::Button *>((FindControl(L"CaptureBtn")));
     m_pPlayerBtn = dynamic_cast<ui::Button *>((FindControl(L"PlayerBtn")));
@@ -62,6 +61,9 @@ void ToolWindow::InitWindow() {
     if (m_pCaptureBackBtn) {
         m_pCaptureBackBtn->AttachClick(nbase::Bind(&ToolWindow::onBtnClicked, this, std::placeholders::_1));
     }
+
+    createRenderWindow();
+    showRenderWindow(false);
 }
 
 LRESULT ToolWindow::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam) {
@@ -91,13 +93,13 @@ void ToolWindow::createRenderWindow() {
 	render_window_ = new CSJRenderWindow();
 
 	HWND render_window_hwnd = render_window_->createRenderWindow(GetHWND());
-	SetWindowLong(render_window_hwnd, GWL_STYLE, WS_VISIBLE);
 
 	render_window_->initializePos(m_hWnd);
 }
 
 LRESULT ToolWindow::OnClose(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
     if (render_window_) {
+        showRenderWindow(false);
         render_window_->CloseWindow();
     }
     
@@ -150,9 +152,18 @@ void ToolWindow::updateRenderWindowPos() {
     ::GetWindowRect(GetHWND(), &cur_area);
 
     //if (pre_w == 0 || pre_h == 0) {
-        SetWindowPos(render_win_hwnd, GetHWND(), cur_area.left + 50, cur_area.top + 50, 400, 300, SWP_NOZORDER);
+        SetWindowPos(render_win_hwnd, GetHWND(), cur_area.left + 164, cur_area.top + 50, 550, 450, SWP_NOZORDER);
         //return;
     //}
+}
+
+void ToolWindow::showRenderWindow(bool bShow) {
+    if (!render_window_) {
+        return ;
+    }
+
+    int nCmd = bShow ? SW_SHOW : SW_HIDE;
+    ::ShowWindow(render_window_->GetHWND(), nCmd);
 }
 
 void ToolWindow::extractMediaData() {
@@ -216,6 +227,8 @@ void ToolWindow::loadMFCapture() {
 
 void ToolWindow::showCaptureBox(bool show) {
     m_pCaptureBox->SetVisible(show);
+
+    showRenderWindow(show);
 
     if (show) {
         loadVideoDeviceList();

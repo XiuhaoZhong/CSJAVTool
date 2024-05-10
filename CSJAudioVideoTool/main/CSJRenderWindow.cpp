@@ -79,12 +79,12 @@ LONG CSJRenderWindow::GetStyle() {
 }
 
 void CSJRenderWindow::InitWindow() {
-    //m_renderMgr = CSJGLRenderManager::getDefaultRenderManager();
-    //m_renderMgr->initGL(m_hWnd, 400, 300);
+    m_renderMgr = CSJGLRenderManager::getDefaultRenderManager();
+    m_renderMgr->initGL(m_hWnd, 550, 450);
 }
 
 void CSJRenderWindow::OnCreate() {
-    ::ShowWindow(m_hWnd, true);
+    //::ShowWindow(m_hWnd, true);
 }
 
 void CSJRenderWindow::initializePos(HWND pHwnd) {
@@ -97,7 +97,7 @@ void CSJRenderWindow::initializePos(HWND pHwnd) {
 
     ::GetWindowRect(pHwnd, &rc);
 
-    bool res = SetWindowPos(m_hWnd, pHwnd, rc.left + 50, rc.top + 50, 400, 300, SWP_NOZORDER);
+    bool res = SetWindowPos(m_hWnd, pHwnd, rc.left + 164, rc.top + 50, 550, 450, SWP_NOZORDER);
     if (res) {
         std::cout << "Initialize render window position successfully" << std::endl;
     } else {

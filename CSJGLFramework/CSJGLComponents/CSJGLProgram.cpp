@@ -18,7 +18,7 @@ CSJGLProgram::CSJGLProgram(std::string & vertexShader, std::string & fragmentSha
     std::string fragmentShaderString = "";
     if (createByFile) {
         vertexShaderString = CSJCommonTool::readFile(vertexShader);
-        fragmentShaderString = CSJCommonTool::readFile(fragmentShaderString);
+        fragmentShaderString = CSJCommonTool::readFile(fragmentShader);
     } else {
         vertexShaderString = vertexShader;
         fragmentShaderString = fragmentShader;
@@ -34,7 +34,7 @@ CSJGLProgram::CSJGLProgram(std::string & vertexShader, std::string & fragmentSha
 
         glLinkProgram(vfprogram);
         this->m_vRenderingProgram = vfprogram;
-        m_bShaderInited = true;
+        m_bProgramUsable = true;
     } else {
         // Create program failed.
     }

@@ -105,7 +105,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PreprocessorDefinitions>WIN32;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
-      <AdditionalIncludeDirectories>$(ProjectDir)CommonData;$(ProjectDir);$(ProjectDir)third_part\log4cpp\include;$(SolutionDir)Include\CSJMediaPegTools;$(SolutionDir)Duilib\;$(SolutionDir)Include\CSJMFMediaTools\;$(SolutionDir)Include\CSJCommonTools\;$(SolutionDir)Include\CSJGLFramework\;$(SolutionDir)Include\MediaData\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)CommonData;$(ProjectDir);$(ProjectDir)third_part\log4cpp\include;$(SolutionDir)Include\CSJMediaPegTools;$(SolutionDir)Duilib\;$(SolutionDir)Include\CSJMFMediaTools\;$(SolutionDir)Include\CSJCommonTools\;$(SolutionDir)Include\CSJGLFramework\;$(SolutionDir)Include\MediaData\;$(SolutionDir)CSJGLFramework\ThirdPart\glfw-3.3.3\include;$(SolutionDir)CSJGLFramework\ThirdPart\glew-2.1.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
