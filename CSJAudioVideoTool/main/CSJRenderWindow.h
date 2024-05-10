@@ -8,6 +8,7 @@
 class CSJRenderWindow : public nim_comp::WindowEx {
 public:
     CSJRenderWindow();
+    CSJRenderWindow(int leftDelta, int topDelta, int width, int height);
     ~CSJRenderWindow();
 
     void CloseWindow();
@@ -27,8 +28,6 @@ public:
 
     static std::shared_ptr<CSJRenderWindow> getInstance();
 
-    void initializePos(HWND pHwnd);
-
     virtual LRESULT OnClose(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled) override;
 
 protected:
@@ -47,12 +46,15 @@ protected:
     */
     virtual std::wstring GetSkinFile() override;
 
- private:
-    static std::shared_ptr<CSJRenderWindow> render_window_;
-
-    std::wstring m_clsName;
-
+private:
+    int                   m_leftDelta;
+    int                   m_topDelta;
+    int                   m_width;
+    int                   m_height;
+    std::wstring          m_clsName;
     CSJSharedRenderManger m_renderMgr;
+
+    static std::shared_ptr<CSJRenderWindow> render_window_;
 };
 
 using sharedRenderWidow = std::shared_ptr<CSJRenderWindow>;

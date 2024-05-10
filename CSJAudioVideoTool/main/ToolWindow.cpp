@@ -15,6 +15,11 @@
 
 const std::wstring ToolWindow::kClassName = L"Basic";
 
+const int renderWindowLeftDelta = 164;
+const int renderWindowTopDelta = 50;
+const int renderWindowWidth = 550;
+const int renderWindowHeight = 450;
+
 ToolWindow::ToolWindow() {
 
 }
@@ -36,8 +41,6 @@ std::wstring ToolWindow::GetWindowClassName() const {
 }
 
 LONG ToolWindow::GetStyle() {
-	//return WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN | WS_CLIPSIBLINGS;
-
 	return WS_OVERLAPPEDWINDOW |  WS_POPUP | WS_CLIPCHILDREN | WS_CLIPSIBLINGS | WS_VISIBLE | WS_SYSMENU | WS_MINIMIZEBOX | WS_THICKFRAME;
 }
 
@@ -90,11 +93,9 @@ LRESULT ToolWindow::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam) {
 }
 
 void ToolWindow::createRenderWindow() {
-	render_window_ = new CSJRenderWindow();
+	render_window_ = new CSJRenderWindow(renderWindowLeftDelta, renderWindowTopDelta, renderWindowWidth, renderWindowHeight);
 
 	HWND render_window_hwnd = render_window_->createRenderWindow(GetHWND());
-
-	render_window_->initializePos(m_hWnd);
 }
 
 LRESULT ToolWindow::OnClose(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
@@ -151,10 +152,12 @@ void ToolWindow::updateRenderWindowPos() {
     RECT cur_area;
     ::GetWindowRect(GetHWND(), &cur_area);
 
-    //if (pre_w == 0 || pre_h == 0) {
-        SetWindowPos(render_win_hwnd, GetHWND(), cur_area.left + 164, cur_area.top + 50, 550, 450, SWP_NOZORDER);
-        //return;
-    //}
+    SetWindowPos(render_win_hwnd, GetHWND(),
+                 cur_area.left + renderWindowLeftDelta,
+                 cur_area.top + renderWindowTopDelta,
+                 renderWindowWidth,
+                 renderWindowHeight,
+                 SWP_NOZORDER);
 }
 
 void ToolWindow::showRenderWindow(bool bShow) {

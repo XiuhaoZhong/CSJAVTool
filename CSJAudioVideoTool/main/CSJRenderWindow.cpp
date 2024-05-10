@@ -24,8 +24,19 @@ std::shared_ptr<CSJRenderWindow> CSJRenderWindow::getInstance() {
     return render_window_;
 }
 
-CSJRenderWindow::CSJRenderWindow() {
+CSJRenderWindow::CSJRenderWindow()
+    : m_leftDelta(0)
+    , m_topDelta(0)
+    , m_width(0)
+    , m_height(0) {
 
+}
+
+CSJRenderWindow::CSJRenderWindow(int leftDelta, int topDelta, int width, int height)
+    : m_leftDelta(leftDelta)
+    , m_topDelta(topDelta)
+    , m_width(width)
+    , m_height(height) {
 }
 
 CSJRenderWindow::~CSJRenderWindow() {
@@ -71,6 +82,8 @@ void CSJRenderWindow::CloseWindow() {
     if (m_renderMgr) {
         m_renderMgr->stopRendering();
     }
+
+    PostMessage(WM_CLOSE, (WPARAM)0, 0L);
 }
 
 LONG CSJRenderWindow::GetStyle() {
@@ -80,13 +93,14 @@ LONG CSJRenderWindow::GetStyle() {
 
 void CSJRenderWindow::InitWindow() {
     m_renderMgr = CSJGLRenderManager::getDefaultRenderManager();
-    m_renderMgr->initGL(m_hWnd, 550, 450);
+    m_renderMgr->initGL(m_hWnd, m_width, m_height);
 }
 
 void CSJRenderWindow::OnCreate() {
-    //::ShowWindow(m_hWnd, true);
+    
 }
 
+/*
 void CSJRenderWindow::initializePos(HWND pHwnd) {
     if (!pHwnd) {
         return;
@@ -96,8 +110,7 @@ void CSJRenderWindow::initializePos(HWND pHwnd) {
     memset(&rc, 0, sizeof(RECT));
 
     ::GetWindowRect(pHwnd, &rc);
-
-    bool res = SetWindowPos(m_hWnd, pHwnd, rc.left + 164, rc.top + 50, 550, 450, SWP_NOZORDER);
+    bool res = SetWindowPos(m_hWnd, pHwnd, rc.left + m_leftDelta, rc.top + m_topDelta, m_width, m_height, SWP_NOZORDER);
     if (res) {
         std::cout << "Initialize render window position successfully" << std::endl;
     } else {
@@ -115,6 +128,7 @@ void CSJRenderWindow::initializePos(HWND pHwnd) {
     std::cout << "Render widow rect: " << top << ", " << left << ", " << bottom
         << ", " << right << std::endl;
 }
+*/
 
 LRESULT CSJRenderWindow::OnClose(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
     if (m_renderMgr) {
