@@ -131,10 +131,11 @@ void CSJRenderWindow::initializePos(HWND pHwnd) {
 */
 
 LRESULT CSJRenderWindow::OnClose(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
-    if (m_renderMgr) {
-        m_renderMgr->stopRendering();
-    }
-
     ::DestroyWindow(m_hWnd);
+    return 0;
+}
+
+LRESULT CSJRenderWindow::OnDestroy(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandled) {
+    PostQuitMessage(0);
     return 0;
 }

@@ -9,13 +9,15 @@ uniform sampler2D texV;
 out vec4 color;
 
 void main() { 
-	color = vec4(0.3, 0.9, 0.6, 1.0f);
-	vec3 yuv;
+	//color = vec4(0.3, 0.9, 0.6, 1.0f);
+	
+	
+	vec3 yuv = vec3(0.3, 0.04, -0.04);
 	vec3 rgb;
 	
-	yuv.x = texture2D(texY, texCoordinates).r;
-	yuv.y = texture2D(texU, texCoordinates).r - 0.5;
-	yuv.z = texture2D(texV, texCoordinates).r - 0.5;
+	//yuv.x = texture(texY, texCoordinates).r;
+	//yuv.y = texture(texU, texCoordinates).r - 0.5;
+	//yuv.z = texture(texV, texCoordinates).r - 0.5;
 	
 	rgb = mat3(1,              1,       1,
 			   0,       -0.39465, 2.03211,
@@ -23,5 +25,6 @@ void main() {
 	
 	//gl_FragColor = vec4(rgb, 1);
 	
+	color = vec4(rgb, 1);
 	
 }

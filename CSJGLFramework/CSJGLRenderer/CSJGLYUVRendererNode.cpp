@@ -5,6 +5,7 @@
 #include "CSJCommonTool/CSJCommonTool.h"
 
 CSJGLYUVRendererNode::CSJGLYUVRendererNode() {
+
 }
 
 CSJGLYUVRendererNode::CSJGLYUVRendererNode(CSJVideoFormatType fmt_type, int width, int height)
@@ -19,7 +20,6 @@ CSJGLYUVRendererNode::~CSJGLYUVRendererNode() {
 }
 
 bool CSJGLYUVRendererNode::init() {
-
     std::string shaderPath = CSJCommonTool::getResourcePath("resources\\shaders\\yuvShaders");
     if (shaderPath.size() == 0) {
         return false;
@@ -32,8 +32,6 @@ bool CSJGLYUVRendererNode::init() {
     if (!spProgram->programUseable()) {
         return false;
     }
-
-    spProgram->useProgram();
 
     std::string uniformName = "texY";
     m_locationUniformY = spProgram->getUniformLocation(uniformName);
@@ -88,8 +86,6 @@ void CSJGLYUVRendererNode::updateRenderPos(int width, int height) {
         vRate = m_width * height * 1.0 / (width * m_height);
     }
 
-    hRate = 1.0f;
-    vRate = 1.0f;
     static float renderCoordinates[] = {
         -vRate, -hRate, 0.0f,   // left bottom
          vRate, -hRate, 0.0f,   // right bottom
@@ -103,47 +99,23 @@ void CSJGLYUVRendererNode::updateRenderPos(int width, int height) {
 }
 
 void CSJGLYUVRendererNode::draw() {
-    fillYUVData();
-
     m_spProgram->useProgram();
+
+    fillYUVData();
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, m_texY);
     glUniform1i(m_locationUniformY, 0);
-    GLenum error = glGetError();
-    if (error == 0) {
-        std::cout << "" << std::endl;
-    }
 
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, m_texU);
     glUniform1i(m_locationUniformU, 1);
 
-    error = glGetError();
-    if (error == 0) {
-        std::cout << "" << std::endl;
-    }
-
     glActiveTexture(GL_TEXTURE2);
     glBindTexture(GL_TEXTURE_2D, m_texV);
     glUniform1i(m_locationUniformV, 2);
-    error = glGetError();
-    if (error == 0) {
-        std::cout << "" << std::endl;
-    }
 
-    glEnableVertexAttribArray(m_posAttr);
-    glEnableVertexAttribArray(m_textCoorAttr);
-    error = glGetError();
-    if (error == 0) {
-        std::cout << "" << std::endl;
-    }
-
-    glDrawArrays(GL_TRIANGLE_STRIP, 0, 3);
-    error = glGetError();
-    if (error == 0) {
-        std::cout << "" << std::endl;
-    }
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 }
 
 void CSJGLYUVRendererNode::initYUVBuffers() {
@@ -174,36 +146,23 @@ void CSJGLYUVRendererNode::initYUV420Buffers() {
     m_vData = new uint8_t[uvLength];
     memset(m_vData, 0, uvLength);
 
-    GLenum error = glGetError();
     glGenTextures(1, &m_texY);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    error = glGetError();
-    if (error == 0) {
-        std::cout << "" << std::endl;
-    }
 
     glGenTextures(1, &m_texU);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    error = glGetError();
-    if (error == 0) {
-        std::cout << "" << std::endl;
-    }
 
     glGenTextures(1, &m_texV);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    error = glGetError();
-    if (error == 0) {
-        std::cout << "" << std::endl;
-    }
 }
 
 void CSJGLYUVRendererNode::initYUV422Buffers() {
@@ -228,37 +187,25 @@ void CSJGLYUVRendererNode::releaseVideoData(uint8_t ** data) {
 }
 
 void CSJGLYUVRendererNode::fillYUVData() {
-    GLenum error = 0;
     size_t yLength = m_width * m_height;
+
     if (m_yData) {
-        memset(m_yData, 99, yLength);
+        memset(m_yData, 255, yLength);
         glBindTexture(GL_TEXTURE_2D, m_texY);
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, m_width, m_height, 0, GL_RED, GL_UNSIGNED_BYTE, m_yData);
-        error = glGetError();
-        if (error == 0) {
-            std::cout << "" << std::endl;
-        }
     }
 
     size_t uvLength = yLength / 4;
     if (m_uData) {
-        memset(m_uData, 66, uvLength);
+        memset(m_uData, 150, uvLength);
         glBindTexture(GL_TEXTURE_2D, m_texU);
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, m_width / 2, m_height / 2, 0, GL_RED, GL_UNSIGNED_BYTE, m_uData);
-        error = glGetError();
-        if (error == 0) {
-            std::cout << "" << std::endl;
-        }
     }
     
     if (m_vData) {
-        memset(m_vData, 99, uvLength);
+        memset(m_vData, 255, uvLength);
         glBindTexture(GL_TEXTURE_2D, m_texV);
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, m_width / 2, m_height / 2, 0, GL_RED, GL_UNSIGNED_BYTE, m_vData);
-        error = glGetError();
-        if (error == 0) {
-            std::cout << "" << std::endl;
-        }
     }
 }
 

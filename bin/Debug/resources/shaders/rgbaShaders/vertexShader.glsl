@@ -8,8 +8,8 @@ attribute vec3 inVertexColor;
 out vec3 ourColor;
 
 void main() {
-	//gl_Position = vec4(position, 1.0);
-	//ourColor = vertexColor;
-	gl_Position = vec4(inPosition, 1.0);
-	ourColor = inVertexColor;
+	gl_Position = vec4(position, 1.0);
+	ourColor = vertexColor;
+	//gl_Position = vec4(inPosition, 1.0);
+	//ourColor = inVertexColor;
 }

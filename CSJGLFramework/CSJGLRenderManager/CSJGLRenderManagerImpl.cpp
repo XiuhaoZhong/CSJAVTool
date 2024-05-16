@@ -153,7 +153,7 @@ void CSJGLRenderManagerImpl::excuteRender() {
 
     std::shared_ptr<CSJGLRGBARenererNode> rgbaRenderer = std::make_shared<CSJGLRGBARenererNode>();
     if (rgbaRenderer->init()) {
-        //pushRendererNode(rgbaRenderer);
+        pushRendererNode(rgbaRenderer);
     }
 
     /**
@@ -225,4 +225,5 @@ void CSJGLRenderManagerImpl::composite() {
         rendererNode->updateRenderPos(m_width, m_height);
         rendererNode->draw();
     }
+
 }
