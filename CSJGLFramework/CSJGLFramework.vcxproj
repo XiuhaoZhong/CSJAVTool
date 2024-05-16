@@ -93,7 +93,7 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;CSJGLFRAMEWORK_EXPORTS;_WINDOWS;_USRDLL;GLEW_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)ThirdPart\glew-2.1.0\include\;$(ProjectDir)ThirdPart\glfw-3.3.3\include\;$(SolutionDir)Include\CSJCommonTools\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)ThirdPart\glew-2.1.0\include\;$(ProjectDir)ThirdPart\glfw-3.3.3\include\;$(SolutionDir)Include\CSJCommonTools\;$(SolutionDir)Include\MediaData\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -174,6 +174,7 @@ $(SolutionDir)copy_file.bat $(SolutionDir) $(ProjectName) $(TargetName) $(Target
     <ClInclude Include="CSJGLFrameworkDefine.h" />
     <ClInclude Include="CSJGLRenderer\CSJGLRendererNode.h" />
     <ClInclude Include="CSJGLRenderer\CSJGLRGBARendererNode.h" />
+    <ClInclude Include="CSJGLRenderer\CSJGLYUVRendererNode.h" />
     <ClInclude Include="CSJGLRenderManager\CSJGLContext.h" />
     <ClInclude Include="CSJGLRenderManager\CSJGLRenderManager.h" />
     <ClInclude Include="CSJGLRenderManager\CSJGLRenderManagerImpl.h" />
@@ -184,6 +185,7 @@ $(SolutionDir)copy_file.bat $(SolutionDir) $(ProjectName) $(TargetName) $(Target
     <ClCompile Include="CSJGLComponents\CSJGLFrameBuffer.cpp" />
     <ClCompile Include="CSJGLComponents\CSJGLProgram.cpp" />
     <ClCompile Include="CSJGLRenderer\CSJGLRGBARendererNode.cpp" />
+    <ClCompile Include="CSJGLRenderer\CSJGLYUVRendererNode.cpp" />
     <ClCompile Include="CSJGLRenderManager\CSJGLContext.cpp" />
     <ClCompile Include="CSJGLRenderManager\CSJGLRenderManager.cpp" />
     <ClCompile Include="CSJGLRenderManager\CSJGLRenderManagerImpl.cpp" />

@@ -5,6 +5,7 @@
 #include "gl/glew.h"
 
 #include "CSJGLRenderer\CSJGLRGBARendererNode.h"
+#include "CSJGLRenderer\CSJGLYUVRendererNode.h"
 
 std::shared_ptr<CSJGLRenderManagerImpl> CSJGLRenderManagerImpl::spRenderManager = nullptr;
 
@@ -74,6 +75,11 @@ bool CSJGLRenderManagerImpl::startRendering() {
 }
 
 void CSJGLRenderManagerImpl::updateVideo(uint8_t * videoData, DWORD timestamp) {
+    if (!m_videoData) {
+        m_videoData = new uint8_t[m_width * m_height * 3 / 2];
+    }
+
+    memcpy(m_videoData, videoData, m_width * m_height * 3 / 2);
 }
 
 void CSJGLRenderManagerImpl::stopRendering() {
@@ -140,9 +146,14 @@ void CSJGLRenderManagerImpl::excuteRender() {
 
     m_spDefaultFramebuffer = std::make_shared<CSJGLFrameBuffer>();
 
+    std::shared_ptr<CSJGLRendererNodeBase> yuvRenderer = std::make_shared<CSJGLYUVRendererNode>(CSJVIDEO_FMT_NV12, 1280, 720);
+    if (yuvRenderer->init()) {
+        pushRendererNode(yuvRenderer);
+    }
+
     std::shared_ptr<CSJGLRGBARenererNode> rgbaRenderer = std::make_shared<CSJGLRGBARenererNode>();
     if (rgbaRenderer->init()) {
-        pushRendererNode(rgbaRenderer);
+        //pushRendererNode(rgbaRenderer);
     }
 
     /**
@@ -180,9 +191,9 @@ void CSJGLRenderManagerImpl::render() {
         //setProjectionMatrix(0, w_, 0, h_, -100.0f, 100.0f);
         //	transform_pipeline_.SetMatrixStacks(model_view_matrix_, projection_matrix_);
 
-        glClearColor(0.2, 0.3, 0.3, 1.0);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glViewport(0, 0, m_width, m_height);
+        glClearColor(0.0, 0.0, 0.0, 1.0);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         composite();
 

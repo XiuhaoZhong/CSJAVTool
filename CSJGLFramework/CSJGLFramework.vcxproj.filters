@@ -54,6 +54,9 @@
     <ClInclude Include="CSJGLRenderer\CSJGLRGBARendererNode.h">
       <Filter>CSJGLRenderer</Filter>
     </ClInclude>
+    <ClInclude Include="CSJGLRenderer\CSJGLYUVRendererNode.h">
+      <Filter>CSJGLRenderer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -78,6 +81,9 @@
       <Filter>CSJGLComponents</Filter>
     </ClCompile>
     <ClCompile Include="CSJGLRenderer\CSJGLRGBARendererNode.cpp">
+      <Filter>CSJGLRenderer</Filter>
+    </ClCompile>
+    <ClCompile Include="CSJGLRenderer\CSJGLYUVRendererNode.cpp">
       <Filter>CSJGLRenderer</Filter>
     </ClCompile>
   </ItemGroup>

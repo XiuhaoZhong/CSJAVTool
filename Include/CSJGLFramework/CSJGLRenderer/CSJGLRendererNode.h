@@ -14,6 +14,28 @@ public:
     virtual ~CSJGLRendererNodeBase() {};
 
     /**
+     * Provides a seris of interfaces for external class to provide data to
+     * renderer node.
+     */
+    class DataProvider {
+    public:
+        DataProvider() = default;
+        ~DataProvider() = default;
+
+        /**
+         * @brief Copy NV12 video data to render node. 
+         * 
+         * Before renderer node call this function, make sure the parameters are
+         * NULL.
+         *
+         * @param[in] y_data    the Y planar of yuv data.
+         * @param[in] u_data    the U planar of yuv data.
+         * @param[in] v_data    the V planar of yuv data.
+         */
+        virtual void copyNV12Data(uint8_t *y_data, uint8_t* u_data, uint8_t* v_data) {}
+    };
+
+    /**
      * @brief Initialize the renderer node
      *
      * @return returning true indicates success, or return false.

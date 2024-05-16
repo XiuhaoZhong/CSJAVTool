@@ -57,6 +57,8 @@ private:
 
     CSJGLWindowInfo   *m_window_info = nullptr;
     CSJGLDeviceInfo    m_device_info;
+
+    uint8_t           *m_videoData = nullptr;
 };
 
 #endif // __CSJGLRENDERMANAGERIMPL_H__

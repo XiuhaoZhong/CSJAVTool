@@ -13,12 +13,20 @@ public:
     void updateRenderPos(int width, int height) override;
     void draw() override;
 
+protected:
+    bool initProgramWithVAO(CSJSpProgram spProgram);
+    bool initProgramWithAttribute(CSJSpProgram spProgram);
+
 private:
     CSJSpFrameBuffer m_spDefaultFramebuffer = nullptr;
     CSJSpProgram     m_spProgram            = nullptr;
 
     GLuint           m_vVao;
     GLuint           m_vVbo;
+
+
+    GLuint           m_posAttr;
+    GLuint           m_colorAttr;
     
 };
 

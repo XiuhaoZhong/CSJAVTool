@@ -44,6 +44,14 @@ void CSJGLProgram::useProgram() {
     glUseProgram(m_vRenderingProgram);
 }
 
+GLint CSJGLProgram::getAttributeLocation(std::string & attributeName) {
+    return glGetAttribLocation(m_vRenderingProgram, attributeName.c_str());
+}
+
+GLuint CSJGLProgram::getUniformLocation(std::string & uniformName) {
+    return glGetUniformLocation(m_vRenderingProgram, uniformName.c_str());
+}
+
 bool CSJGLProgram::createVertexShader(const std::string & vertexShaderString) {
     bool createVertShaderRes = false;
     if (vertexShaderString.size() == 0) {

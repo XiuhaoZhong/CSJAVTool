@@ -33,6 +33,13 @@ public:
     }
     void useProgram();
 
+    GLuint getProgram() const {
+        return m_vRenderingProgram;
+    }
+
+    GLint getAttributeLocation(std::string& attributeName);
+    GLuint getUniformLocation(std::string& uniformName);
+
 protected:
     bool createVertexShader(const std::string& shaderString);
 
