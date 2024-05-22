@@ -14,6 +14,9 @@
     <Filter Include="CSJMediaHandlers">
       <UniqueIdentifier>{8afe1d9f-b895-4660-ade7-780b53cb8c0e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="CSJMediaModules">
+      <UniqueIdentifier>{4bb972d1-8bac-409c-936d-66b0c41710e4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main\main.h">
@@ -43,6 +46,12 @@
     <ClInclude Include="CSJMediaHandlers\CSJMediaLiveHandler.h">
       <Filter>CSJMediaHandlers</Filter>
     </ClInclude>
+    <ClInclude Include="CSJMediaModules\CSJMediaLiveFrame.h">
+      <Filter>CSJMediaModules</Filter>
+    </ClInclude>
+    <ClInclude Include="main\CSJToolModuleUIBase.h">
+      <Filter>main</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main\ToolWindow.cpp">
@@ -68,6 +77,12 @@
     </ClCompile>
     <ClCompile Include="CSJMediaHandlers\CSJMediaLiveHandler.cpp">
       <Filter>CSJMediaHandlers</Filter>
+    </ClCompile>
+    <ClCompile Include="CSJMediaModules\CSJMediaLiveFrame.cpp">
+      <Filter>CSJMediaModules</Filter>
+    </ClCompile>
+    <ClCompile Include="main\CSJToolModuleUIBase.cpp">
+      <Filter>main</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

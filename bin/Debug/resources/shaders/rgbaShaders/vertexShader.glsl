@@ -2,8 +2,8 @@
 layout (location = 0) in vec3 position;
 layout (location = 1) in vec3 vertexColor;
 
-attribute vec3 inPosition;
-attribute vec3 inVertexColor;
+in vec3 inPosition;
+in vec3 inVertexColor;
 
 out vec3 ourColor;
 

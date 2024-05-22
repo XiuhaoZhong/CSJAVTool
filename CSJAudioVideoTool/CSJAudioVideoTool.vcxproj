@@ -24,7 +24,9 @@
     <ClInclude Include="CSJAVAudioHandler.h" />
     <ClInclude Include="CSJMediaHandlers\CSJMediaHandlerBase.h" />
     <ClInclude Include="CSJMediaHandlers\CSJMediaLiveHandler.h" />
+    <ClInclude Include="CSJMediaModules\CSJMediaLiveFrame.h" />
     <ClInclude Include="main\CSJRenderWindow.h" />
+    <ClInclude Include="main\CSJToolModuleUIBase.h" />
     <ClInclude Include="main\targetver.h" />
     <ClInclude Include="main\ToolWindow.h" />
     <ClInclude Include="main\main.h" />
@@ -35,7 +37,9 @@
     <ClCompile Include="CSJAVAudioHandler.cpp" />
     <ClCompile Include="CSJMediaHandlers\CSJMediaHandlerBase.cpp" />
     <ClCompile Include="CSJMediaHandlers\CSJMediaLiveHandler.cpp" />
+    <ClCompile Include="CSJMediaModules\CSJMediaLiveFrame.cpp" />
     <ClCompile Include="main\CSJRenderWindow.cpp" />
+    <ClCompile Include="main\CSJToolModuleUIBase.cpp" />
     <ClCompile Include="main\main.cpp" />
     <ClCompile Include="main\ToolWindow.cpp" />
   </ItemGroup>

@@ -13,6 +13,8 @@
 
 #include "CSJAVAudioHandler.h"
 
+#include "CSJMediaModules/CSJMediaLiveFrame.h"
+
 const std::wstring ToolWindow::kClassName = L"Basic";
 
 const int renderWindowLeftDelta = 164;
@@ -50,6 +52,8 @@ void ToolWindow::InitWindow() {
     //transformMedia();
     //loadMFCapture();
 
+    m_pMainUI = dynamic_cast<ui::Box *>((FindControl(L"MainUI")));
+
     m_pMainFrameView = dynamic_cast<ui::Box *>((FindControl(L"MainFrameBox")));
     m_pCaptureBtn = dynamic_cast<ui::Button *>((FindControl(L"CaptureBtn")));
     m_pPlayerBtn = dynamic_cast<ui::Button *>((FindControl(L"PlayerBtn")));
@@ -59,11 +63,11 @@ void ToolWindow::InitWindow() {
         m_pCaptureBtn->AttachClick(nbase::Bind(&ToolWindow::onBtnClicked, this, std::placeholders::_1));
     }
 
-    m_pCaptureBox = dynamic_cast<ui::HBox *>((FindControl(L"CaptureBox")));
+    /*m_pCaptureBox = dynamic_cast<ui::HBox *>((FindControl(L"CaptureBox")));
     m_pCaptureBackBtn = dynamic_cast<ui::Button *>((FindControl(L"CaptureReturnBtn")));
     if (m_pCaptureBackBtn) {
         m_pCaptureBackBtn->AttachClick(nbase::Bind(&ToolWindow::onBtnClicked, this, std::placeholders::_1));
-    }
+    }*/
 
     createRenderWindow();
     showRenderWindow(false);
@@ -117,10 +121,8 @@ bool ToolWindow::onBtnClicked(ui::EventArgs *args) {
     if (args->pSender == m_pCaptureBtn) {
         m_pMainFrameView->SetVisible(false);
         showCaptureBox(true);
-    } else if (args->pSender == m_pCaptureBackBtn) {
-        m_pMainFrameView->SetVisible(true);
-        showCaptureBox(false);
-    }
+    } 
+
     return true;
 }
 
@@ -229,81 +231,15 @@ void ToolWindow::loadMFCapture() {
 }
 
 void ToolWindow::showCaptureBox(bool show) {
-    m_pCaptureBox->SetVisible(show);
+    //m_pCaptureBox->SetVisible(show);
+    if (!m_pMediaLiveFrame) {
 
+        std::wstring xmlPath = GetWindowResourcePath() + L"MediaLiveFrame.xml";
+        ui::STRINGorID xml(xmlPath.c_str());
+        m_pMediaLiveFrame = new CSJMediaLiveFrame(xml, this, m_pMainUI);
+        m_pMediaLiveFrame->initUI();
+    }
+
+    m_pMediaLiveFrame->showFrame(show);
     showRenderWindow(show);
-
-    if (show) {
-        loadVideoDeviceList();
-    }
-}
-
-void ToolWindow::loadVideoDeviceList() {
-    if (!m_pVideoDevcieCombo) {
-        m_pVideoDevcieCombo = dynamic_cast<ui::Combo *>((FindControl(L"CameraDeviceCombo")));
-        m_pVideoDevcieCombo->SetPopupTop(false);
-    }
-
-    m_pVideoDevcieCombo->RemoveAll();
-    for (int i = 0; i < 3; i++) {
-        std::wstring number = std::to_wstring(i);
-        std::wstring text = L"Device" + number;
-        ui::ListContainerElement *element = createListElement(text, i, 100, 20);
-        if (element) {
-            m_pVideoDevcieCombo->Add(element);
-        }
-    }
-    m_pVideoDevcieCombo->SelectItem(0);
-
-    if (!m_pVideoFmtCombo) {
-        m_pVideoFmtCombo = dynamic_cast<ui::Combo *>((FindControl(L"CameraFmtCombo")));
-        m_pVideoFmtCombo->SetPopupTop(false);
-    }
-
-    m_pVideoFmtCombo->RemoveAll();
-    std::vector<std::wstring> fmts = { L"NV12", L"MJPG", L"YV12" };
-    for (int i = 0; i < fmts.size(); i++) {
-        ui::ListContainerElement *element = createListElement(fmts[i], i, 100, 20);
-        if (element) {
-            m_pVideoFmtCombo->Add(element);
-        }
-    }
-    m_pVideoFmtCombo->SelectItem(0);
-
-    
-    if (!m_pVideoResolutionCombo) {
-        m_pVideoResolutionCombo = dynamic_cast<ui::Combo *>((FindControl(L"CameraResolutionCombo")));
-        m_pVideoResolutionCombo->SetPopupTop(false);
-    }
-
-    m_pVideoResolutionCombo->RemoveAll();
-    std::vector<std::wstring> resolutions = { L"1280x720", L"640x480", L"480x320" };
-    for (int i = 0; i < fmts.size(); i++) {
-        ui::ListContainerElement *element = createListElement(resolutions[i], i, 100, 20);
-        if (element) {
-            m_pVideoResolutionCombo->Add(element);
-        }
-    }
-
-    m_pVideoResolutionCombo->SelectItem(0);
-}
-
-ui::ListContainerElement * ToolWindow::createListElement(std::wstring & text, 
-                                                         int index,
-                                                         int fixedWidth,
-                                                         int fixedHeight,
-                                                         std::wstring bkcolor,
-                                                         std::wstring selectedcolor) {
-    ui::ListContainerElement *listElement = new ui::ListContainerElement();
-    if (!listElement) {
-        return nullptr;
-    }
-    listElement->SetText(text);
-    listElement->SetIndex(index);
-    listElement->SetFixedWidth(fixedWidth > 0 ? fixedWidth : DUI_LENGTH_AUTO);
-    listElement->SetFixedHeight(fixedHeight > 0 ? fixedHeight: DUI_LENGTH_AUTO);
-    listElement->SetBkColor(bkcolor);
-    listElement->SetSelectedStateColor(ui::kControlStateNormal, selectedcolor);
-
-    return listElement;
 }

@@ -6,14 +6,6 @@
 
 using namespace nim_comp;
 
-//void testForPtr() {
-//    std::unique_ptr<CSJDataManager> up;
-//
-//    std::shared_ptr<CSJDataManager> sp;
-//
-//    std::weak_ptr<CSJDataManager> wp;
-//}
-
 std::shared_ptr<CSJRenderWindow> CSJRenderWindow::render_window_ = nullptr;
 
 std::shared_ptr<CSJRenderWindow> CSJRenderWindow::getInstance() {
@@ -63,7 +55,8 @@ HWND CSJRenderWindow::createRenderWindow(HWND hwndParent,
                                          const ui::UiRect& rc) {
     std::wstring className = GetWindowClassName();
 
-    m_hWnd = Create(hwndParent, L"CSJRenderWindow", WS_CLIPCHILDREN | WS_CLIPSIBLINGS | WS_POPUP, WS_EX_TOOLWINDOW, false);
+    m_hWnd = Create(hwndParent, L"CSJRenderWindow", WS_CLIPCHILDREN | WS_CLIPSIBLINGS | WS_POPUP, 
+                    WS_EX_TOOLWINDOW, false);
     LONG errorCode = ::GetLastError();
     if (errorCode == ERROR_CLASS_ALREADY_EXISTS) {
         std::cout << "" << std::endl;
@@ -99,36 +92,6 @@ void CSJRenderWindow::InitWindow() {
 void CSJRenderWindow::OnCreate() {
     
 }
-
-/*
-void CSJRenderWindow::initializePos(HWND pHwnd) {
-    if (!pHwnd) {
-        return;
-    }
-
-    RECT rc;
-    memset(&rc, 0, sizeof(RECT));
-
-    ::GetWindowRect(pHwnd, &rc);
-    bool res = SetWindowPos(m_hWnd, pHwnd, rc.left + m_leftDelta, rc.top + m_topDelta, m_width, m_height, SWP_NOZORDER);
-    if (res) {
-        std::cout << "Initialize render window position successfully" << std::endl;
-    } else {
-        std::cout << "Could not initialize render window position." << std::endl;
-    }
-
-    RECT rect_mask;
-    ::GetWindowRect(m_hWnd, &rect_mask);
-
-    int top = rect_mask.top;
-    int left = rect_mask.left;
-    int bottom = rect_mask.bottom;
-    int right = rect_mask.right;
-
-    std::cout << "Render widow rect: " << top << ", " << left << ", " << bottom
-        << ", " << right << std::endl;
-}
-*/
 
 LRESULT CSJRenderWindow::OnClose(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
     ::DestroyWindow(m_hWnd);
