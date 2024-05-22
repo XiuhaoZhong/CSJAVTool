@@ -189,10 +189,10 @@ void CSJMFCaptureImpl::startVideoCapWithSourceReader() {
     IMFSourceReader *pReader = NULL;
     HRESULT hr = S_OK;
 
-    // 已经验证，此方法好用，可以读取到摄像头数据
+    // create media source to read video data.
     hr = MFCreateSourceReaderFromMediaSource(mediaSource, NULL, &pReader);
     if (SUCCEEDED(hr)) {
-        // 设置输出格式
+        // Setting the mediaType of output format.
         hr = pReader->SetCurrentMediaType((DWORD) MF_SOURCE_READER_FIRST_VIDEO_STREAM, NULL, mediaType);
         if (SUCCEEDED(hr)) {
             m_isStop = false;
@@ -210,7 +210,7 @@ void CSJMFCaptureImpl::startVideoCapWithSourceReader() {
 
                 hr = pReader->ReadSample((DWORD) MF_SOURCE_READER_FIRST_VIDEO_STREAM, 0, &dwStreamIndex, &dwStreamFlags, &llTimeStamp, &pBuffer);
                 if (SUCCEEDED(hr)) {
-                    // 第一帧可能是为空，需要做一个判断;
+                    // At the first time returning of the ReadSample, the pBuffer might null.
                     if (pBuffer == NULL) {
                         continue;
                     }
@@ -310,8 +310,6 @@ void CSJMFCaptureImpl::startAudioCapWithSourceReader() {
                             std::cout << "lock sample failed." << std::endl;
                         }
 
-                        // TODO: curLength为76800，下面的audioClient中buffer的大小为48000，记得先测试播放，在处理数据大小问题
-                        // 2024/04/09
                         DWORD curLength;
                         hr = buf->GetCurrentLength(&curLength);
                         if (FAILED(hr)) {
