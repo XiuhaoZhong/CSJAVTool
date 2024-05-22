@@ -63,12 +63,6 @@ void ToolWindow::InitWindow() {
         m_pCaptureBtn->AttachClick(nbase::Bind(&ToolWindow::onBtnClicked, this, std::placeholders::_1));
     }
 
-    /*m_pCaptureBox = dynamic_cast<ui::HBox *>((FindControl(L"CaptureBox")));
-    m_pCaptureBackBtn = dynamic_cast<ui::Button *>((FindControl(L"CaptureReturnBtn")));
-    if (m_pCaptureBackBtn) {
-        m_pCaptureBackBtn->AttachClick(nbase::Bind(&ToolWindow::onBtnClicked, this, std::placeholders::_1));
-    }*/
-
     createRenderWindow();
     showRenderWindow(false);
 }
