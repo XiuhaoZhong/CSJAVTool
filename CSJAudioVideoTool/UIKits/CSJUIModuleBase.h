@@ -10,10 +10,28 @@
  * modularize so that users can divide total UI into many parts, that is, it's
  * very efficient and clear to build the UI logics.
  */
-class CSJToolModuleUIBase : public nbase::SupportWeakCallback {
+class CSJUIModuleBase : public nbase::SupportWeakCallback {
 public:
-    CSJToolModuleUIBase(ui::STRINGorID xml, ui::Window *manager, ui::Box *parent);
-    virtual ~CSJToolModuleUIBase();
+    CSJUIModuleBase(ui::STRINGorID xml, ui::Window *manager, ui::Box *parent);
+    virtual ~CSJUIModuleBase();
+
+    /**
+     * This delegate provides functions are used to module UIs communicates its' parent. 
+     *
+     * When a module UI is showing in the whole area of it's parent, it is necessary to 
+     * notify it's parent when current ui will hide/ destory or other case that the parent
+     * can't response immediately.
+     */
+    class Delegate {
+    public:
+        Delegate() = default;
+        ~Delegate() = default;
+
+        /**
+         * Notify parent that current module will return.
+         */
+        virtual void onModuleBack() = 0;
+    };
 
     /**
      * @brief show or hide the module UI.

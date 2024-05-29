@@ -26,10 +26,10 @@
     <ClInclude Include="CSJMediaHandlers\CSJMediaLiveHandler.h" />
     <ClInclude Include="CSJMediaModules\CSJMediaLiveFrame.h" />
     <ClInclude Include="main\CSJRenderWindow.h" />
-    <ClInclude Include="main\CSJToolModuleUIBase.h" />
     <ClInclude Include="main\targetver.h" />
     <ClInclude Include="main\ToolWindow.h" />
     <ClInclude Include="main\main.h" />
+    <ClInclude Include="UIKits\CSJUIModuleBase.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CommonData\CSJDataManager.cpp" />
@@ -39,9 +39,9 @@
     <ClCompile Include="CSJMediaHandlers\CSJMediaLiveHandler.cpp" />
     <ClCompile Include="CSJMediaModules\CSJMediaLiveFrame.cpp" />
     <ClCompile Include="main\CSJRenderWindow.cpp" />
-    <ClCompile Include="main\CSJToolModuleUIBase.cpp" />
     <ClCompile Include="main\main.cpp" />
     <ClCompile Include="main\ToolWindow.cpp" />
+    <ClCompile Include="UIKits\CSJUIModuleBase.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>

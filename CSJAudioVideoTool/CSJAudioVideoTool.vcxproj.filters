@@ -17,6 +17,9 @@
     <Filter Include="CSJMediaModules">
       <UniqueIdentifier>{4bb972d1-8bac-409c-936d-66b0c41710e4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="UIKits">
+      <UniqueIdentifier>{d37a0fe3-62c3-46f5-9e70-62b5f4bbfab0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main\main.h">
@@ -49,8 +52,8 @@
     <ClInclude Include="CSJMediaModules\CSJMediaLiveFrame.h">
       <Filter>CSJMediaModules</Filter>
     </ClInclude>
-    <ClInclude Include="main\CSJToolModuleUIBase.h">
-      <Filter>main</Filter>
+    <ClInclude Include="UIKits\CSJUIModuleBase.h">
+      <Filter>UIKits</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -81,8 +84,8 @@
     <ClCompile Include="CSJMediaModules\CSJMediaLiveFrame.cpp">
       <Filter>CSJMediaModules</Filter>
     </ClCompile>
-    <ClCompile Include="main\CSJToolModuleUIBase.cpp">
-      <Filter>main</Filter>
+    <ClCompile Include="UIKits\CSJUIModuleBase.cpp">
+      <Filter>UIKits</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

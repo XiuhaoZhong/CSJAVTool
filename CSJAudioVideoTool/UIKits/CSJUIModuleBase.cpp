@@ -1,10 +1,10 @@
-#include "CSJToolModuleUIBase.h"
+#include "CSJUIModuleBase.h"
 
 #include "duilib/Core/WindowBuilder.h"
 
 using namespace ui;
 
-CSJToolModuleUIBase::CSJToolModuleUIBase(STRINGorID xml, Window* manager, Box* parent) {
+CSJUIModuleBase::CSJUIModuleBase(STRINGorID xml, Window* manager, Box* parent) {
     ui::WindowBuilder windowBuilder;
     m_pRoot = windowBuilder.Create(xml, ui::CreateControlCallback(), manager, parent, nullptr);
     if (m_pRoot) {
@@ -15,11 +15,11 @@ CSJToolModuleUIBase::CSJToolModuleUIBase(STRINGorID xml, Window* manager, Box* p
     }
 }
 
-CSJToolModuleUIBase::~CSJToolModuleUIBase() {
+CSJUIModuleBase::~CSJUIModuleBase() {
 
 }
 
-void CSJToolModuleUIBase::showFrame(bool bshow) {
+void CSJUIModuleBase::showFrame(bool bshow) {
     if (!m_pRoot) {
         return;
     }
@@ -27,6 +27,6 @@ void CSJToolModuleUIBase::showFrame(bool bshow) {
     m_pRoot->SetVisible(bshow);
 }
 
-void CSJToolModuleUIBase::initUI() {
+void CSJUIModuleBase::initUI() {
 
 }

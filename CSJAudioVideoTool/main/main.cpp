@@ -58,8 +58,6 @@ void MainThread::Init() {
 	window->Create(NULL, window->kClassName.c_str(), WS_OVERLAPPEDWINDOW & ~WS_MAXIMIZEBOX, 0);
 	window->CenterWindow();
 	window->ShowWindow();
-
-	//window->createRenderWindow();
 }
 
 void MainThread::Cleanup() {

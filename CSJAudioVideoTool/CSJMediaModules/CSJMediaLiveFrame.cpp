@@ -3,11 +3,11 @@
 #include <string>
 
 CSJMediaLiveFrame::CSJMediaLiveFrame()
-    : CSJToolModuleUIBase(L"", nullptr, nullptr) {
+    : CSJUIModuleBase(L"", nullptr, nullptr) {
 }
 
 CSJMediaLiveFrame::CSJMediaLiveFrame(ui::STRINGorID & xml, ui::Window * manager, ui::Box * parent)
-    : CSJToolModuleUIBase(xml, manager, parent) {
+    : CSJUIModuleBase(xml, manager, parent) {
 
 }
 

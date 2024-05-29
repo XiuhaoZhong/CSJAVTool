@@ -1,9 +1,11 @@
 #ifndef __CSJMEDIALIVEFRAME_H__
 #define __CSJMEDIALIVEFRAME_H__
 
-#include "main/CSJToolModuleUIBase.h"
+#include "UIKits/CSJUIModuleBase.h"
 
-class CSJMediaLiveFrame : public CSJToolModuleUIBase {
+#include "CSJMediaHandlers/CSJMediaLiveHandler.h"
+
+class CSJMediaLiveFrame : public CSJUIModuleBase {
 public:
     CSJMediaLiveFrame();
 
@@ -47,6 +49,8 @@ private:
     ui::Combo   *m_pVideoDevcieCombo     = nullptr;
     ui::Combo   *m_pVideoFmtCombo        = nullptr;
     ui::Combo   *m_pVideoResolutionCombo = nullptr;
+
+    CSJSpMediaLiveHandler m_pLiveHandler = nullptr;
 };
 
 #endif // __CSJMEDIALIVEFRAME_H__

@@ -97,4 +97,7 @@ private:
     bool              m_bRendererInit;
 };
 
+
+using CSJSpMediaLiveHandler = std::shared_ptr<CSJMediaLiveHandler>;
+
 #endif // __CSJMEDIALIVEHANDLER_H__
