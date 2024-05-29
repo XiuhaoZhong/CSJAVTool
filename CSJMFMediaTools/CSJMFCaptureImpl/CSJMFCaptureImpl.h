@@ -5,6 +5,7 @@
 
 #include <mutex>
 #include <thread>
+#include <atlcomcli.h>
 
 #include <Audioclient.h>
 
@@ -61,8 +62,6 @@ public:
 
     virtual CSJAudioDeviceInfo getAudioDeviceInfo(std::wstring identify) override;
 
-    void CopyDataToPlayer();
-
 protected:
     /**
     *  Starts Video capture with seleted video meida type.
@@ -104,7 +103,7 @@ protected:
     /**
     *  Create the video capture media source with device symbolic.
     */
-    IMFMediaSource* createVideoCaptureSourceWithSymlink();
+    CComPtr<IMFMediaSource> createVideoCaptureSourceWithSymlink();
 
     /**
     *  Get selected video capture type.
@@ -113,7 +112,7 @@ protected:
     *
     *  @return IMFMediaType, the media type which the video capturing wants.
     */
-    IMFMediaType* getSelectedVideoMediaType(IMFMediaSource *media_source);
+    CComPtr<IMFMediaType> getSelectedVideoMediaType(IMFMediaSource *media_source);
 
     /**
     *  Check the selected index is same as the current audio device.

@@ -4,7 +4,7 @@
 #include <mfidl.h>
 #include <mfapi.h>
 #include <mmdeviceapi.h>
-#include <atlcomcli.h>
+
 
 #include <iostream>
 #include <fstream>
@@ -176,17 +176,17 @@ CSJAudioDeviceInfo CSJMFCaptureImpl::getAudioDeviceInfo(std::wstring identify) {
 }
 
 void CSJMFCaptureImpl::startVideoCapWithSourceReader() {
-    IMFMediaSource *mediaSource = createVideoCaptureSourceWithSymlink();
+    CComPtr<IMFMediaSource> mediaSource = createVideoCaptureSourceWithSymlink();
     if (!mediaSource) {
         return ;
     }
 
-    IMFMediaType *mediaType = getSelectedVideoMediaType(mediaSource);
+    CComPtr<IMFMediaType> mediaType = getSelectedVideoMediaType(mediaSource);
     if (!mediaType) {
         return ;
     }
 
-    IMFSourceReader *pReader = NULL;
+    CComPtr<IMFSourceReader> pReader = NULL;
     HRESULT hr = S_OK;
 
     // create media source to read video data.
@@ -245,10 +245,10 @@ void CSJMFCaptureImpl::startVideoCapWithSourceReader() {
         }
     }
 
-    SafeRelease(&mediaType);
+    //SafeRelease(&mediaType);
     // pReader release 之后，会调用mediaSource的shutdown()方法
-    SafeRelease(&pReader);
-    SafeRelease(&mediaSource);
+    //SafeRelease(&pReader);
+    //SafeRelease(&mediaSource);
     m_isStop = false;
     m_status = CSJMF_CAPTURE_STOP;
 }
@@ -882,9 +882,9 @@ bool CSJMFCaptureImpl::createVideoCaptureSource() {
     return false;
 }
 
-IMFMediaSource* CSJMFCaptureImpl::createVideoCaptureSourceWithSymlink() {
+CComPtr<IMFMediaSource> CSJMFCaptureImpl::createVideoCaptureSourceWithSymlink() {
     IMFAttributes *pAttributes = NULL;
-    IMFMediaSource* mediaSource = NULL;
+    CComPtr<IMFMediaSource> mediaSource = NULL;
 
     do {
         HRESULT hr = MFCreateAttributes(&pAttributes, 2);
@@ -911,14 +911,14 @@ IMFMediaSource* CSJMFCaptureImpl::createVideoCaptureSourceWithSymlink() {
             break;
         }
 
-        mediaSource->AddRef();
+        //mediaSource->AddRef();
     } while (FALSE);
 
     SafeRelease(&pAttributes);
     return mediaSource;
 }
 
-IMFMediaType* CSJMFCaptureImpl::getSelectedVideoMediaType(IMFMediaSource * media_source) {
+CComPtr<IMFMediaType> CSJMFCaptureImpl::getSelectedVideoMediaType(IMFMediaSource * media_source) {
     if (!media_source) {
         return NULL;
     }
@@ -926,7 +926,7 @@ IMFMediaType* CSJMFCaptureImpl::getSelectedVideoMediaType(IMFMediaSource * media
     IMFPresentationDescriptor *pPD = NULL;
     IMFStreamDescriptor *pSD = NULL;
     IMFMediaTypeHandler *pHandler = NULL;
-    IMFMediaType *selMediaType = NULL;
+    CComPtr<IMFMediaType> selMediaType = NULL;
 
     std::string selFmt = "NV12";
     DWORD resolutionIndex = 0;
@@ -1000,7 +1000,7 @@ IMFMediaType* CSJMFCaptureImpl::getSelectedVideoMediaType(IMFMediaSource * media
             break;
         }
 
-        selMediaType->AddRef();
+        //selMediaType->AddRef();
         hr = pHandler->SetCurrentMediaType(selMediaType);
         if (SUCCEEDED(hr)) {
             res = true;

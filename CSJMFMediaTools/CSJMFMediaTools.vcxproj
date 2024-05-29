@@ -94,7 +94,7 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;CSJMFMEDIATOOLS_EXPORTS;_WINDOWS;_USRDLL;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)CSJMFCapture;$(SolutionDir)Include\CSJCommonTools\;$(ProjectDir)CSJAudioPlayer\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)CSJMFCapture;$(SolutionDir)Include\CSJCommonTools\;$(ProjectDir)CSJAudioPlayer\;$(SolutionDir)Include\MediaData\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

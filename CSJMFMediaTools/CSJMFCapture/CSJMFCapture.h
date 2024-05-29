@@ -7,6 +7,8 @@
 #include <string>
 #include <map>
 
+#include "CSJMediaData.h"
+
 using CSJMFDeviceList = std::vector<std::wstring>;
 using CSJMFDeviceMap = std::map<std::wstring, std::wstring>;
 
