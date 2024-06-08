@@ -30,7 +30,7 @@ public:
     /**
      * @brief the function that stop the handler.
      */
-    virtual void stop() = 0;
+    virtual void stopHandler() = 0;
 };
 
 #endif // __CSJMEDIAHANDLERBASE_H__

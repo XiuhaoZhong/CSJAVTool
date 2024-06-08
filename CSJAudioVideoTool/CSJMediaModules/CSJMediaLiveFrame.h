@@ -13,6 +13,7 @@ public:
     ~CSJMediaLiveFrame();
 
     void initUI() override;
+
 protected:
     bool onBtnClicked(ui::EventArgs *args);
     /**
@@ -42,6 +43,13 @@ protected:
                                                 std::wstring bkcolor = L"white",
                                                 std::wstring selectedcolor = L"blue");
 
+    /**
+     * @brief Control the capture.
+     *
+     * @param[in] captureCtrl   pass true indicates that use want to start capture, or stop capture;
+     */
+    void onControlCapture(bool captureCtrl);
+
 private:
     // ui components.
     ui::HBox    *m_pCaptureBox           = nullptr;
@@ -50,7 +58,18 @@ private:
     ui::Combo   *m_pVideoFmtCombo        = nullptr;
     ui::Combo   *m_pVideoResolutionCombo = nullptr;
 
+    ui::Button  *m_pCapConrolBtn         = nullptr;
+
     CSJSpMediaLiveHandler m_pLiveHandler = nullptr;
+
+    int m_selAudioDevIndex           = 0;
+    int m_selVideoDevIndex           = 0;
+    int m_selVideoDevFmtIndex        = 0;
+    int m_selVideoDevResotionIndex   = 0;
+    std::vector<std::wstring> m_audioDevNames;
+    std::vector<std::wstring> m_videoDevNames;
+    std::vector<std::wstring> m_videoDevFormats;
+    std::vector<std::wstring> m_videoDevResolutions;
 };
 
 #endif // __CSJMEDIALIVEFRAME_H__

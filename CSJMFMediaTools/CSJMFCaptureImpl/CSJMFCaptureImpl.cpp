@@ -12,20 +12,20 @@
 #include "CSJMFMediaHeader.h"
 #include "CSJStringTool/CSJStringTool.h"
 
-static std::string SubTypeToString(GUID& subtype) {
+static std::wstring SubTypeToString(GUID& subtype) {
     WCHAR buffer[128];
     StringFromGUID2(subtype, buffer, sizeof(buffer));
 
-    std::string res = "";
+    std::wstring res = L"";
     std::wstring st(buffer);
     if (st.compare(L"{3231564E-0000-0010-8000-00AA00389B71}") == 0) {
-        res = "NV12";
+        res = L"NV12";
     } else if (st.compare(L"{47504A4D-0000-0010-8000-00AA00389B71}") == 0) {
-        res = "MJPG";
+        res = L"MJPG";
     } else if (st.compare(L"{32595559-0000-0010-8000-00AA00389B71}") == 0) {
-        res = "YV12";
+        res = L"YV12";
     } else if (st.compare(L"{00000003-0000-0010-8000-00AA00389B71}") == 0) {
-        res = "MFAudioFormat_Float";
+        res = L"MFAudioFormat_Float";
     }
 
     return res;
@@ -38,23 +38,15 @@ CSJSharedCapture CSJMFCapture::getMFCapture() {
 CSJMFCaptureImpl::CSJMFCaptureImpl() {
     m_videoDevicesCnt = 0;
     m_videoDevices = NULL;
-    m_szCurCaptureSymlink = NULL;
 
     m_audioDevicesCnt = 0;
     m_audioDevices = NULL;
-    m_szAudioEndpointID = NULL;
 
     m_delegate = nullptr;
 }
 
 CSJMFCaptureImpl::~CSJMFCaptureImpl() {
     finalize();
-
-    CoTaskMemFree(m_szCurCaptureSymlink);
-    m_szCurCaptureSymlink = NULL;
-
-    CoTaskMemFree(m_szAudioEndpointID);
-    m_szAudioEndpointID = NULL;
 }
 
 bool CSJMFCaptureImpl::initializeCapture() {
@@ -65,22 +57,12 @@ bool CSJMFCaptureImpl::initializeCapture() {
     return true;
 }
 
-CSJMFDeviceList CSJMFCaptureImpl::getVideoCapDevices() {
-    return m_videoDevs;
-}
-
-CSJMFDeviceList CSJMFCaptureImpl::getAudioCapDevices() {
-    return m_audioDevs;
-}
-
 void CSJMFCaptureImpl::selectedCamera(int camera_index) {
     WCHAR *symlink;
     if (isSameVideoDevice(camera_index, &symlink)) {
         return ;
     }
 
-    // Free the old device symlink;
-    CoTaskMemFree(m_szCurCaptureSymlink);
     // Save the new device symlink;
     m_szCurCaptureSymlink = symlink;
 
@@ -92,7 +74,7 @@ void CSJMFCaptureImpl::selectedCamera(int camera_index) {
     // TODO: 1、关闭当前视频采集设备
     //       2、重建mediaSession 以及 topology
     //       3、打开新的视频设备
-    stopCapture();
+    stop();
 
     IMFMediaSource **capureMediaSource = NULL;
     HRESULT hr = m_videoDevices[camera_index]->ActivateObject(IID_PPV_ARGS(capureMediaSource));
@@ -111,7 +93,6 @@ void CSJMFCaptureImpl::selectedMicrophone(int microphone_index) {
         return;
     }
 
-    CoTaskMemFree(m_szAudioEndpointID);
     m_szAudioEndpointID = endpointID;
 
     if (m_status != CSJMF_CAPTURE_CAPTURING) {
@@ -125,13 +106,13 @@ void CSJMFCaptureImpl::selectedMicrophone(int microphone_index) {
 
 }
 
-bool CSJMFCaptureImpl::startCapture() {    
+bool CSJMFCaptureImpl::start() {    
     m_videoCapThread = std::thread(&CSJMFCaptureImpl::startVideoCapWithSourceReader, this);
     //m_audioCapThread = std::thread(&CSJMFCaptureImpl::startAudioCapWithSourceReader, this);
     return true;
 }
 
-void CSJMFCaptureImpl::pauseCapture() {
+void CSJMFCaptureImpl::pause() {
     if (m_status != CSJMF_CAPTURE_CAPTURING) {
         return;
     }
@@ -139,7 +120,7 @@ void CSJMFCaptureImpl::pauseCapture() {
     m_status = CSJMF_CAPTURE_PAUSE;
 }
 
-void CSJMFCaptureImpl::resumeCapture() {
+void CSJMFCaptureImpl::resume() {
     if (m_status != CSJMF_CAPTURE_PAUSE) {
         return ;
     }
@@ -147,7 +128,7 @@ void CSJMFCaptureImpl::resumeCapture() {
     m_status = CSJMF_CAPTURE_CAPTURING;
 }
 
-void CSJMFCaptureImpl::stopCapture() {
+void CSJMFCaptureImpl::stop() {
     if (m_status == CSJMF_CAPTURE_STOP) {
         return ;
     }
@@ -167,12 +148,16 @@ std::vector<CSJDeviceIdentifier> CSJMFCaptureImpl::getDeviceIdentifiers(CSJMFDev
     }
 }
 
-CSJVideoDeviceInfo CSJMFCaptureImpl::getVideoDeviceInfo(std::wstring identify) {
-    return m_videoDeviceInfos[identify];
+std::vector<CSJVideoDeviceInfo> CSJMFCaptureImpl::getVideoDeviceInfo() {
+    return m_videoDeviceInfos;
 }
 
-CSJAudioDeviceInfo CSJMFCaptureImpl::getAudioDeviceInfo(std::wstring identify) {
-    return m_audioDeviceInfos[identify];
+std::vector<CSJAudioDeviceInfo>  CSJMFCaptureImpl::getAudioDeviceInfo() {
+    return m_audioDeviceInfos;
+}
+
+bool CSJMFCaptureImpl::isStarted() {
+    return !m_isStop;
 }
 
 void CSJMFCaptureImpl::startVideoCapWithSourceReader() {
@@ -245,10 +230,6 @@ void CSJMFCaptureImpl::startVideoCapWithSourceReader() {
         }
     }
 
-    //SafeRelease(&mediaType);
-    // pReader release 之后，会调用mediaSource的shutdown()方法
-    //SafeRelease(&pReader);
-    //SafeRelease(&mediaSource);
     m_isStop = false;
     m_status = CSJMF_CAPTURE_STOP;
 }
@@ -341,7 +322,7 @@ void CSJMFCaptureImpl::startAudioCapWithSourceReader() {
 void CSJMFCaptureImpl::loadVideoDeviceInfos() {
     releaseVideoDeviceInfo();
 
-    IMFAttributes *pAttributes = NULL;
+    CComPtr<IMFAttributes> pAttributes = NULL;
     do {
         HRESULT hr = MFCreateAttributes(&pAttributes, 1);
         if (FAILED(hr)) {
@@ -370,43 +351,30 @@ void CSJMFCaptureImpl::loadVideoDeviceInfos() {
                 continue;
             }
 
-            std::wstring devName(szFriendlyName);
-            m_videoDevs.push_back(devName);
-
             WCHAR *devSymlink;
             UINT32 cchSymlink;
             hr = m_videoDevices[i]->GetAllocatedString(MF_DEVSOURCE_ATTRIBUTE_SOURCE_TYPE_VIDCAP_SYMBOLIC_LINK,
                                                        &devSymlink,
                                                        &cchSymlink);
 
-            CSJVideoSubTypeInfos subTypeInfos;
-            subTypeInfos.device_name = szFriendlyName;
-            subTypeInfos.device_symlink = devSymlink;
-
             m_videoDeviceIdentifiers.push_back({ szFriendlyName, devSymlink });
 
             CSJVideoDeviceInfo deviceInfo;
-            deviceInfo.device_name = szFriendlyName;
-            deviceInfo.device_link = devSymlink;
+            deviceInfo.deviceIdentity = { szFriendlyName, devSymlink };
 
-            IMFMediaSource *pSource = NULL;
+            CComPtr<IMFMediaSource> pSource = NULL;
             hr = m_videoDevices[i]->ActivateObject(IID_PPV_ARGS(&pSource));
             if (FAILED(hr)) {
                 break;
             }
 
-            loadVideoMediaSourceInfos(pSource, subTypeInfos, deviceInfo);
-            m_videoSubTypeInfos.insert({ subTypeInfos.device_symlink, subTypeInfos });
-            SafeRelease(&pSource);
+            loadVideoMediaSourceInfos(pSource, deviceInfo);
+            m_videoDeviceInfos.emplace_back(deviceInfo);
         }
     } while (FALSE);
-
-    SafeRelease(&pAttributes);
-    pAttributes = NULL;
 }
 
-void CSJMFCaptureImpl::loadVideoMediaSourceInfos(IMFMediaSource * mediaSource, 
-                                                 CSJVideoSubTypeInfos& subTypeInfo, 
+void CSJMFCaptureImpl::loadVideoMediaSourceInfos(CComPtr<IMFMediaSource> mediaSource, 
                                                  CSJVideoDeviceInfo &deviceInfo) {
     if (!mediaSource) {
         return ;
@@ -445,7 +413,7 @@ void CSJMFCaptureImpl::loadVideoMediaSourceInfos(IMFMediaSource * mediaSource,
         }
 
         for (DWORD i = 0; i < mediaTypeCnt; i++) {
-            IMFMediaType *mediaType;
+            CComPtr<IMFMediaType> mediaType = NULL;
             hr = typeHandler->GetMediaTypeByIndex(i, &mediaType);
             if (FAILED(hr)) {
                 continue;
@@ -455,10 +423,6 @@ void CSJMFCaptureImpl::loadVideoMediaSourceInfos(IMFMediaSource * mediaSource,
             hr = mediaType->IsCompressedFormat(&isCompressedFMT);
             if (FAILED(hr)) {
                 continue;
-            }
-
-            if (isCompressedFMT) {
-                std::cout << "compressed fmt" << std::endl;
             }
 
             GUID subtype = { 0 };
@@ -473,18 +437,8 @@ void CSJMFCaptureImpl::loadVideoMediaSourceInfos(IMFMediaSource * mediaSource,
             hr = MFGetAttributeRatio(mediaType, MF_MT_FRAME_RATE_RANGE_MIN, &frameRateMin, &denominator);
             hr = MFGetAttributeRatio(mediaType, MF_MT_FRAME_RATE_RANGE_MAX, &frameRateMax, &denominator);
 
-            std::string fmt_name = SubTypeToString(subtype);
-
-            CSJVideoCaptureSubTypeInfo cameraInfo;
-            cameraInfo.sub_type = subtype;
-            cameraInfo.fmt_name = fmt_name;
-            cameraInfo.width = width;
-            cameraInfo.height = height;
-            cameraInfo.frameRate = frameRate;
-
-            subTypeInfo.fmtList.push_back(cameraInfo);
-
-            std::vector<std::string> &fmts = deviceInfo.formats;
+            std::wstring fmt_name = SubTypeToString(subtype);
+            std::vector<std::wstring> &fmts = deviceInfo.formats;
             bool fmtExist = false;
             for (auto format : fmts) {
                 if (format.compare(fmt_name) == 0) {
@@ -497,7 +451,9 @@ void CSJMFCaptureImpl::loadVideoMediaSourceInfos(IMFMediaSource * mediaSource,
                 fmts.push_back(fmt_name);
             }
 
-            deviceInfo.resolutionMap[fmt_name].push_back({(int)width, (int)height});
+            CSJVideoFmtInfo fmtInfo = { frameRate, {(int)width, (int)height} };
+            deviceInfo.fmtInfo[fmt_name].push_back(fmtInfo);
+            m_videoSubtypes.push_back(mediaType);
         }
     }
 }
@@ -505,7 +461,7 @@ void CSJMFCaptureImpl::loadVideoMediaSourceInfos(IMFMediaSource * mediaSource,
 void CSJMFCaptureImpl::loadAudioDeviceInfos() {
     releaseAudioDeviceInfo();
 
-    IMFAttributes *pAttributes = NULL;
+    CComPtr<IMFAttributes> pAttributes = NULL;
 
     do {
         HRESULT hr = MFCreateAttributes(&pAttributes, 1);
@@ -535,10 +491,7 @@ void CSJMFCaptureImpl::loadAudioDeviceInfos() {
                 continue;
             }
 
-            std::wstring devName(szFriendlyName);
-            m_audioDevs.push_back(devName);
-
-            IMFMediaSource *pSource = NULL;
+            CComPtr<IMFMediaSource> pSource = NULL;
             hr = m_audioDevices[i]->ActivateObject(IID_PPV_ARGS(&pSource));
             if (FAILED(hr)) {
                 break;
@@ -557,24 +510,19 @@ void CSJMFCaptureImpl::loadAudioDeviceInfos() {
             
             std::wstring endPointID(devEndPoint);
             CSJAudioDeviceInfo deviceInfo;
-            deviceInfo.device_name = devName;
-            deviceInfo.device_endPintID = endPointID;
+            deviceInfo.deviceIndentity = { szFriendlyName, endPointID };
             loadAudioMediaSourceInfos(pSource, deviceInfo);
-            m_audioDeviceInfos.insert({ endPointID, deviceInfo });
-
+            m_audioDeviceInfos.emplace_back(deviceInfo);
         }
     } while (FALSE);
-    
-    SafeRelease(&pAttributes);
-    pAttributes = NULL;
 }
 
 IMFMediaSource * CSJMFCaptureImpl::createAudioCaptureSourceWithEndPoint() {
-    if (!m_szAudioEndpointID) {
+    if (m_szAudioEndpointID.empty()) {
         return NULL;
     }
 
-    IMFAttributes *pAttributes = NULL;
+     CComPtr<IMFAttributes> pAttributes = NULL;
     IMFMediaSource *mediaSource = NULL;
 
     do {
@@ -588,7 +536,7 @@ IMFMediaSource * CSJMFCaptureImpl::createAudioCaptureSourceWithEndPoint() {
 
         // Set the endpoint ID.
         hr = pAttributes->SetString(MF_DEVSOURCE_ATTRIBUTE_SOURCE_TYPE_AUDCAP_ENDPOINT_ID,
-            (LPCWSTR) m_szAudioEndpointID);
+            (LPCWSTR) m_szAudioEndpointID.c_str());
         if (FAILED(hr)) {
             break;
         }
@@ -601,13 +549,13 @@ IMFMediaSource * CSJMFCaptureImpl::createAudioCaptureSourceWithEndPoint() {
         mediaSource->AddRef();
     } while (false);
 
-    SafeRelease(&pAttributes);
-
     return mediaSource;
 }
 
 void CSJMFCaptureImpl::releaseVideoDeviceInfo() {
-    m_videoDevs.clear();
+    m_videoDeviceInfos.clear();
+    m_videoSubtypes.clear();
+
     if (m_videoDevices) {
         for (int i = 0; i < m_videoDevicesCnt; i++) {
             SafeRelease(&m_videoDevices[i]);
@@ -623,104 +571,41 @@ IMFMediaType * CSJMFCaptureImpl::getSelectedAudioMediaType(IMFMediaSource * audi
         return NULL;
     }
 
-    IMFPresentationDescriptor *pPD = NULL;
-    IMFStreamDescriptor *pSD = NULL;
-    IMFMediaTypeHandler *pHandler = NULL;
-    IMFMediaType *selMediaType = NULL;
+    CComPtr<IMFMediaType> selMediaType = NULL;
 
-    DWORD selIndex = 0;
-    std::string selFmt = "MFAudioFormat_Float";
+    int selDevIndex = 0;
+    auto selDevInfo = m_audioDeviceInfos[selDevIndex];
+    CSJAudioFmtInfo selFmtInfo = selDevInfo.fmtList[0];
+    auto subtypeIt = m_audioSubtypes.begin();
+    while (subtypeIt != m_audioSubtypes.end()) {
+        GUID subtype = { 0 };
+        UINT32 channels = 0;
+        UINT32 sampleRate = 0;
+        UINT32 bitsPerSample = 0;
 
-    std::wstring device_endPoint(m_szAudioEndpointID);
-    CSJAudioDeviceInfo deviceInfo = m_audioDeviceInfos[device_endPoint];
+        (*subtypeIt)->GetGUID(MF_MT_SUBTYPE, &subtype);
+        channels = MFGetAttributeUINT32((*subtypeIt), MF_MT_AUDIO_NUM_CHANNELS, channels);
+        sampleRate = MFGetAttributeUINT32((*subtypeIt), MF_MT_AUDIO_SAMPLES_PER_SECOND, sampleRate);
+        bitsPerSample = MFGetAttributeUINT32((*subtypeIt), MF_MT_AUDIO_BITS_PER_SAMPLE, bitsPerSample);
 
-    GUID fmtGuid;
-    DWORD selSampleRate = 0, selChannels = 0, selBitPerSample = 0;
-    CSJAudioCaptureFmtList fmtList = deviceInfo.fmtList;
-    auto it = fmtList.begin();
-    while (it != fmtList.end()) {
-        if (it->fmt_name == selFmt) {
-            fmtGuid = it->sub_type;
-            selSampleRate = it->sampleRate;
-            selChannels = it->channels;
-            selBitPerSample = it->bitsPerSample;
+        std::wstring fmtName = SubTypeToString(subtype);
+        if (fmtName.compare(selFmtInfo.fmt_name) == 0 &&
+            selFmtInfo.bitsPerSample == bitsPerSample &&
+            selFmtInfo.channels == channels &&
+            selFmtInfo.sampleRate == sampleRate) {
+            
+            selMediaType = (*subtypeIt);
+            break;
         }
-
-        it++;
     }
-
-    bool res = false;
-    HRESULT hr = S_OK;
-    do {
-        hr = audio_source->CreatePresentationDescriptor(&pPD);
-        if (FAILED(hr)) {
-            break;
-        }
-
-        BOOL fSelected;
-        hr = pPD->GetStreamDescriptorByIndex(0, &fSelected, &pSD);
-        if (FAILED(hr)) {
-            break;
-        }
-
-        hr = pSD->GetMediaTypeHandler(&pHandler);
-        if (FAILED(hr)) {
-            break;
-        }
-
-        DWORD mediaTypeCnt;
-        hr = pHandler->GetMediaTypeCount(&mediaTypeCnt);
-        if (FAILED(hr)) {
-            break;
-        }
-
-        for (int i = 0; i < mediaTypeCnt; i++) {
-            IMFMediaType *pType = NULL;
-            hr = pHandler->GetMediaTypeByIndex(i, &pType);
-            if (FAILED(hr)) {
-                continue;
-            }
-
-            GUID subtype = { 0 };
-            UINT32 channels = 0;
-            UINT32 sampleRate = 0;
-            UINT32 bitsPerSample = 0;
-
-            hr = pType->GetGUID(MF_MT_SUBTYPE, &subtype);
-            channels = MFGetAttributeUINT32(pType, MF_MT_AUDIO_NUM_CHANNELS, channels);
-            sampleRate = MFGetAttributeUINT32(pType, MF_MT_AUDIO_SAMPLES_PER_SECOND, sampleRate);
-            bitsPerSample = MFGetAttributeUINT32(pType, MF_MT_AUDIO_BITS_PER_SAMPLE, bitsPerSample);
-
-            if (subtype == fmtGuid && channels == selChannels &&
-                sampleRate == selSampleRate && bitsPerSample == selBitPerSample) {
-                selMediaType = pType;
-                break;
-            }
-
-            SafeRelease(&pType);
-        }
-
-        if (!selMediaType) {
-            break;
-        }
-
-        selMediaType->AddRef();
-        hr = pHandler->SetCurrentMediaType(selMediaType);
-        if (SUCCEEDED(hr)) {
-            res = true;
-            break;
-        }
-    } while (false);
-
-    SafeRelease(&pPD);
-    SafeRelease(&pSD);
-    SafeRelease(&pHandler);
 
     return selMediaType;
 }
 
 void CSJMFCaptureImpl::releaseAudioDeviceInfo() {
-    m_audioDevs.clear();
+    m_audioDeviceInfos.clear();
+    m_audioSubtypes.clear();
+
     if (m_audioDevices) {
         for (int i = 0; i < m_audioDevicesCnt; i++) {
             SafeRelease(&m_audioDevices[i]);
@@ -731,12 +616,12 @@ void CSJMFCaptureImpl::releaseAudioDeviceInfo() {
     m_audioDevicesCnt = 0;
 }
 
-void CSJMFCaptureImpl::loadAudioMediaSourceInfos(IMFMediaSource * mediaSource, CSJAudioDeviceInfo & deviceInfo) {
+void CSJMFCaptureImpl::loadAudioMediaSourceInfos(CComPtr<IMFMediaSource> mediaSource, CSJAudioDeviceInfo & deviceInfo) {
     if (!mediaSource) {
         return;
     }
 
-    IMFPresentationDescriptor *descriptor;
+    CComPtr<IMFPresentationDescriptor> descriptor;
     HRESULT hr = mediaSource->CreatePresentationDescriptor(&descriptor);
     if (FAILED(hr)) {
         return;
@@ -748,7 +633,7 @@ void CSJMFCaptureImpl::loadAudioMediaSourceInfos(IMFMediaSource * mediaSource, C
         return;
     }
 
-    IMFStreamDescriptor *streamDescriptor;
+    CComPtr<IMFStreamDescriptor> streamDescriptor;
     for (DWORD i = 0; i < streamCnt; i++) {
         BOOL isSelected = FALSE;
         hr = descriptor->GetStreamDescriptorByIndex(i, &isSelected, &streamDescriptor);
@@ -769,7 +654,7 @@ void CSJMFCaptureImpl::loadAudioMediaSourceInfos(IMFMediaSource * mediaSource, C
         }
 
         for (DWORD i = 0; i < mediaTypeCnt; i++) {
-            IMFMediaType *mediaType;
+            CComPtr<IMFMediaType> mediaType = NULL;
             hr = typeHandler->GetMediaTypeByIndex(i, &mediaType);
             if (FAILED(hr)) {
                 continue;
@@ -779,10 +664,6 @@ void CSJMFCaptureImpl::loadAudioMediaSourceInfos(IMFMediaSource * mediaSource, C
             hr = mediaType->IsCompressedFormat(&isCompressedFMT);
             if (FAILED(hr)) {
                 continue;
-            }
-
-            if (isCompressedFMT) {
-                std::cout << "compressed fmt" << std::endl;
             }
 
             GUID subtype = { 0 };
@@ -803,6 +684,7 @@ void CSJMFCaptureImpl::loadAudioMediaSourceInfos(IMFMediaSource * mediaSource, C
             fmtInfo.bitsPerSample = bitsPerSample;
 
             deviceInfo.fmtList.push_back(fmtInfo);
+            m_audioSubtypes.push_back(mediaType);
         }
     }
 }
@@ -829,7 +711,8 @@ bool CSJMFCaptureImpl::isSameVideoDevice(int index, WCHAR **symlink) {
             break;
         }
 
-        if (m_szCurCaptureSymlink &&  _wcsicmp(devSymlink, m_szCurCaptureSymlink) == 0) {
+        std::wstring tmpLink(devSymlink);
+        if (!m_szCurCaptureSymlink.empty() && m_szCurCaptureSymlink.compare(tmpLink) == 0) {
             res = true;
             break;
         }
@@ -851,8 +734,8 @@ bool CSJMFCaptureImpl::isSameAudioDevice(int index, WCHAR **endpointID) {
         return res;
     }
 
-    WCHAR *devEndpointID;
-    UINT32 cchEndpointID;
+    WCHAR *devEndpointID = NULL;
+    UINT32 cchEndpointID = 0;
     do {
         HRESULT hr = m_audioDevices[index]->GetAllocatedString(MF_DEVSOURCE_ATTRIBUTE_SOURCE_TYPE_AUDCAP_ENDPOINT_ID,
                                                                &devEndpointID,
@@ -862,7 +745,8 @@ bool CSJMFCaptureImpl::isSameAudioDevice(int index, WCHAR **endpointID) {
             break;
         }
 
-        if (m_szCurCaptureSymlink &&  _wcsicmp(devEndpointID, m_szCurCaptureSymlink) == 0) {
+        std::wstring tmpEndpoint(devEndpointID);
+        if (!m_szCurCaptureSymlink.empty() &&  m_szCurCaptureSymlink.compare(tmpEndpoint) == 0) {
             res = true;
             break;
         }
@@ -883,8 +767,10 @@ bool CSJMFCaptureImpl::createVideoCaptureSource() {
 }
 
 CComPtr<IMFMediaSource> CSJMFCaptureImpl::createVideoCaptureSourceWithSymlink() {
-    IMFAttributes *pAttributes = NULL;
+    CComPtr<IMFAttributes> pAttributes = NULL;
     CComPtr<IMFMediaSource> mediaSource = NULL;
+
+    m_szCurCaptureSymlink = m_videoDeviceInfos[0].deviceIdentity.device_identity;
 
     do {
         HRESULT hr = MFCreateAttributes(&pAttributes, 2);
@@ -900,7 +786,7 @@ CComPtr<IMFMediaSource> CSJMFCaptureImpl::createVideoCaptureSourceWithSymlink() 
 
         // Set the symbolic link.
         hr = pAttributes->SetString(MF_DEVSOURCE_ATTRIBUTE_SOURCE_TYPE_VIDCAP_SYMBOLIC_LINK,
-                                    (LPCWSTR)m_szCurCaptureSymlink);
+                                    (LPCWSTR)m_szCurCaptureSymlink.c_str());
 
         if (FAILED(hr)) {
             break;
@@ -911,10 +797,8 @@ CComPtr<IMFMediaSource> CSJMFCaptureImpl::createVideoCaptureSourceWithSymlink() 
             break;
         }
 
-        //mediaSource->AddRef();
     } while (FALSE);
 
-    SafeRelease(&pAttributes);
     return mediaSource;
 }
 
@@ -923,95 +807,33 @@ CComPtr<IMFMediaType> CSJMFCaptureImpl::getSelectedVideoMediaType(IMFMediaSource
         return NULL;
     }
 
-    IMFPresentationDescriptor *pPD = NULL;
-    IMFStreamDescriptor *pSD = NULL;
-    IMFMediaTypeHandler *pHandler = NULL;
     CComPtr<IMFMediaType> selMediaType = NULL;
+    int deviceIndex = 0, fmtIndex = 0, resolutionIndex = 0;
 
-    std::string selFmt = "NV12";
-    DWORD resolutionIndex = 0;
+    // selected capture parameters.
+    CSJVideoDeviceInfo selDev = m_videoDeviceInfos[deviceIndex];
+    std::wstring selFormat = selDev.formats[fmtIndex];
+    CSJVideoResolution selResolution = selDev.fmtInfo[selFormat][resolutionIndex].resolution;
 
-    std::wstring device_symlink(m_szCurCaptureSymlink);
-    CSJVideoSubTypeInfos deviceInfo = m_videoSubTypeInfos[device_symlink];
-    
-    GUID fmtGuid;
     DWORD selWidth = 0, selHeight = 0;
-    CSJVideoSubTypeList fmtList = deviceInfo.fmtList;
-    auto it = fmtList.begin();
-    while (it != fmtList.end()) {
-        if (it->fmt_name == selFmt) {
-            fmtGuid = it->sub_type;
-            selWidth = it->width;
-            selHeight = it->height;
+    auto it = m_videoSubtypes.begin();
+    while (it != m_videoSubtypes.end()) {
+        GUID subtype = { 0 };
+        UINT32 frameRate = 0;
+        UINT32 denominator = 0;
+        UINT32 width = 0, height = 0;
+        UINT32 frameRateMin = 0, frameRateMax = 0;
+
+        (*it)->GetGUID(MF_MT_SUBTYPE, &subtype);
+        MFGetAttributeSize((*it), MF_MT_FRAME_SIZE, &width, &height);
+        std::wstring subtypeStr = SubTypeToString(subtype);
+
+        if (subtypeStr.compare(selFormat) == 0 && selResolution.width == width && selResolution.height == height) {
+            selMediaType = *it;
             break;
         }
-
-        it++;
     }
 
-    bool res = false;
-    HRESULT hr = S_OK;
-    do {
-        hr = media_source->CreatePresentationDescriptor(&pPD);
-        if (FAILED(hr)) {
-            break;
-        }
-
-        BOOL fSelected;
-        hr = pPD->GetStreamDescriptorByIndex(0, &fSelected, &pSD);
-        if (FAILED(hr)) {
-            break;
-        }
-
-        hr = pSD->GetMediaTypeHandler(&pHandler);
-        if (FAILED(hr)) {
-            break;
-        }
-
-        DWORD mediaTypeCnt;
-        hr = pHandler->GetMediaTypeCount(&mediaTypeCnt);
-        if (FAILED(hr)) {
-            break;
-        }
-
-        for (int i = 0; i < mediaTypeCnt; i++) {
-            IMFMediaType *pType = NULL;
-            hr = pHandler->GetMediaTypeByIndex(i, &pType);
-            if (FAILED(hr)) {
-                continue;
-            }
-
-            GUID subtype = { 0 };
-            UINT32 denominator = 0;
-            UINT32 width = 0, height = 0;
-
-            hr = pType->GetGUID(MF_MT_SUBTYPE, &subtype);
-            hr = MFGetAttributeSize(pType, MF_MT_FRAME_SIZE, &width, &height);
-            if (subtype == fmtGuid && selWidth == width && selHeight == height) {
-                selMediaType = pType;
-                SafeRelease(&pType);
-                break;
-            }
-
-            SafeRelease(&pType);
-        }
-
-        if (!selMediaType) {
-            break;
-        }
-
-        //selMediaType->AddRef();
-        hr = pHandler->SetCurrentMediaType(selMediaType);
-        if (SUCCEEDED(hr)) {
-            res = true;
-            break;
-        }
-    } while (false);
-
-    SafeRelease(&pPD);
-    SafeRelease(&pSD);
-    SafeRelease(&pHandler);
-    
     return selMediaType;
 }
 
@@ -1019,131 +841,3 @@ const CLSID CLSID_MMDeviceEnumerator = __uuidof(MMDeviceEnumerator);
 const IID IID_IMMDeviceEnumerator = __uuidof(IMMDeviceEnumerator);
 const IID IID_IAudioClient = __uuidof(IAudioClient);
 const IID IID_IAudioRenderClient = __uuidof(IAudioRenderClient);
-
-/*
-#define REFTIMES_PER_SEC  10000000
-#define REFTIMES_PER_MILLISEC  10000
-
-#define EXIT_ON_ERROR(hres)  \
-              if (FAILED(hres)) { goto Exit; }
-#define SAFE_RELEASE(punk)  \
-              if ((punk) != NULL)  \
-                { (punk)->Release(); (punk) = NULL; }
-
-const CLSID CLSID_MMDeviceEnumerator = __uuidof(MMDeviceEnumerator);
-const IID IID_IMMDeviceEnumerator = __uuidof(IMMDeviceEnumerator);
-const IID IID_IAudioClient = __uuidof(IAudioClient);
-const IID IID_IAudioRenderClient = __uuidof(IAudioRenderClient);
-
-HRESULT PlayAudioStream(MyAudioSource *pMySource) {
-    HRESULT hr;
-    REFERENCE_TIME hnsRequestedDuration = REFTIMES_PER_SEC;
-    REFERENCE_TIME hnsActualDuration;
-    IMMDeviceEnumerator *pEnumerator = NULL;
-    IMMDevice *pDevice = NULL;
-    IAudioClient *pAudioClient = NULL;
-    IAudioRenderClient *pRenderClient = NULL;
-    WAVEFORMATEX *pwfx = NULL;
-    UINT32 bufferFrameCount;
-    UINT32 numFramesAvailable;
-    UINT32 numFramesPadding;
-    BYTE *pData;
-    DWORD flags = 0;
-
-    hr = CoCreateInstance(
-        CLSID_MMDeviceEnumerator, NULL,
-        CLSCTX_ALL, IID_IMMDeviceEnumerator,
-        (void**) &pEnumerator);
-    EXIT_ON_ERROR(hr)
-
-        hr = pEnumerator->GetDefaultAudioEndpoint(
-            eRender, eConsole, &pDevice);
-    EXIT_ON_ERROR(hr)
-
-        hr = pDevice->Activate(
-            IID_IAudioClient, CLSCTX_ALL,
-            NULL, (void**) &pAudioClient);
-    EXIT_ON_ERROR(hr)
-
-        hr = pAudioClient->GetMixFormat(&pwfx);
-    EXIT_ON_ERROR(hr)
-
-        hr = pAudioClient->Initialize(
-            AUDCLNT_SHAREMODE_SHARED,
-            0,
-            hnsRequestedDuration,
-            0,
-            pwfx,
-            NULL);
-    EXIT_ON_ERROR(hr)
-
-        // Tell the audio source which format to use.
-        hr = pMySource->SetFormat(pwfx);
-    EXIT_ON_ERROR(hr)
-
-        // Get the actual size of the allocated buffer.
-        hr = pAudioClient->GetBufferSize(&bufferFrameCount);
-    EXIT_ON_ERROR(hr)
-
-        hr = pAudioClient->GetService(
-            IID_IAudioRenderClient,
-            (void**) &pRenderClient);
-    EXIT_ON_ERROR(hr)
-
-        // Grab the entire buffer for the initial fill operation.
-        hr = pRenderClient->GetBuffer(bufferFrameCount, &pData);
-    EXIT_ON_ERROR(hr)
-
-        // Load the initial data into the shared buffer.
-        hr = pMySource->LoadData(bufferFrameCount, pData, &flags);
-    EXIT_ON_ERROR(hr)
-
-        hr = pRenderClient->ReleaseBuffer(bufferFrameCount, flags);
-    EXIT_ON_ERROR(hr)
-
-        // Calculate the actual duration of the allocated buffer.
-        hnsActualDuration = (double) REFTIMES_PER_SEC *
-        bufferFrameCount / pwfx->nSamplesPerSec;
-
-    hr = pAudioClient->Start();  // Start playing.
-    EXIT_ON_ERROR(hr)
-
-        // Each loop fills about half of the shared buffer.
-        while (flags != AUDCLNT_BUFFERFLAGS_SILENT) {
-            // Sleep for half the buffer duration.
-            Sleep((DWORD) (hnsActualDuration / REFTIMES_PER_MILLISEC / 2));
-
-            // See how much buffer space is available.
-            hr = pAudioClient->GetCurrentPadding(&numFramesPadding);
-            EXIT_ON_ERROR(hr)
-
-                numFramesAvailable = bufferFrameCount - numFramesPadding;
-
-            // Grab all the available space in the shared buffer.
-            hr = pRenderClient->GetBuffer(numFramesAvailable, &pData);
-            EXIT_ON_ERROR(hr)
-
-                // Get next 1/2-second of data from the audio source.
-                hr = pMySource->LoadData(numFramesAvailable, pData, &flags);
-            EXIT_ON_ERROR(hr)
-
-                hr = pRenderClient->ReleaseBuffer(numFramesAvailable, flags);
-            EXIT_ON_ERROR(hr)
-        }
-
-    // Wait for last data in buffer to play before stopping.
-    Sleep((DWORD) (hnsActualDuration / REFTIMES_PER_MILLISEC / 2));
-
-    hr = pAudioClient->Stop();  // Stop playing.
-    EXIT_ON_ERROR(hr)
-
-        Exit:
-    CoTaskMemFree(pwfx);
-    SAFE_RELEASE(pEnumerator)
-        SAFE_RELEASE(pDevice)
-        SAFE_RELEASE(pAudioClient)
-        SAFE_RELEASE(pRenderClient)
-
-        return hr;
-}
-*/

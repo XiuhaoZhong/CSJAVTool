@@ -49,7 +49,7 @@ void CSJAVAudioHandler::startCapture() {
     m_mediaCapture->selectedCamera(0);
     //m_mediaCapture->selectedMicrophone(0);
 
-    m_mediaCapture->startCapture();
+    m_mediaCapture->start();
 
     //m_audioPlayer->play();
 }

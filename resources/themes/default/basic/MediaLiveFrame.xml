@@ -22,6 +22,9 @@
 			<Label text="分辨率:" width="60" height="20" valign="center" />
 			<Combo name="CameraResolutionCombo" width="100" height="20" valign="center" vscrollbar="true" visible="true" dropboxsize="100,60" bkcolor="white"/>
 	  </HBox>
+	  <HBox width="180" height="50">
+			<Button name="CapControlBtn" width="100" height="20" text="start capture"/>
+	  </HBox>
 	</VBox>
 </HBox>
 

@@ -48,24 +48,31 @@ typedef struct {
 } CSJVideoResolution;
 
 /**
+ * video format info, includes resolution and frame rate.
+ */
+typedef struct {
+    int                frameRate;
+    CSJVideoResolution resolution;
+} CSJVideoFmtInfo;
+
+/**
  * Video capture format param.
  */
 typedef struct {
-    std::wstring device_name;
-    std::wstring device_link;
-    std::vector<std::string> formats;
-    std::map<std::string, std::vector<CSJVideoResolution>> resolutionMap;
+    CSJDeviceIdentifier deviceIdentity;
+    std::vector<std::wstring> formats;
+    std::map<std::wstring, std::vector<CSJVideoFmtInfo>> fmtInfo;
 } CSJVideoDeviceInfo;
 
 /**
 *  Audio capture format params.
 */
 typedef struct {
-    GUID        sub_type;       // audio capture format guid.
-    UINT32      channels;       
-    UINT32      sampleRate;
-    UINT32      bitsPerSample;  // audio capture format name.
-    std::string fmt_name;
+    GUID         sub_type;       // audio capture format guid.
+    UINT32       channels;       
+    UINT32       sampleRate;
+    UINT32       bitsPerSample;  // audio capture format name.
+    std::wstring fmt_name;
 } CSJAudioFmtInfo;
 
 using CSJAudioCaptureFmtList = std::vector<CSJAudioFmtInfo>;
@@ -74,8 +81,7 @@ using CSJAudioCaptureFmtList = std::vector<CSJAudioFmtInfo>;
 *  Audio capture device params.
 */
 typedef struct {
-    std::wstring            device_name;
-    std::wstring            device_endPintID;
+    CSJDeviceIdentifier     deviceIndentity;
     CSJAudioCaptureFmtList  fmtList;
 } CSJAudioDeviceInfo;
 
@@ -126,16 +132,6 @@ public:
     virtual bool initializeCapture() = 0;
 
     /**
-    *  Get video capture devices name list.
-    */
-    virtual CSJMFDeviceList getVideoCapDevices() = 0;
-
-    /**
-    *  Get audio capture devices name list.
-    */
-    virtual CSJMFDeviceList getAudioCapDevices() = 0;
-
-    /**
      *  Selected a camera to capture.
      *
      *  @param camera_index the index of the device.
@@ -152,13 +148,20 @@ public:
     /************************************************************************/
     /*  Capture operations.                                                 */
     /************************************************************************/
-    virtual bool startCapture() = 0;
+    virtual bool start() = 0;
 
-    virtual void pauseCapture() = 0;
+    virtual void pause() = 0;
 
-    virtual void resumeCapture() = 0;
+    virtual void resume() = 0;
 
-    virtual void stopCapture() = 0;
+    virtual void stop() = 0;
+
+        /**
+     * @brief wheather the device is capturing.
+     *
+     * @return  ture if it's captruing.
+     */
+    virtual bool isStarted() = 0;
 
     /**
     *  Set the delegate which could deliver capture data, error, status to external.
@@ -173,18 +176,16 @@ public:
     virtual std::vector<CSJDeviceIdentifier> getDeviceIdentifiers(CSJMFDeviceType device_type) = 0;
 
     /**
-     * @brief Get the device info.
-     *
-     * @param[in] identify  it is the symlink.
+     * @brief Get video device infos.
      */
-    virtual CSJVideoDeviceInfo getVideoDeviceInfo(std::wstring identify) = 0;
+    virtual std::vector<CSJVideoDeviceInfo> getVideoDeviceInfo() = 0;
 
     /**
      * @brief Get the device info.
      *
      * @param[in] identify  it is endpoint.
      */
-    virtual CSJAudioDeviceInfo getAudioDeviceInfo(std::wstring identify) = 0;
+    virtual std::vector<CSJAudioDeviceInfo>  getAudioDeviceInfo() = 0;
 
 };
 #endif // __CSJMFCAPTURE_H__

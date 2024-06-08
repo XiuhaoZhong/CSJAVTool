@@ -2,6 +2,8 @@
 
 #include <string>
 
+using namespace ui;
+
 CSJMediaLiveFrame::CSJMediaLiveFrame()
     : CSJUIModuleBase(L"", nullptr, nullptr) {
 }
@@ -16,17 +18,42 @@ CSJMediaLiveFrame::~CSJMediaLiveFrame() {
 }
 
 void CSJMediaLiveFrame::initUI() {
-    m_pCaptureBox = dynamic_cast<ui::HBox *>((getManager()->FindControl(L"CaptureBox")));
-    m_pCaptureBackBtn = dynamic_cast<ui::Button *>((getManager()->FindControl(L"CaptureReturnBtn")));
+    m_pCaptureBox = dynamic_cast<HBox *>((getManager()->FindControl(L"CaptureBox")));
+    m_pCaptureBackBtn = dynamic_cast<Button *>((getManager()->FindControl(L"CaptureReturnBtn")));
     if (m_pCaptureBackBtn) {
         m_pCaptureBackBtn->AttachClick(nbase::Bind(&CSJMediaLiveFrame::onBtnClicked, this, std::placeholders::_1));
     }
 
-    loadVideoDeviceList();
+    m_pCapConrolBtn = dynamic_cast<Button *>((getManager()->FindControl(L"CapControlBtn")));
+    if (m_pCapConrolBtn) {
+        m_pCapConrolBtn->AttachClick(nbase::Bind(&CSJMediaLiveFrame::onBtnClicked, this, std::placeholders::_1));
+    }
+    
+    m_pLiveHandler = std::make_shared<CSJMediaLiveHandler>();
+    if (m_pLiveHandler->initLiveHandler()) {
+
+        m_pLiveHandler->getAudioCapDevNames(m_audioDevNames);
+        m_pLiveHandler->getVideoCapDevNames(m_videoDevNames);
+        m_pLiveHandler->getFormatsWithDevIndex(m_selVideoDevIndex, m_videoDevFormats);
+        m_pLiveHandler->getResolutionsWithDevIndexAndFmtIndex(m_selVideoDevIndex, m_selVideoDevFmtIndex, m_videoDevResolutions);
+
+        loadVideoDeviceList();
+
+        m_pLiveHandler->startCapture();
+    }
 }
 
 bool CSJMediaLiveFrame::onBtnClicked(ui::EventArgs * args) {
     if (args->pSender == m_pCaptureBackBtn) {
+        return true;
+    } else if (args->pSender == m_pCapConrolBtn) {
+
+        if (!m_pLiveHandler->isCapturing()) {
+            onControlCapture(false);
+        } else {
+            onControlCapture(true);
+        }
+
         return true;
     }
     return false;
@@ -39,15 +66,14 @@ void CSJMediaLiveFrame::loadVideoDeviceList() {
     }
 
     m_pVideoDevcieCombo->RemoveAll();
-    for (int i = 0; i < 3; i++) {
-        std::wstring number = std::to_wstring(i);
-        std::wstring text = L"Device" + number;
+    for (size_t i = 0; i < m_videoDevNames.size(); i++) {
+        std::wstring text = m_videoDevNames[i];
         ui::ListContainerElement *element = createListElement(text, i, 100, 20);
         if (element) {
             m_pVideoDevcieCombo->Add(element);
         }
     }
-    m_pVideoDevcieCombo->SelectItem(0);
+    m_pVideoDevcieCombo->SelectItem(m_selVideoDevIndex);
 
     if (!m_pVideoFmtCombo) {
         m_pVideoFmtCombo = dynamic_cast<ui::Combo *>((getManager()->FindControl(L"CameraFmtCombo")));
@@ -55,14 +81,13 @@ void CSJMediaLiveFrame::loadVideoDeviceList() {
     }
 
     m_pVideoFmtCombo->RemoveAll();
-    std::vector<std::wstring> fmts = { L"NV12", L"MJPG", L"YV12" };
-    for (int i = 0; i < fmts.size(); i++) {
-        ui::ListContainerElement *element = createListElement(fmts[i], i, 100, 20);
+    for (size_t i = 0; i < m_videoDevFormats.size(); i++) {
+        ui::ListContainerElement *element = createListElement(m_videoDevFormats[i], i, 100, 20);
         if (element) {
             m_pVideoFmtCombo->Add(element);
         }
     }
-    m_pVideoFmtCombo->SelectItem(0);
+    m_pVideoFmtCombo->SelectItem(m_selVideoDevFmtIndex);
 
     if (!m_pVideoResolutionCombo) {
         m_pVideoResolutionCombo = dynamic_cast<ui::Combo *>((getManager()->FindControl(L"CameraResolutionCombo")));
@@ -70,15 +95,13 @@ void CSJMediaLiveFrame::loadVideoDeviceList() {
     }
 
     m_pVideoResolutionCombo->RemoveAll();
-    std::vector<std::wstring> resolutions = { L"1280x720", L"640x480", L"480x320" };
-    for (int i = 0; i < fmts.size(); i++) {
-        ui::ListContainerElement *element = createListElement(resolutions[i], i, 100, 20);
+    for (size_t i = 0; i < m_videoDevResolutions.size(); i++) {
+        ui::ListContainerElement *element = createListElement(m_videoDevResolutions[i], i, 100, 20);
         if (element) {
             m_pVideoResolutionCombo->Add(element);
         }
     }
-
-    m_pVideoResolutionCombo->SelectItem(0);
+    m_pVideoResolutionCombo->SelectItem(m_selVideoDevResotionIndex);
 }
 
 ui::ListContainerElement * CSJMediaLiveFrame::createListElement(std::wstring & text, 
@@ -100,3 +123,16 @@ ui::ListContainerElement * CSJMediaLiveFrame::createListElement(std::wstring & t
 
     return listElement;
 }
+
+void CSJMediaLiveFrame::onControlCapture(bool captureCtrl) {
+    if (!m_pLiveHandler) {
+        return ;
+    }
+
+    if (captureCtrl) {
+        m_pLiveHandler->startCapture();
+    } else {
+        m_pLiveHandler->stopHandler();
+    }
+}
+
