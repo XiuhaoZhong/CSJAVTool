@@ -94,7 +94,7 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;CSJMFMEDIATOOLS_EXPORTS;_WINDOWS;_USRDLL;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)CSJMFCapture;$(SolutionDir)Include\CSJCommonTools\;$(ProjectDir)CSJAudioPlayer\;$(SolutionDir)Include\MediaData\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)CSJMFCapture;$(SolutionDir)Include\CSJCommonTools\;$(ProjectDir)CSJMFPlayer\;$(SolutionDir)Include\MediaData\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -106,7 +106,8 @@
     <PostBuildEvent>
       <Command>Xcopy /y $(ProjectDir)CSJMFMediaToolsDefine.h $(SolutionDir)Include\$(ProjectName)\
 Xcopy /y $(ProjectDir)CSJMFCapture\CSJMFCapture.h $(SolutionDir)Include\$(ProjectName)\CSJMFCapture\
-Xcopy /y $(ProjectDir)CSJAudioPlayer\CSJAudioPlayer.h $(SolutionDir)Include\$(ProjectName)\CSJAudioPlayer\
+Xcopy /y $(ProjectDir)CSJMFPlayer\CSJAudioPlayer.h $(SolutionDir)Include\$(ProjectName)\CSJMFPlayer\
+Xcopy /y $(ProjectDir)CSJMFPlayer\CSJMFPlayer.h $(SolutionDir)Include\$(ProjectName)\CSJMFPlayer\
 $(SolutionDir)copy_file.bat $(SolutionDir) $(ProjectName) $(TargetName) $(TargetExt) $(Platform) $(Configuration)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -167,23 +168,25 @@ $(SolutionDir)copy_file.bat $(SolutionDir) $(ProjectName) $(TargetName) $(Target
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="CSJAudioPlayerImpl\CSJAudioPlayerCAImpl.h" />
-    <ClInclude Include="CSJAudioPlayerImpl\CSJAudioPlayerDSImpl.h" />
-    <ClInclude Include="CSJAudioPlayer\CSJAudioPlayer.h" />
     <ClInclude Include="CSJMFMediaToolsDefine.h" />
     <ClInclude Include="CSJMFMediaHeader.h" />
     <ClInclude Include="CSJMFCaptureImpl\CSJMFCaptureImpl.h" />
     <ClInclude Include="CSJMFCapture\CSJMFCapture.h" />
+    <ClInclude Include="CSJMFPlayerImpl\CSJAudioPlayerCAImpl.h" />
+    <ClInclude Include="CSJMFPlayerImpl\CSJAudioPlayerDSImpl.h" />
+    <ClInclude Include="CSJMFPlayerImpl\CSJMFPlayerTopoImpl.h" />
+    <ClInclude Include="CSJMFPlayer\CSJAudioPlayer.h" />
+    <ClInclude Include="CSJMFPlayer\CSJMFPlayer.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="CSJAudioPlayer.cpp" />
-    <ClCompile Include="CSJAudioPlayerImpl\CSJAudioPlayerCAImpl.cpp" />
-    <ClCompile Include="CSJAudioPlayerImpl\CSJAudioPlayerDSImpl.cpp" />
     <ClCompile Include="CSJMFCaptureImpl\CSJMFCaptureImpl.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="CSJMFPlayerImpl\CSJAudioPlayerCAImpl.cpp" />
+    <ClCompile Include="CSJMFPlayerImpl\CSJAudioPlayerDSImpl.cpp" />
+    <ClCompile Include="CSJMFPlayerImpl\CSJMFPlayerTopoImpl.cpp" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

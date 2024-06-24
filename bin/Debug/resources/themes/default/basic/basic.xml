@@ -18,6 +18,7 @@
 		  <Button name="CaptureBtn" width="100" height="30" halign="center" pushedcolor="gray" bkcolor="light_gray" borderround="2,2" normaltextcolor="color_palette2" text="CaptureView" />
 		  <Button name="PlayerBtn" width="100" height="30"  halign="center" pushedcolor="gray" bkcolor="light_gray" borderround="2,2" normaltextcolor="color_palette2" text="PlayerView"/>
 		  <Button name="TransCodeBtn" width="100" height="30" halign="center" pushedcolor="gray" bkcolor="light_gray" borderround="2,2" normaltextcolor="color_palette2" text="TransCodeView"/>
+		  <Button name="TestFrameBtn" width="100" height="30" halign="center" pushedcolor="gray" bkcolor="light_gray" borderround="2,2" normaltextcolor="color_palette2" text="TestView"/>
 		</VBox>
 	  </VBox>
     </Box>

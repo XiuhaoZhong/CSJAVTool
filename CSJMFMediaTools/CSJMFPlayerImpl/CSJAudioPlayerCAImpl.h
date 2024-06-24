@@ -1,7 +1,7 @@
 #ifndef __CSJAUDIOPLAYERCAIMPLH__
 #define __CSJAUDIOPLAYERCAIMPL_H__
 
-#include "CSJAudioPlayer/CSJAudioPlayer.h"
+#include "CSJMFPlayer/CSJAudioPlayer.h"
 
 #include <Audioclient.h>
 #include <atlcomcli.h>

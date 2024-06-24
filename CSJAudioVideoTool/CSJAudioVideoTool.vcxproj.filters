@@ -55,6 +55,12 @@
     <ClInclude Include="UIKits\CSJUIModuleBase.h">
       <Filter>UIKits</Filter>
     </ClInclude>
+    <ClInclude Include="CSJMediaModules\CSJTestFrame.h">
+      <Filter>CSJMediaModules</Filter>
+    </ClInclude>
+    <ClInclude Include="CSJMediaModules\CSJMediaPlayerFrame.h">
+      <Filter>CSJMediaModules</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main\ToolWindow.cpp">
@@ -86,6 +92,12 @@
     </ClCompile>
     <ClCompile Include="UIKits\CSJUIModuleBase.cpp">
       <Filter>UIKits</Filter>
+    </ClCompile>
+    <ClCompile Include="CSJMediaModules\CSJTestFrame.cpp">
+      <Filter>CSJMediaModules</Filter>
+    </ClCompile>
+    <ClCompile Include="CSJMediaModules\CSJMediaPlayerFrame.cpp">
+      <Filter>CSJMediaModules</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

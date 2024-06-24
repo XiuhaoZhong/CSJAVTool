@@ -10,10 +10,13 @@
 #include "CSJMediaExtracter/CSJMediaExtracter.h"
 #include "CSJMediaTransformer/CSJMediaTransformer.h"
 #include "CSJMFCapture/CSJMFCapture.h"
+#include "CSJMFPlayer/CSJMFPlayer.h"
 
 #include "CSJAVAudioHandler.h"
 
 #include "CSJMediaModules/CSJMediaLiveFrame.h"
+#include "CSJMediaModules/CSJMediaPlayerFrame.h"
+#include "CSJMediaModules/CSJTestFrame.h"
 
 const std::wstring ToolWindow::kClassName = L"Basic";
 
@@ -58,10 +61,21 @@ void ToolWindow::InitWindow() {
     m_pCaptureBtn = dynamic_cast<ui::Button *>((FindControl(L"CaptureBtn")));
     m_pPlayerBtn = dynamic_cast<ui::Button *>((FindControl(L"PlayerBtn")));
     m_pTransCodeBtn = dynamic_cast<ui::Button *>((FindControl(L"TransCodeBtn")));
+    m_pTestFrameBtn = dynamic_cast<ui::Button *>(FindControl(L"TestFrameBtn"));
 
     if (m_pCaptureBtn) {
         m_pCaptureBtn->AttachClick(nbase::Bind(&ToolWindow::onBtnClicked, this, std::placeholders::_1));
     }
+
+    if (m_pPlayerBtn) {
+        m_pPlayerBtn->AttachClick(nbase::Bind(&ToolWindow::onBtnClicked, this, std::placeholders::_1));
+    }
+
+    if (m_pTestFrameBtn) {
+        m_pTestFrameBtn->AttachClick(nbase::Bind(&ToolWindow::onBtnClicked, this, std::placeholders::_1));
+    }
+
+    CSJDataManager::GetInstance()->setMainHwnd(GetHWND());
 
     createRenderWindow();
     showRenderWindow(false);
@@ -113,9 +127,14 @@ LRESULT ToolWindow::OnDestroy(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHa
 
 bool ToolWindow::onBtnClicked(ui::EventArgs *args) {
     if (args->pSender == m_pCaptureBtn) {
-        m_pMainFrameView->SetVisible(false);
-        showCaptureBox(true);
-    } 
+        //m_pMainFrameView->SetVisible(false);
+        //showCaptureBox(true);
+        testMFPlayer();
+    } else if (args->pSender == m_pTestFrameBtn) {
+        showTestFrame(true);
+    } else if (args->pSender == m_pPlayerBtn) {
+        showPlayerFrame(true);
+    }
 
     return true;
 }
@@ -214,6 +233,7 @@ void ToolWindow::transformMedia() {
     }
 }
 
+
 static std::shared_ptr<CSJAVAudioHandler> audioHandler;
 void ToolWindow::loadMFCapture() {
     audioHandler = std::make_shared<CSJAVAudioHandler>();
@@ -236,4 +256,39 @@ void ToolWindow::showCaptureBox(bool show) {
 
     m_pMediaLiveFrame->showFrame(show);
     showRenderWindow(show);
+}
+
+void ToolWindow::showPlayerFrame(bool show) {
+    if (!m_pMediaPlayerFrame) {
+        std::wstring xmlPath = GetWindowResourcePath() + L"CSJPlayerFrame.xml";
+        ui::STRINGorID xml(xmlPath.c_str());
+        m_pMediaPlayerFrame = new CSJMediaPlayerFrame(xml, this, m_pMainUI);
+        if (!m_pMediaPlayerFrame) {
+            return;
+        }
+
+        m_pMediaPlayerFrame->initUI();
+    }
+
+    m_pMediaPlayerFrame->showFrame(show);
+}
+
+void ToolWindow::showTestFrame(bool show) {
+    if (!m_pTestFrame) {
+        std::wstring xmlPath = GetWindowResourcePath() + L"WindowsTestFrame.xml";
+        ui::STRINGorID xml(xmlPath.c_str());
+        m_pTestFrame = new CSJTestFrame(xml, this, m_pMainUI);
+        m_pTestFrame->initUI();
+    }
+    
+    m_pTestFrame->showFrame(show);
+}
+
+void ToolWindow::testMFPlayer() {
+    CSJSpMFPlayer mfPlayer = CSJMFPlayer::generateMFPlayer();
+
+    showRenderWindow(true);
+    std::wstring path(L"partyAnimals.mp4");
+    mfPlayer->setPlayFile(path);
+    mfPlayer->start();
 }

@@ -25,6 +25,8 @@
     <ClInclude Include="CSJMediaHandlers\CSJMediaHandlerBase.h" />
     <ClInclude Include="CSJMediaHandlers\CSJMediaLiveHandler.h" />
     <ClInclude Include="CSJMediaModules\CSJMediaLiveFrame.h" />
+    <ClInclude Include="CSJMediaModules\CSJMediaPlayerFrame.h" />
+    <ClInclude Include="CSJMediaModules\CSJTestFrame.h" />
     <ClInclude Include="main\CSJRenderWindow.h" />
     <ClInclude Include="main\targetver.h" />
     <ClInclude Include="main\ToolWindow.h" />
@@ -38,6 +40,8 @@
     <ClCompile Include="CSJMediaHandlers\CSJMediaHandlerBase.cpp" />
     <ClCompile Include="CSJMediaHandlers\CSJMediaLiveHandler.cpp" />
     <ClCompile Include="CSJMediaModules\CSJMediaLiveFrame.cpp" />
+    <ClCompile Include="CSJMediaModules\CSJMediaPlayerFrame.cpp" />
+    <ClCompile Include="CSJMediaModules\CSJTestFrame.cpp" />
     <ClCompile Include="main\CSJRenderWindow.cpp" />
     <ClCompile Include="main\main.cpp" />
     <ClCompile Include="main\ToolWindow.cpp" />
@@ -114,7 +118,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <AdditionalLibraryDirectories>$(SolutionDir)Lib\$(platform)\$(configuration);$(ProjectDir)third_part\log4cpp\lib\$(platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>base_d.lib;duilib_d.lib;ui_components_d.lib;log4cpp.lib;CSJMediaPegTools.lib;CSJMFMediaTools.lib;Mfplat.lib;CSJCommonTools.lib;CSJGLFramework.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>base_d.lib;duilib_d.lib;ui_components_d.lib;log4cpp.lib;CSJMediaPegTools.lib;CSJMFMediaTools.lib;Mfplat.lib;CSJCommonTools.lib;CSJGLFramework.lib;comctl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>Xcopy /y $(SolutionDir)Dlls\*.dll $(SolutionDir)bin\$(Configuration)\

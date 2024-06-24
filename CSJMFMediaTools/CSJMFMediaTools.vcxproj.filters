@@ -19,10 +19,10 @@
     <Filter Include="CSJMFCaptureImpl">
       <UniqueIdentifier>{327d6020-3522-4079-93e2-c8459c07bec8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="CSJAudioPlayer">
+    <Filter Include="CSJMFPlayer">
       <UniqueIdentifier>{9a76485b-0a0d-48d1-957f-5876bd2026e4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="CSJAudioPlayerImpl">
+    <Filter Include="CSJMFPlayerImpl">
       <UniqueIdentifier>{6e2247d0-de19-4e96-9edb-242ae45be5b4}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -45,14 +45,20 @@
     <ClInclude Include="CSJMFMediaHeader.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="CSJAudioPlayer\CSJAudioPlayer.h">
-      <Filter>CSJAudioPlayer</Filter>
+    <ClInclude Include="CSJMFPlayer\CSJAudioPlayer.h">
+      <Filter>CSJMFPlayer</Filter>
     </ClInclude>
-    <ClInclude Include="CSJAudioPlayerImpl\CSJAudioPlayerDSImpl.h">
-      <Filter>CSJAudioPlayerImpl</Filter>
+    <ClInclude Include="CSJMFPlayer\CSJMFPlayer.h">
+      <Filter>CSJMFPlayer</Filter>
     </ClInclude>
-    <ClInclude Include="CSJAudioPlayerImpl\CSJAudioPlayerCAImpl.h">
-      <Filter>CSJAudioPlayerImpl</Filter>
+    <ClInclude Include="CSJMFPlayerImpl\CSJAudioPlayerCAImpl.h">
+      <Filter>CSJMFPlayerImpl</Filter>
+    </ClInclude>
+    <ClInclude Include="CSJMFPlayerImpl\CSJAudioPlayerDSImpl.h">
+      <Filter>CSJMFPlayerImpl</Filter>
+    </ClInclude>
+    <ClInclude Include="CSJMFPlayerImpl\CSJMFPlayerTopoImpl.h">
+      <Filter>CSJMFPlayerImpl</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -65,14 +71,14 @@
     <ClCompile Include="CSJMFCaptureImpl\CSJMFCaptureImpl.cpp">
       <Filter>CSJMFCaptureImpl</Filter>
     </ClCompile>
-    <ClCompile Include="CSJAudioPlayerImpl\CSJAudioPlayerDSImpl.cpp">
-      <Filter>CSJAudioPlayerImpl</Filter>
+    <ClCompile Include="CSJMFPlayerImpl\CSJAudioPlayerCAImpl.cpp">
+      <Filter>CSJMFPlayerImpl</Filter>
     </ClCompile>
-    <ClCompile Include="CSJAudioPlayer.cpp">
-      <Filter>CSJAudioPlayer</Filter>
+    <ClCompile Include="CSJMFPlayerImpl\CSJAudioPlayerDSImpl.cpp">
+      <Filter>CSJMFPlayerImpl</Filter>
     </ClCompile>
-    <ClCompile Include="CSJAudioPlayerImpl\CSJAudioPlayerCAImpl.cpp">
-      <Filter>CSJAudioPlayerImpl</Filter>
+    <ClCompile Include="CSJMFPlayerImpl\CSJMFPlayerTopoImpl.cpp">
+      <Filter>CSJMFPlayerImpl</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

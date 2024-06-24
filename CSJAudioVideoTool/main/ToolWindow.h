@@ -8,6 +8,8 @@
 class CSJRenderWindow;
 
 class CSJMediaLiveFrame;
+class CSJMediaPlayerFrame;
+class CSJTestFrame;
 
 class ToolWindow : public ui::WindowImplBase {
 public:
@@ -52,6 +54,11 @@ protected:
 
     void showCaptureBox(bool show);
 
+    void showPlayerFrame(bool show);
+
+    void showTestFrame(bool show);
+
+    void testMFPlayer();
 
 private:
 	HDC hdc;
@@ -68,9 +75,13 @@ private:
     ui::Button  *m_pCaptureBtn    = nullptr;
     ui::Button  *m_pPlayerBtn     = nullptr;
     ui::Button  *m_pTransCodeBtn  = nullptr;
+    ui::Button  *m_pTestFrameBtn  = nullptr;
 
-    CSJMediaLiveFrame *m_pMediaLiveFrame = nullptr;
+    CSJMediaLiveFrame   *m_pMediaLiveFrame = nullptr;
+    CSJMediaPlayerFrame *m_pMediaPlayerFrame = nullptr;
 
-	CSJRenderWindow *render_window_;
+    CSJTestFrame        *m_pTestFrame = nullptr;
+
+	CSJRenderWindow     *render_window_;
 };
 

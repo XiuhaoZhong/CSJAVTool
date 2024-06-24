@@ -26,6 +26,10 @@ static std::wstring SubTypeToString(GUID& subtype) {
         res = L"YV12";
     } else if (st.compare(L"{00000003-0000-0010-8000-00AA00389B71}") == 0) {
         res = L"MFAudioFormat_Float";
+    } else if (st.compare(L"{00001610-0000-0010-8000-00AA00389B71}") == 0) {
+        res = L"MFAudioFormat_AAC";
+    } else if (st.compare(L"00000055-0000-0010-8000-00AA00389B71") == 0) {
+        res = L"MFAudioFormat_MP3";
     }
 
     return res;
@@ -173,6 +177,8 @@ void CSJMFCaptureImpl::startVideoCapWithSourceReader() {
 
     CComPtr<IMFSourceReader> pReader = NULL;
     HRESULT hr = S_OK;
+
+    CComPtr<IMFMediaSink> pSink = NULL;
 
     // create media source to read video data.
     hr = MFCreateSourceReaderFromMediaSource(mediaSource, NULL, &pReader);

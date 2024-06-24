@@ -60,7 +60,9 @@ public:
         virtual void fillAudioSample(UINT32 frames, BYTE *pData) {}
     };
 
-    static CSJSharedAudioPlayer getCSJAudioPlayer(CSJAudioPlayerTpye type = CSJAUDIOPLAYER_DSHOW);
+    static CSJSharedAudioPlayer getCSJAudioPlayer(CSJAudioPlayerTpye type = CSJAUDIOPLAYER_DSHOW) {
+        return nullptr;
+    };
     
     virtual void setDelegate(CSJAudioPlayer::Delegate *delegate) = 0;
 
