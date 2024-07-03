@@ -94,14 +94,14 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(ProjectDir)CSJMediaExtracter;$(ProjectDir)dependencies\ffmpeg\include;$(ProjectDir);$(ProjectDir)CSJMediaUtils;$(SolutionDir)Include\MediaData;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)CSJMediaExtracter;$(ProjectDir)dependencies\ffmpeg\include;$(ProjectDir);$(ProjectDir)CSJMediaUtils;$(SolutionDir)Include\CSJCommonTools\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalLibraryDirectories>$(ProjectDir)dependencies\ffmpeg\libs\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>avformat.lib;avutil.lib;avcodec.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)dependencies\ffmpeg\libs\$(Platform);$(SolutionDir)Lib\$(platform)\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>avformat.lib;avutil.lib;avcodec.lib;CSJCommonTools.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>Xcopy /y $(ProjectDir)CSJMediaExtracter\CSJMediaExtracter.h $(SolutionDir)Include\$(ProjectName)\CSJMediaExtracter\

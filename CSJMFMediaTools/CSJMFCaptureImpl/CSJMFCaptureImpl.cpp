@@ -4,36 +4,16 @@
 #include <mfidl.h>
 #include <mfapi.h>
 #include <mmdeviceapi.h>
-
+#include <wmcodecdsp.h>
+#include <mftransform.h>
+#include <mfreadwrite.h>
 
 #include <iostream>
 #include <fstream>
 
 #include "CSJMFMediaHeader.h"
 #include "CSJStringTool/CSJStringTool.h"
-
-static std::wstring SubTypeToString(GUID& subtype) {
-    WCHAR buffer[128];
-    StringFromGUID2(subtype, buffer, sizeof(buffer));
-
-    std::wstring res = L"";
-    std::wstring st(buffer);
-    if (st.compare(L"{3231564E-0000-0010-8000-00AA00389B71}") == 0) {
-        res = L"NV12";
-    } else if (st.compare(L"{47504A4D-0000-0010-8000-00AA00389B71}") == 0) {
-        res = L"MJPG";
-    } else if (st.compare(L"{32595559-0000-0010-8000-00AA00389B71}") == 0) {
-        res = L"YV12";
-    } else if (st.compare(L"{00000003-0000-0010-8000-00AA00389B71}") == 0) {
-        res = L"MFAudioFormat_Float";
-    } else if (st.compare(L"{00001610-0000-0010-8000-00AA00389B71}") == 0) {
-        res = L"MFAudioFormat_AAC";
-    } else if (st.compare(L"00000055-0000-0010-8000-00AA00389B71") == 0) {
-        res = L"MFAudioFormat_MP3";
-    }
-
-    return res;
-}
+#include "CSJMediaData/CSJMediaData.h"
 
 CSJSharedCapture CSJMFCapture::getMFCapture() {
     return std::make_shared<CSJMFCaptureImpl>();
@@ -47,6 +27,7 @@ CSJMFCaptureImpl::CSJMFCaptureImpl() {
     m_audioDevices = NULL;
 
     m_delegate = nullptr;
+    m_isStop = true;
 }
 
 CSJMFCaptureImpl::~CSJMFCaptureImpl() {
@@ -61,11 +42,29 @@ bool CSJMFCaptureImpl::initializeCapture() {
     return true;
 }
 
-void CSJMFCaptureImpl::selectedCamera(int camera_index) {
+void CSJMFCaptureImpl::setOutputAsRGB24(bool outputRGB24) {
+    m_outputRGB24 = true;
+}
+
+void CSJMFCaptureImpl::selectedCamera(int camera_index, int format_index, int resolution_index) {
     WCHAR *symlink;
-    if (isSameVideoDevice(camera_index, &symlink)) {
+    
+    if (isSameVideoDevice(camera_index, &symlink) && (
+        camera_index == m_selVideoDevIndex &&
+        format_index == m_selVideoFmtIndex &&
+        resolution_index == m_selVideoResolutionIndex)) {
         return ;
     }
+
+    m_selVideoDevIndex = camera_index;
+    m_selVideoFmtIndex = format_index;
+    m_selVideoResolutionIndex = resolution_index;
+
+    // At this stage, if you want to change the video capture parameter, you must
+    // select the new parameter from the UI, and then stop capture, and start catpure.
+    // I will improve to change capture parameters without restarting capture by hand
+    // in the future.
+    return;
 
     // Save the new device symlink;
     m_szCurCaptureSymlink = symlink;
@@ -208,32 +207,35 @@ void CSJMFCaptureImpl::startVideoCapWithSourceReader() {
 
                     DWORD sampleLen = 0;
                     pBuffer->GetBufferCount(&sampleLen);
+                    pBuffer->SetSampleTime(llTimeStamp);
 
                     // Note: you must take the following operation on the buf
                     // 1.Using CComptr on constraints the buf
                     // 2.Using raw pointer on the buf, and SafeRelease the buf at the end of the circle.
                     // or the ReadSample won't return in future.
-                    CComPtr<IMFMediaBuffer> buf;
-                    pBuffer->GetBufferByIndex(0, &buf);
-                    if (buf) {
-
-                        BYTE *buffer = NULL;
-                        DWORD maxLen;
-                        hr = buf->Lock(&buffer, &maxLen, &sampleLen);
-                        if (FAILED(hr)) {
-                            std::cout << "lock sample failed." << std::endl;
+                    CComPtr<IMFMediaBuffer> buf = NULL;
+                    if (m_outputRGB24) {
+                        buf = convertToRGB24(pBuffer, mediaType);
+                        if (!buf) {
+                            continue;
                         }
-
-                        if (outYuvFile) {
-                            fwrite(buffer, 1, sampleLen, outYuvFile);
-                            fflush(outYuvFile);
-                        }
+                    } else {
+                        hr = pBuffer->GetBufferByIndex(0, &buf);
                     }
 
+                    if (m_delegate) {
+                        m_delegate->onVideoArrive(buf, llTimeStamp);
+                    }
+                    
                     SafeRelease(&pBuffer);
+
                 }
             }
         }
+    }
+
+    if (m_outputRGB24) {
+        m_transformer = nullptr;
     }
 
     m_isStop = false;
@@ -695,6 +697,118 @@ void CSJMFCaptureImpl::loadAudioMediaSourceInfos(CComPtr<IMFMediaSource> mediaSo
     }
 }
 
+CComPtr<IMFTransform> CSJMFCaptureImpl::createTransformWithType() {
+    CComPtr<IMFTransform> transformer = nullptr;
+
+    CComPtr<IUnknown> colorConvTransformUnk = nullptr;
+    HRESULT hr = CoCreateInstance(CLSID_CColorConvertDMO, NULL, CLSCTX_INPROC_SERVER,
+                                  IID_IUnknown, (void **)&colorConvTransformUnk);
+    if (FAILED(hr)) {
+        return nullptr;
+    }
+
+    hr = colorConvTransformUnk->QueryInterface(IID_PPV_ARGS(&transformer));
+    if (FAILED(hr)) {
+        return nullptr;
+    }
+
+    return transformer;
+}
+
+CComPtr<IMFMediaBuffer> CSJMFCaptureImpl::convertToRGB24(CComPtr<IMFSample> inputSample, CComPtr<IMFMediaType> inputType) {
+    CComPtr<IMFMediaBuffer> buf = nullptr;
+
+    if (!m_transformer) {
+        m_transformer = createTransformWithType();
+    }
+
+    if (!m_transformer) {
+        return buf;
+    }
+
+    HRESULT hr = m_transformer->SetInputType(0, inputType, 0);
+    if (FAILED(hr)) {
+        return buf;
+    }
+
+    CComPtr<IMFMediaType> outputType = nullptr;
+    hr = MFCreateMediaType(&outputType);
+    if (FAILED(hr)) {
+        return buf;
+    }
+
+    hr = inputType->CopyAllItems(outputType);
+    if (FAILED(hr)) {
+        return buf;
+    }
+
+    hr = outputType->SetGUID(MF_MT_MAJOR_TYPE, MFMediaType_Video);
+    hr = outputType->SetGUID(MF_MT_SUBTYPE, MFVideoFormat_RGB24);
+    if (FAILED(hr)) {
+        return buf;
+    }
+
+    CComPtr<IMFMediaType> avaMediaType = nullptr;
+    hr = m_transformer->GetOutputAvailableType(0, 0, &avaMediaType);
+    if (FAILED(hr)) {
+        return buf;
+    }
+
+    GUID subType;
+    hr = avaMediaType->GetGUID(MF_MT_SUBTYPE, &subType);
+    if (FAILED(hr)) {
+        return buf;
+    }
+
+    hr = m_transformer->SetOutputType(0, outputType, 0);
+    if (FAILED(hr)) {
+        return buf;
+    }
+
+    DWORD mftStatus = 0;
+    hr = m_transformer->GetInputStatus(0, &mftStatus);
+    if (FAILED(hr)) {
+        return buf;
+    }
+
+    hr = m_transformer->ProcessMessage(MFT_MESSAGE_COMMAND_FLUSH, NULL);
+    hr = m_transformer->ProcessMessage(MFT_MESSAGE_NOTIFY_BEGIN_STREAMING, NULL);
+    hr = m_transformer->ProcessMessage(MFT_MESSAGE_NOTIFY_START_OF_STREAM, NULL);
+
+    hr = m_transformer->ProcessInput(0, inputSample, NULL);
+    if (FAILED(hr)) {
+        return buf;
+    }
+
+    MFT_OUTPUT_STREAM_INFO si = { 0 };
+    mftStatus = 0;
+    CComPtr<IMFSample> pOutputSample = nullptr;
+    CComPtr<IMFMediaBuffer> pOutputBuffer = nullptr;
+    MFT_OUTPUT_DATA_BUFFER mftOutBuffer;
+
+    hr = m_transformer->GetOutputStreamInfo(0, &si);
+    hr = MFCreateSample(&pOutputSample);
+    hr = MFCreateMemoryBuffer(si.cbSize, &pOutputBuffer);
+    hr = pOutputSample->AddBuffer(pOutputBuffer);
+
+    mftOutBuffer.dwStreamID = 0;
+    mftOutBuffer.dwStatus = 0;
+    mftOutBuffer.pEvents = NULL;
+    mftOutBuffer.pSample = pOutputSample;
+
+    hr = m_transformer->ProcessOutput(0, 1, &mftOutBuffer, &mftStatus);
+    if (FAILED(hr)) {
+        return buf;
+    }
+
+    hr = pOutputSample->ConvertToContiguousBuffer(&buf);
+    if (FAILED(hr)) {
+        return buf;
+    }
+
+    return buf;
+}
+
 void CSJMFCaptureImpl::finalize() {
     releaseVideoDeviceInfo();
     releaseAudioDeviceInfo();
@@ -814,7 +928,7 @@ CComPtr<IMFMediaType> CSJMFCaptureImpl::getSelectedVideoMediaType(IMFMediaSource
     }
 
     CComPtr<IMFMediaType> selMediaType = NULL;
-    int deviceIndex = 0, fmtIndex = 0, resolutionIndex = 0;
+    int deviceIndex = m_selVideoDevIndex, fmtIndex = m_selVideoFmtIndex, resolutionIndex = m_selVideoResolutionIndex;
 
     // selected capture parameters.
     CSJVideoDeviceInfo selDev = m_videoDeviceInfos[deviceIndex];

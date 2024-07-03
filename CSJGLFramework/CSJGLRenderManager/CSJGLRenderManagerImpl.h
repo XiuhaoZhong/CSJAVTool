@@ -20,6 +20,10 @@ public:
 
     bool initGL(HWND hwnd, int width, int height) override;
     void unInitGL() override;
+    void setFrameRate(DWORD frameRate) override;
+
+    bool initYUVRenderer(CSJVideoFormatType videoFmt, int width, int height) override;
+    void updateYUVData(CSJVideoData &videoData) override;
 
     bool startRendering() override;
     void updateVideo(uint8_t *videoData, DWORD timestamp) override;
@@ -45,6 +49,7 @@ private:
     std::thread        m_renderThread;
     CSJSpFrameBuffer   m_spDefaultFramebuffer = nullptr;
 
+    DWORD              m_frameRate;
     int                m_width;
     int                m_height;
     HWND               m_hWnd;
@@ -58,6 +63,7 @@ private:
     CSJGLWindowInfo   *m_window_info = nullptr;
     CSJGLDeviceInfo    m_device_info;
 
+    std::shared_ptr<CSJGLRendererNodeBase> m_pYUVRenderer = nullptr;
     uint8_t           *m_videoData = nullptr;
 };
 

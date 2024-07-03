@@ -100,7 +100,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>Mfuuid.lib;Mfplat.lib;Mf.lib;Mfreadwrite.lib;dsound.lib;CSJCommonTools.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Mfuuid.lib;Mfplat.lib;Mf.lib;Mfreadwrite.lib;dsound.lib;wmcodecdspuuid.lib;CSJCommonTools.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)Lib\$(platform)\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>

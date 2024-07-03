@@ -25,6 +25,10 @@ public:
 
     UINT64 getDuration() override;
 
+    bool isStarted() override;
+    bool isPaused() override;
+    bool isStopped() override;
+
 protected:
     bool init();
 
@@ -40,7 +44,7 @@ protected:
                           CComPtr<IMFActivate> pActivate,
                           DWORD dwId,
                           CComPtr<IMFTopologyNode> &ppNode);
-
+     
     /**
      * @brief get media detail info with mediasouce.
      *

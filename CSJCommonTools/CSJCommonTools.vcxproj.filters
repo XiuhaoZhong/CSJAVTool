@@ -22,6 +22,9 @@
     <Filter Include="CSJCommonTool">
       <UniqueIdentifier>{b66225e8-1394-4ccc-b369-d50ff602d799}</UniqueIdentifier>
     </Filter>
+    <Filter Include="CSJMediaData">
+      <UniqueIdentifier>{56250f37-0219-4575-b948-51a5f1be8dd8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -42,6 +45,9 @@
     <ClInclude Include="CSJCommonTool\CSJCommonTool.h">
       <Filter>CSJCommonTool</Filter>
     </ClInclude>
+    <ClInclude Include="CSJMediaData\CSJMediaData.h">
+      <Filter>CSJMediaData</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -58,6 +64,9 @@
     </ClCompile>
     <ClCompile Include="CSJCommonTool\CSJCommonTool.cpp">
       <Filter>CSJCommonTool</Filter>
+    </ClCompile>
+    <ClCompile Include="CSJMediaData\CSJMediaData.cpp">
+      <Filter>CSJMediaData</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

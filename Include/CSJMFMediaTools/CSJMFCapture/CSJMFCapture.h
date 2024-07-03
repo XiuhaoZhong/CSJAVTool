@@ -3,11 +3,11 @@
 
 #include "CSJMFMediaToolsDefine.h"
 
+#include <atlbase.h>
+
 #include <vector>
 #include <string>
 #include <map>
-
-#include "CSJMediaData.h"
 
 using CSJMFDeviceList = std::vector<std::wstring>;
 using CSJMFDeviceMap = std::map<std::wstring, std::wstring>;
@@ -109,6 +109,14 @@ public:
         virtual void onVideDataArrive() = 0;
 
         /**
+         * @brief notify user when video data captured.
+         *
+         * @param[in] videoData     the video data captured.
+         * @param[in] timestamp     the time stamp of current video data.
+         */
+        virtual void onVideoArrive(IMFMediaBuffer* videoData, LONGLONG timeStamp) = 0;
+
+        /**
         *  The audio data arrived.
         */
         virtual void onAudioDataArrive(CSJMFAudioData *audioData) = 0;
@@ -132,11 +140,19 @@ public:
     virtual bool initializeCapture() = 0;
 
     /**
+     * @brief Indicates the output format is RGB24 or not.
+     *
+     * @param[in] outputRGB24   if true,  the output frame is in RGB24, the default is the 
+                                format which is set with user chose.
+     */
+    virtual void setOutputAsRGB24(bool outputRGB24) = 0;
+
+    /**
      *  Selected a camera to capture.
      *
      *  @param camera_index the index of the device.
      */
-    virtual void selectedCamera(int camera_index) = 0;
+    virtual void selectedCamera(int camera_index, int format_index, int resolution_index) = 0;
 
     /**
     *  Selected a microphone to capture.

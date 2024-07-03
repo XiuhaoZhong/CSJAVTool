@@ -40,9 +40,6 @@
     <ClInclude Include="main\targetver.h">
       <Filter>main</Filter>
     </ClInclude>
-    <ClInclude Include="CSJAVAudioHandler.h">
-      <Filter>main</Filter>
-    </ClInclude>
     <ClInclude Include="CSJMediaHandlers\CSJMediaHandlerBase.h">
       <Filter>CSJMediaHandlers</Filter>
     </ClInclude>
@@ -76,9 +73,6 @@
       <Filter>CommonData</Filter>
     </ClCompile>
     <ClCompile Include="main\main.cpp">
-      <Filter>main</Filter>
-    </ClCompile>
-    <ClCompile Include="CSJAVAudioHandler.cpp">
       <Filter>main</Filter>
     </ClCompile>
     <ClCompile Include="CSJMediaHandlers\CSJMediaHandlerBase.cpp">

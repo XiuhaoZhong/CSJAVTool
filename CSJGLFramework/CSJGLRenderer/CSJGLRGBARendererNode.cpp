@@ -57,14 +57,25 @@ bool CSJGLRGBARenererNode::init() {
     return true;
 }
 
+bool CSJGLRGBARenererNode::shouldRender() {
+    return true;
+}
+
 void CSJGLRGBARenererNode::setDefaultFramebuffer(CSJSpFrameBuffer framebuffer) {
     if (m_spDefaultFramebuffer != framebuffer) {
         m_spDefaultFramebuffer = framebuffer;
     }
 }
 
+void CSJGLRGBARenererNode::updateRenderContent(CSJVideoData * videoData) {
+
+}
+
 void CSJGLRGBARenererNode::updateRenderPos(int width, int height) {
 
+}
+
+void CSJGLRGBARenererNode::updateTexture() {
 }
 
 void CSJGLRGBARenererNode::draw() {

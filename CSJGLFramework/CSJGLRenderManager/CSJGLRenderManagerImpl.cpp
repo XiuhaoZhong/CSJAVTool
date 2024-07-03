@@ -1,11 +1,27 @@
 #include "CSJGLRenderManagerImpl.h"
 
 #include <iostream>
+#include <chrono>
 
 #include "gl/glew.h"
 
 #include "CSJGLRenderer\CSJGLRGBARendererNode.h"
 #include "CSJGLRenderer\CSJGLYUVRendererNode.h"
+
+using namespace std::chrono;
+
+static void debugCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar *message, const void *param) {
+
+    const GLubyte *sourceStr = glGetString(source);
+    const GLubyte *typeStr = glGetString(type);
+    const GLubyte *severityStr = glGetString(severity);
+
+    //std::string sStr((const unsigned char*)sourceStr);
+
+    printf("%s:%s[%s](%d): %s\n", sourceStr, typeStr,
+           severityStr, id, message);
+
+}
 
 std::shared_ptr<CSJGLRenderManagerImpl> CSJGLRenderManagerImpl::spRenderManager = nullptr;
 
@@ -17,6 +33,8 @@ CSJGLRenderManagerImpl::CSJGLRenderManagerImpl()
     m_pauseEvent = CreateEvent(NULL, FALSE, FALSE, L"");
     m_glInitEvent = CreateEvent(NULL, FALSE, FALSE, L"");
     m_glUninitEvent = CreateEvent(NULL, FALSE, FALSE, L"");
+
+    m_frameRate = defaultFrameRate;
 }
 
 CSJGLRenderManagerImpl::~CSJGLRenderManagerImpl() {
@@ -68,6 +86,28 @@ bool CSJGLRenderManagerImpl::initGL(HWND hwnd, int width, int height) {
 
 void CSJGLRenderManagerImpl::unInitGL() {
    
+}
+
+void CSJGLRenderManagerImpl::setFrameRate(DWORD frameRate) {
+}
+
+bool CSJGLRenderManagerImpl::initYUVRenderer(CSJVideoFormatType videoFmt, int width, int height) {
+    std::shared_ptr<CSJGLRendererNodeBase> yuvRenderer = std::make_shared<CSJGLYUVRendererNode>(videoFmt, width, height);
+    /*if (!yuvRenderer->init()) {
+        return false;
+    }*/
+
+    pushRendererNode(yuvRenderer);
+    m_pYUVRenderer = yuvRenderer;
+    return true;
+}
+
+void CSJGLRenderManagerImpl::updateYUVData(CSJVideoData & videoData) {
+    if (!m_pYUVRenderer) {
+        return;
+    }
+
+    m_pYUVRenderer->updateRenderContent(&videoData);
 }
 
 bool CSJGLRenderManagerImpl::startRendering() {
@@ -146,11 +186,6 @@ void CSJGLRenderManagerImpl::excuteRender() {
 
     m_spDefaultFramebuffer = std::make_shared<CSJGLFrameBuffer>();
 
-    std::shared_ptr<CSJGLRendererNodeBase> yuvRenderer = std::make_shared<CSJGLYUVRendererNode>(CSJVIDEO_FMT_NV12, 1280, 720);
-    if (yuvRenderer->init()) {
-        pushRendererNode(yuvRenderer);
-    }
-
     std::shared_ptr<CSJGLRGBARenererNode> rgbaRenderer = std::make_shared<CSJGLRGBARenererNode>();
     if (rgbaRenderer->init()) {
         pushRendererNode(rgbaRenderer);
@@ -184,7 +219,8 @@ void CSJGLRenderManagerImpl::render() {
             break;
         }
 
-        DWORD time1 = GetTickCount();
+        int frame_internal = (double)(1000) / m_frameRate;
+        steady_clock::time_point beforeRenderPt = steady_clock::now();
 
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -198,13 +234,13 @@ void CSJGLRenderManagerImpl::render() {
         composite();
 
         context->swapLayerBuffer(&m_device_info);
-        
-        DWORD time2 = GetTickCount();
-        DWORD diff = time2 - time1;
-        if (diff > 0) {
-            std::cout << "diff time is: " << diff << std::endl;
-        }
         context->leaveGLContext(&m_device_info);
+
+        steady_clock::time_point afterRenderPt = steady_clock::now();
+        auto costs_time = std::chrono::duration_cast<std::chrono::milliseconds>(afterRenderPt - beforeRenderPt);
+        if (costs_time.count() < frame_internal) {
+            std::this_thread::sleep_for(std::chrono::milliseconds(frame_internal - costs_time.count()));
+        }
     }
 
     SetEvent(m_glUninitEvent);
@@ -221,8 +257,13 @@ void CSJGLRenderManagerImpl::composite() {
      * traverse the rendererNodes, and excute its draw function.
      */
     for (auto rendererNode : m_rendererNodes) {
+        if (!rendererNode->shouldRender()) {
+            continue;
+        }
+
         rendererNode->setDefaultFramebuffer(m_spDefaultFramebuffer);
         rendererNode->updateRenderPos(m_width, m_height);
+        rendererNode->updateTexture();
         rendererNode->draw();
     }
 

@@ -1,5 +1,7 @@
 #include "CSJMediaLiveHandler.h"
 
+#include "CSJGLRenderManager/CSJGLRenderManager.h"
+
 CSJMediaLiveHandler::CSJMediaLiveHandler()
     : m_pCapture(nullptr) 
     , m_bCaptureInit(false)
@@ -21,24 +23,22 @@ bool CSJMediaLiveHandler::initLiveHandler() {
         return false;
     }
 
+    m_pCapture->setOutputAsRGB24(true);
     return true;
 }
 
 void CSJMediaLiveHandler::selectCaptureDevice(int selIndex) {
     m_selCapDeviceIndex = selIndex;
 
-    m_selCapFormatIndex = 0;
-    m_selCapResolutionIndex = 0;
+    selectFormatByIndex(0);
 }
 
 void CSJMediaLiveHandler::selectCaptureFormat(int selIndex) {
-    m_selCapFormatIndex = selIndex;
-
-    m_selCapResolutionIndex = 0;
+    selectFormatByIndex(selIndex);
 }
 
 void CSJMediaLiveHandler::selectCaptureResolution(int selIndex) {
-    m_selCapResolutionIndex = selIndex;
+    selectCaptureResolution(selIndex);
 }
 
 void CSJMediaLiveHandler::setRenderWindow(HWND hwnd) {
@@ -46,10 +46,11 @@ void CSJMediaLiveHandler::setRenderWindow(HWND hwnd) {
 }
 
 bool CSJMediaLiveHandler::startCapture() {
-    if (m_pCapture) {
+    if (m_pCapture && !m_pCapture->isStarted()) {
+        setCurrentCapturePramaters();
         m_pCapture->start();
     }
-    return false;
+    return true;
 }
 
 bool CSJMediaLiveHandler::isCapturing() {
@@ -61,9 +62,28 @@ bool CSJMediaLiveHandler::isCapturing() {
 }
 
 void CSJMediaLiveHandler::stopHandler() {
+
 }
 
 void CSJMediaLiveHandler::onVideDataArrive() {
+}
+
+void CSJMediaLiveHandler::onVideoArrive(IMFMediaBuffer* videoData, LONGLONG timeStamp) {
+    if (!videoData) {
+        return ;
+    }
+
+    BYTE *buffer = NULL;
+    DWORD maxLen;
+    DWORD sampleLen = 0;
+    HRESULT hr = videoData->Lock(&buffer, &maxLen, &sampleLen);
+    if (FAILED(hr)) {
+        return;
+    }
+     
+    CSJVideoData videoFrame(m_curVideoFmt, buffer, m_curWidth, m_curHeight);
+    CSJGLRenderManager::getDefaultRenderManager()->updateYUVData(videoFrame);
+    videoData->Unlock();
 }
 
 void CSJMediaLiveHandler::onAudioDataArrive(CSJMFAudioData * audioData) {
@@ -164,6 +184,17 @@ bool CSJMediaLiveHandler::initRender() {
     return false;
 }
 
+void CSJMediaLiveHandler::setCurrentCapturePramaters() {
+    CSJVideoDeviceInfo selDeviceInfo = m_videoCapInfos[m_selCapDeviceIndex];
+    std::wstring selVideoFmt = selDeviceInfo.formats[m_selCapFormatIndex];
+    CSJVideoFmtInfo selFmtInfo = selDeviceInfo.fmtInfo[selVideoFmt][m_selCapResolutionIndex];
+    m_curWidth = selFmtInfo.resolution.width;
+    m_curHeight = selFmtInfo.resolution.height;
+    m_curVideoFmt = string2VideoType(selVideoFmt);
+
+    CSJGLRenderManager::getDefaultRenderManager()->initYUVRenderer(m_curVideoFmt, m_curWidth, m_curHeight);
+}
+
 void CSJMediaLiveHandler::reloadCaptureInfos() {
     if (!m_pCapture) {
         return;
@@ -174,4 +205,18 @@ void CSJMediaLiveHandler::reloadCaptureInfos() {
 
     m_videoCapInfos = m_pCapture->getVideoDeviceInfo();
     m_audioCapInfos = m_pCapture->getAudioDeviceInfo();
+}
+
+void CSJMediaLiveHandler::selectFormatByIndex(int formatIndex) {
+    m_selCapFormatIndex = formatIndex;
+    selectResolutionByIndex(0);
+}
+
+void CSJMediaLiveHandler::selectResolutionByIndex(int resolutionIndex) {
+    m_selCapResolutionIndex = resolutionIndex;
+    if (!m_pCapture) {
+        return;
+    }
+
+    m_pCapture->selectedCamera(m_selCapDeviceIndex, m_selCapFormatIndex, m_selCapResolutionIndex);
 }

@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Window size="900,600" caption="0,0,0,35">
 	<VBox name="CaptureBox" width="900" height="600" bkcolor="bk_wnd_lightcolor" childmargin="5">
-		<Button name="PlayBtn" text="play" width="100" height="30" halign="center" pushedcolor="gray" bkcolor="light_gray" borderround="2,2" normaltextcolor="color_palette2"/>
-		<Button name="PauseBtn" text="pause" width="100" height="30" halign="center" pushedcolor="gray" bkcolor="light_gray" borderround="2,2" normaltextcolor="color_palette2"/>
-		<Label name="SelectItemLbl" text="选择的文件" width="200" height="30" halign="center"/>
-		<Button name="SelectBtn" text="选择文件" width="100" height="30" halign="center" pushedcolor="gray" bkcolor="light_gray" borderround="2,2" normaltextcolor="color_palette2"/>
-		<Button name="BackBtn" text="back" width="100" height="30" halign="center" pushedcolor="gray" bkcolor="light_gray" borderround="2,2" normaltextcolor="color_palette2"/>
+		<HBox height="500" width="900">
+		</HBox>
+		<HBox valign="bottom" height="50" width="900" childmargin="10">
+			<Button name="PlayBtn" text="play" width="100" height="30" valign="center" pushedcolor="gray" bkcolor="light_gray" borderround="2,2" normaltextcolor="color_palette2"/>
+			<Button name="PauseBtn" text="pause" width="100" height="30" valign="center" pushedcolor="gray" bkcolor="light_gray" borderround="2,2" normaltextcolor="color_palette2"/>
+			<Label name="SelectItemLbl" text="选择的文件" width="200" height="30" valign="center" align="vcenterleft" />
+			<Button name="SelectBtn" text="选择文件" width="100" height="30" valign="center" pushedcolor="gray" bkcolor="light_gray" borderround="2,2" normaltextcolor="color_palette2"/>
+			<Button name="BackBtn" text="back" width="100" height="30" valign="center" halign="right" pushedcolor="gray" bkcolor="light_gray" borderround="2,2" normaltextcolor="color_palette2"/>
+		</HBox>
 	</VBox>
 </Window>

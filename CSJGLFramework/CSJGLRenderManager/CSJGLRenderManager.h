@@ -7,12 +7,15 @@
 
 #include <memory>
 
+#include "CSJMediaData/CSJMediaData.h"
 #include "CSJGLRenderer/CSJGLRendererNode.h"
 
 class CSJGLRenderManager;
 using CSJSharedRenderManger = std::shared_ptr<CSJGLRenderManager>;
 
 class CSJGLRendererNodeBase;
+
+#define defaultFrameRate 30
 
 class CSJGLFRAMEWORK_API CSJGLRenderManager {
 public:
@@ -33,6 +36,14 @@ public:
     virtual bool initGL(HWND hwnd, int width, int height) = 0;
 
     /**
+     * @brief Set the frame rate of video render. Indicates number of frames per second.
+     *        The default frame rate is 30.
+     *
+     * @param[in] frameRate the fresh rate of video, the video push rate is the samce.
+     */
+    virtual void setFrameRate(DWORD frameRate) = 0;
+
+    /**
      * @brief unInitialize the OpenGL.
      */
     virtual void unInitGL() = 0;
@@ -43,6 +54,22 @@ public:
      * @return success return true, or return false.
      */
     virtual bool startRendering() = 0;
+
+    /**
+     * @brief Initialize a yuv renderer to render video frame.
+     *
+     * param[in] videoFmt   the pixel format of the video frame.
+     * param[in] width      the width of video frame.
+     * param[in] height     the height of video frame.
+     */
+    virtual bool initYUVRenderer(CSJVideoFormatType videoFmt, int width, int height) = 0;
+
+    /**
+     * @brief Update the YUV data to render.
+     *
+     * param[in] videoData  the new YUV video data.
+     */
+    virtual void updateYUVData(CSJVideoData &videoData) = 0;
 
     /**
      * @brief update video data.

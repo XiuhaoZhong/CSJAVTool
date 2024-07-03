@@ -21,7 +21,6 @@
   <ItemGroup>
     <ClInclude Include="CommonData\CSJDataManager.h" />
     <ClInclude Include="CommonData\CSJLogManager.h" />
-    <ClInclude Include="CSJAVAudioHandler.h" />
     <ClInclude Include="CSJMediaHandlers\CSJMediaHandlerBase.h" />
     <ClInclude Include="CSJMediaHandlers\CSJMediaLiveHandler.h" />
     <ClInclude Include="CSJMediaModules\CSJMediaLiveFrame.h" />
@@ -36,7 +35,6 @@
   <ItemGroup>
     <ClCompile Include="CommonData\CSJDataManager.cpp" />
     <ClCompile Include="CommonData\CSJLogManager.cpp" />
-    <ClCompile Include="CSJAVAudioHandler.cpp" />
     <ClCompile Include="CSJMediaHandlers\CSJMediaHandlerBase.cpp" />
     <ClCompile Include="CSJMediaHandlers\CSJMediaLiveHandler.cpp" />
     <ClCompile Include="CSJMediaModules\CSJMediaLiveFrame.cpp" />

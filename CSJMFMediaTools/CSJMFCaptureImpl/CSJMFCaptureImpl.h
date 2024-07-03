@@ -19,7 +19,9 @@ public:
 
     bool initializeCapture() override;
 
-    void selectedCamera(int camera_index) override;
+    void setOutputAsRGB24(bool outputRGB24) override;
+
+    void selectedCamera(int camera_index, int format_index, int resolution_index) override;
 
     void selectedMicrophone(int microphone_index) override;
 
@@ -124,32 +126,53 @@ protected:
 
     void loadAudioMediaSourceInfos(CComPtr<IMFMediaSource> mediaSource, CSJAudioDeviceInfo& deviceInfo);
 
+    /**
+     * @brief Create a IMFTransform.
+     *
+     * @Return IMFTransformer.
+     */
+    CComPtr<IMFTransform> createTransformWithType();
+
+    /**
+     * @brief convert sample data format to rgb24
+     *
+     * @param[in] inputSample   the original sample.
+     * @param[in] inputType     the original media type.
+     *
+     * @Return the dest buffer.
+     */
+    CComPtr<IMFMediaBuffer> convertToRGB24(CComPtr<IMFSample> inputSample, CComPtr<IMFMediaType> inputType);
+
 private:
-    IMFActivate         **m_videoDevices;       // holding the active object for the device.
+    IMFActivate       **m_videoDevices;         // holding the active object for the device.
     UINT32              m_videoDevicesCnt;      // the count of video devices.
     std::wstring        m_szCurCaptureSymlink;  // current video device's symlink, identifier a device.
-    IMFMediaType        *m_selVideoMediaType;
+    IMFMediaType       *m_selVideoMediaType;
+    int                 m_selVideoDevIndex = 0;
+    int                 m_selVideoFmtIndex = 0;
+    int                 m_selVideoResolutionIndex = 0;
+    bool                m_outputRGB24 = false;
 
-    IMFActivate         **m_audioDevices;
+    IMFActivate       **m_audioDevices;
     UINT32              m_audioDevicesCnt;
     std::wstring        m_szAudioEndpointID;    // current audio device's symlink, identifier a device.
-    IMFMediaType        *m_selAudioMedaiType;
+    IMFMediaType       *m_selAudioMedaiType;
 
     std::thread         m_videoCapThread;
     std::thread         m_audioCapThread;
 
-    std::vector<CSJDeviceIdentifier>             m_videoDeviceIdentifiers;
-    std::vector<CComPtr<IMFMediaType>>           m_videoSubtypes;
-    std::vector<CSJDeviceIdentifier>             m_audioDeviceIdentifiers;
-    std::vector<CComPtr<IMFMediaType>>           m_audioSubtypes;
+    std::vector<CSJDeviceIdentifier>    m_videoDeviceIdentifiers;
+    std::vector<CComPtr<IMFMediaType>>  m_videoSubtypes;
+    std::vector<CSJDeviceIdentifier>    m_audioDeviceIdentifiers;
+    std::vector<CComPtr<IMFMediaType>>  m_audioSubtypes;
 
-    std::vector<CSJVideoDeviceInfo>              m_videoDeviceInfos;
-    std::vector<CSJAudioDeviceInfo>              m_audioDeviceInfos;
+    std::vector<CSJVideoDeviceInfo>     m_videoDeviceInfos;
+    std::vector<CSJAudioDeviceInfo>     m_audioDeviceInfos;
 
-    CSJMFCaptureStatus  m_status;               // current capture status.
-    bool                m_isStop;               // a flag indicates should stop capture or not.
-
-    CSJMFCapture::Delegate *m_delegate;
+    CSJMFCaptureStatus      m_status;               // current capture status.
+    bool                    m_isStop;               // a flag indicates should stop capture or not.
+    CComPtr<IMFTransform>   m_transformer = nullptr;
+    CSJMFCapture::Delegate *m_delegate = nullptr;
 };
 
 #endif // __CSJMFCAPTUREIMPL_H__

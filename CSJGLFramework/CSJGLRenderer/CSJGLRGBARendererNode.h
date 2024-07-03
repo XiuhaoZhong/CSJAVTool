@@ -9,8 +9,11 @@ public:
     ~CSJGLRGBARenererNode();
 
     bool init() override;
+    bool shouldRender() override;
     void setDefaultFramebuffer(CSJSpFrameBuffer framebuffer) override;
+    void updateRenderContent(CSJVideoData *videoData) override;
     void updateRenderPos(int width, int height) override;
+    void updateTexture() override;
     void draw() override;
 
 protected:

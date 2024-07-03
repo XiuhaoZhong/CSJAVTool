@@ -1,9 +1,11 @@
 #ifndef __CSJGLYUVRENDERERNODE_H__
 #define __CSJGLYUVRENDERERNODE_H__
 
+#include <mutex>
+
 #include "CSJGLRendererNode.h"
 
-#include "CSJMediaData.h"
+#include "CSJMediaData/CSJMediaData.h"
 
 class CSJGLYUVRendererNode : public CSJGLRendererNodeBase {
 public:
@@ -22,11 +24,16 @@ public:
     /* implements CSJGLRendererNodeBase                                     */
     /************************************************************************/
     bool init() override;
+    bool shouldRender() override;
     void setDefaultFramebuffer(CSJSpFrameBuffer framebuffer) override;
+    void updateRenderContent(CSJVideoData *videoData) override;
     void updateRenderPos(int width, int height) override;
+    void updateTexture() override;
     void draw() override;
 
 protected:
+    void initTexture();
+
     void initYUVBuffers();
 
     void initYUV420Buffers();
@@ -37,10 +44,14 @@ protected:
 
     void releaseVideoData(uint8_t **data);
 
-    void fillYUVData();
+    void fillYUVData(uint8_t *data);
+    void fillI420Data(uint8_t *data);
+    void fillNV12Data(uint8_t *data);
+    void fillYV12Data(uint8_t *data);
      
 private:
     // the video data of yuv planars.
+    std::mutex         m_yuvDataMtx;
     uint8_t            *m_yData = nullptr;
     uint8_t            *m_uData = nullptr;
     uint8_t            *m_vData = nullptr;
@@ -62,9 +73,17 @@ private:
     GLuint              m_texY;
     GLuint              m_texU;
     GLuint              m_texV;
+    GLuint              m_rgbTex;
 
     GLint               m_posAttr;      // render coordinates, (-1, -1) ~ (1, 1).
     GLint               m_textCoorAttr; // texture coordinates, (0, 0) ~ (1, 1).
+
+    bool                m_init = false;
+
+    CSJVideoData        m_videoData;
+
+    // test data
+    FILE *outYuvFile;
 };
 
 #endif // __CSJGLYUVRENDERERNODE_H__

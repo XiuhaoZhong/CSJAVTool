@@ -1,8 +1,11 @@
 #ifndef __CSJMEDIALIVEHANDLER_H__
 #define __CSJMEDIALIVEHANDLER_H__
 
+#include <atlbase.h>
+
 #include "CSJMediaHandlerBase.h"
 
+#include "CSJMediaData/CSJMediaData.h"
 #include "CSJMFCapture/CSJMFCapture.h"
 #include "CSJMediaEncoder/CSJMediaEncoder.h"
 
@@ -73,6 +76,8 @@ public:
     /************************************************************************/
     void onVideDataArrive() override;
 
+    void onVideoArrive(IMFMediaBuffer* videoData, LONGLONG timeStamp);
+
     void onAudioDataArrive(CSJMFAudioData *audioData) override;
 
     void onErrorOccurs() override;
@@ -133,16 +138,24 @@ protected:
     bool initRender();
 
     /**
+     * @brief Set the current capture parameter before capture starts.
+     */
+    void setCurrentCapturePramaters();
+
+    /**
      * @brief reload the capture device infos.
      */
     void reloadCaptureInfos();
 
+    void selectFormatByIndex(int formatIndex);
+    void selectResolutionByIndex(int resolutionIndex);
+
 private:
     CSJSharedCapture  m_pCapture;
     bool              m_bCaptureInit;
-    int               m_selCapDeviceIndex;
-    int               m_selCapFormatIndex;
-    int               m_selCapResolutionIndex;
+    int               m_selCapDeviceIndex = 0;
+    int               m_selCapFormatIndex = 0;
+    int               m_selCapResolutionIndex = 0;
 
     CSJSharedEncoder  m_pEncoder;
     bool              m_bEncoderInit;
@@ -153,6 +166,9 @@ private:
     std::vector<CSJVideoDeviceInfo> m_videoCapInfos;
     std::vector<CSJAudioDeviceInfo> m_audioCapInfos;
 
+    int                m_curWidth = 0;
+    int                m_curHeight = 0;
+    CSJVideoFormatType m_curVideoFmt = CSJVIDEO_FMT_NONE;
 };
 
 

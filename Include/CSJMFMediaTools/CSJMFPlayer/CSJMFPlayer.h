@@ -47,6 +47,13 @@ public:
      * @return duration.
      */
     virtual UINT64 getDuration() = 0;
+
+    /************************************************************************/
+    /* get player status.                                                   */
+    /************************************************************************/
+    virtual bool isStarted() = 0;
+    virtual bool isPaused() = 0;
+    virtual bool isStopped() = 0;
 };
 
 using CSJSpMFPlayer = std::shared_ptr<CSJMFPlayer>;

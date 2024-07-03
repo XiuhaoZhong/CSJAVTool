@@ -16,10 +16,18 @@ public:
 
 protected:
     bool onBtnClicked(ui::EventArgs *args);
+
+    bool onComboSelected(ui::EventArgs* args);
     /**
      * @brief load capture devices, including video and audio capture.
      */
     void loadVideoDeviceList();
+
+    void onVideoDevSelected(int index);
+
+    void onVideoFmtSelected(int index);
+
+    void onVideoResolutionSelected(int index);
 
     /**
      * @brief create list element with the params.
@@ -58,7 +66,7 @@ private:
     ui::Combo   *m_pVideoFmtCombo        = nullptr;
     ui::Combo   *m_pVideoResolutionCombo = nullptr;
 
-    ui::Button  *m_pCapConrolBtn         = nullptr;
+    ui::Button  *m_pCapControlBtn        = nullptr;
 
     CSJSpMediaLiveHandler m_pLiveHandler = nullptr;
 

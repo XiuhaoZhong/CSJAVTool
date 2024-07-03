@@ -12,8 +12,6 @@
 #include "CSJMFCapture/CSJMFCapture.h"
 #include "CSJMFPlayer/CSJMFPlayer.h"
 
-#include "CSJAVAudioHandler.h"
-
 #include "CSJMediaModules/CSJMediaLiveFrame.h"
 #include "CSJMediaModules/CSJMediaPlayerFrame.h"
 #include "CSJMediaModules/CSJTestFrame.h"
@@ -127,9 +125,9 @@ LRESULT ToolWindow::OnDestroy(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHa
 
 bool ToolWindow::onBtnClicked(ui::EventArgs *args) {
     if (args->pSender == m_pCaptureBtn) {
-        //m_pMainFrameView->SetVisible(false);
-        //showCaptureBox(true);
-        testMFPlayer();
+        m_pMainFrameView->SetVisible(false);
+        showCaptureBox(true);
+        //testMFPlayer();
     } else if (args->pSender == m_pTestFrameBtn) {
         showTestFrame(true);
     } else if (args->pSender == m_pPlayerBtn) {
@@ -233,19 +231,7 @@ void ToolWindow::transformMedia() {
     }
 }
 
-
-static std::shared_ptr<CSJAVAudioHandler> audioHandler;
-void ToolWindow::loadMFCapture() {
-    audioHandler = std::make_shared<CSJAVAudioHandler>();
-    
-    audioHandler->init();
-
-    audioHandler->startCapture();   
-    //audioHandler->testPlayer();
-}
-
 void ToolWindow::showCaptureBox(bool show) {
-    //m_pCaptureBox->SetVisible(show);
     if (!m_pMediaLiveFrame) {
 
         std::wstring xmlPath = GetWindowResourcePath() + L"MediaLiveFrame.xml";

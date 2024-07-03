@@ -24,9 +24,9 @@ void CSJMediaLiveFrame::initUI() {
         m_pCaptureBackBtn->AttachClick(nbase::Bind(&CSJMediaLiveFrame::onBtnClicked, this, std::placeholders::_1));
     }
 
-    m_pCapConrolBtn = dynamic_cast<Button *>((getManager()->FindControl(L"CapControlBtn")));
-    if (m_pCapConrolBtn) {
-        m_pCapConrolBtn->AttachClick(nbase::Bind(&CSJMediaLiveFrame::onBtnClicked, this, std::placeholders::_1));
+    m_pCapControlBtn = dynamic_cast<Button *>((getManager()->FindControl(L"recordBtn")));
+    if (m_pCapControlBtn) {
+        m_pCapControlBtn->AttachClick(nbase::Bind(&CSJMediaLiveFrame::onBtnClicked, this, std::placeholders::_1));
     }
     
     m_pLiveHandler = std::make_shared<CSJMediaLiveHandler>();
@@ -39,16 +39,16 @@ void CSJMediaLiveFrame::initUI() {
 
         loadVideoDeviceList();
 
-        m_pLiveHandler->startCapture();
+        //m_pLiveHandler->startCapture();
     }
 }
 
 bool CSJMediaLiveFrame::onBtnClicked(ui::EventArgs * args) {
     if (args->pSender == m_pCaptureBackBtn) {
         return true;
-    } else if (args->pSender == m_pCapConrolBtn) {
+    } else if (args->pSender == m_pCapControlBtn) {
 
-        if (!m_pLiveHandler->isCapturing()) {
+        if (m_pLiveHandler->isCapturing()) {
             onControlCapture(false);
         } else {
             onControlCapture(true);
@@ -59,10 +59,22 @@ bool CSJMediaLiveFrame::onBtnClicked(ui::EventArgs * args) {
     return false;
 }
 
+bool CSJMediaLiveFrame::onComboSelected(EventArgs * args) {
+    if (args->pSender == m_pVideoDevcieCombo) {
+        onVideoDevSelected(args->wParam);
+    } else if (args->pSender == m_pVideoFmtCombo) {
+        onVideoFmtSelected(args->wParam);
+    } else if (args->pSender == m_pVideoResolutionCombo) {
+        onVideoResolutionSelected(args->wParam);
+    }
+    return true;
+}
+
 void CSJMediaLiveFrame::loadVideoDeviceList() {
     if (!m_pVideoDevcieCombo) {
         m_pVideoDevcieCombo = dynamic_cast<ui::Combo *>((getManager()->FindControl(L"CameraDeviceCombo")));
         m_pVideoDevcieCombo->SetPopupTop(false);
+        m_pVideoDevcieCombo->AttachSelect(nbase::Bind(&CSJMediaLiveFrame::onComboSelected, this, std::placeholders::_1));
     }
 
     m_pVideoDevcieCombo->RemoveAll();
@@ -78,6 +90,7 @@ void CSJMediaLiveFrame::loadVideoDeviceList() {
     if (!m_pVideoFmtCombo) {
         m_pVideoFmtCombo = dynamic_cast<ui::Combo *>((getManager()->FindControl(L"CameraFmtCombo")));
         m_pVideoFmtCombo->SetPopupTop(false);
+        m_pVideoFmtCombo->AttachSelect(nbase::Bind(&CSJMediaLiveFrame::onComboSelected, this, std::placeholders::_1));
     }
 
     m_pVideoFmtCombo->RemoveAll();
@@ -92,6 +105,7 @@ void CSJMediaLiveFrame::loadVideoDeviceList() {
     if (!m_pVideoResolutionCombo) {
         m_pVideoResolutionCombo = dynamic_cast<ui::Combo *>((getManager()->FindControl(L"CameraResolutionCombo")));
         m_pVideoResolutionCombo->SetPopupTop(false);
+        m_pVideoResolutionCombo->AttachSelect(nbase::Bind(&CSJMediaLiveFrame::onComboSelected, this, std::placeholders::_1));
     }
 
     m_pVideoResolutionCombo->RemoveAll();
@@ -102,6 +116,24 @@ void CSJMediaLiveFrame::loadVideoDeviceList() {
         }
     }
     m_pVideoResolutionCombo->SelectItem(m_selVideoDevResotionIndex);
+}
+
+void CSJMediaLiveFrame::onVideoDevSelected(int index) {
+    if (!m_pLiveHandler) {
+        return;
+    }
+}
+
+void CSJMediaLiveFrame::onVideoFmtSelected(int index) {
+    if (!m_pLiveHandler) {
+        return;
+    }
+}
+
+void CSJMediaLiveFrame::onVideoResolutionSelected(int index) {
+    if (!m_pLiveHandler) {
+        return;
+    }
 }
 
 ui::ListContainerElement * CSJMediaLiveFrame::createListElement(std::wstring & text, 
@@ -131,8 +163,10 @@ void CSJMediaLiveFrame::onControlCapture(bool captureCtrl) {
 
     if (captureCtrl) {
         m_pLiveHandler->startCapture();
+        m_pCapControlBtn->SetText(L"停止录制");
     } else {
         m_pLiveHandler->stopHandler();
+        m_pCapControlBtn->SetText(L"开始录制");
     }
 }
 

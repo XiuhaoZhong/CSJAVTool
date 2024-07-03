@@ -5,6 +5,8 @@
 
 #include <memory>
 
+#include "CSJMediaData/CSJMediaData.h"
+
 #include "CSJGLComponents/CSJGLProgram.h"
 #include "CSJGLComponents/CSJGLFrameBuffer.h"
 
@@ -43,6 +45,13 @@ public:
     virtual bool init() = 0;
 
     /**
+     * @brief Indicates current renderer node should render or not.
+     * 
+     * @Return true should render, or skip current node.
+     */
+    virtual bool shouldRender() = 0;
+
+    /**
      * @brief Set the default framebuffer.
      * 
      * Renderer node could renderer content to the default framebuffer, or add
@@ -56,6 +65,14 @@ public:
     virtual void setDefaultFramebuffer(CSJSpFrameBuffer framebuffer) = 0;
 
     /**
+     * @brief Update the video content.
+     *
+     * @param[in] videoData     the video data,  in fact, this constructor can represent
+     *                          video data or image data which will be rendered.
+     */
+    virtual void updateRenderContent(CSJVideoData *videoData) = 0;
+
+    /**
      * @brief Update the render area with the size of render target. When drawing 
      *        conetnt to a render device(render window), the content's size maybe
      *        different to the window's size, or only a part of the window, so the 
@@ -66,6 +83,11 @@ public:
      * @param[in] height the height of render window in windows.    
      */
     virtual void updateRenderPos(int width, int height) = 0;
+
+    /**
+     * @brief update texture.
+     */
+    virtual void updateTexture() = 0;
 
     /**
      * @brief Renderer the content of current renderer node.

@@ -77,6 +77,18 @@ UINT64 CSJMFPlayerTopoImpl::getDuration() {
     return duration;
 }
 
+bool CSJMFPlayerTopoImpl::isStarted() {
+    return false;
+}
+
+bool CSJMFPlayerTopoImpl::isPaused() {
+    return false;
+}
+
+bool CSJMFPlayerTopoImpl::isStopped() {
+    return false;
+}
+
 bool CSJMFPlayerTopoImpl::init() {
     CComPtr<IMFSourceResolver> pSourceResolver = nullptr;
     HRESULT hr = MFCreateSourceResolver(&pSourceResolver);
