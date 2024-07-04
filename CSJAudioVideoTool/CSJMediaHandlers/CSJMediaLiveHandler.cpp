@@ -23,7 +23,6 @@ bool CSJMediaLiveHandler::initLiveHandler() {
         return false;
     }
 
-    m_pCapture->setOutputAsRGB24(true);
     return true;
 }
 

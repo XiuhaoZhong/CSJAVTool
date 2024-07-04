@@ -43,11 +43,6 @@ protected:
     void releaseYUVBuffers();
 
     void releaseVideoData(uint8_t **data);
-
-    void fillYUVData(uint8_t *data);
-    void fillI420Data(uint8_t *data);
-    void fillNV12Data(uint8_t *data);
-    void fillYV12Data(uint8_t *data);
      
 private:
     // the video data of yuv planars.

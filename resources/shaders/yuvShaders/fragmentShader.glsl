@@ -9,7 +9,7 @@ uniform sampler2D texV;
 out vec4 color;
 
 void main() { 
-	vec3 yuv = vec3(0.34, 0.02, 0.04);
+	vec3 yuv;
 	vec3 rgb;
 	
 	yuv.x = texture(texY, texCoordinates).r;

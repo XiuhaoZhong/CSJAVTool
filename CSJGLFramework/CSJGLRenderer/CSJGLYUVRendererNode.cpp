@@ -153,12 +153,12 @@ void CSJGLYUVRendererNode::updateTexture() {
     }
 
     if (m_videoData.getyuvU()) {
-        glBindTexture(GL_TEXTURE_2D, m_texY);
+        glBindTexture(GL_TEXTURE_2D, m_texU);
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, m_width / 2, m_height / 2, 0, GL_RED, GL_UNSIGNED_BYTE, m_videoData.getyuvU());
     }
 
     if (m_videoData.getyuvV()) {
-        glBindTexture(GL_TEXTURE_2D, m_texY);
+        glBindTexture(GL_TEXTURE_2D, m_texV);
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, m_width / 2, m_height / 2, 0, GL_RED, GL_UNSIGNED_BYTE, m_videoData.getyuvV());
     }
 }
@@ -258,58 +258,5 @@ void CSJGLYUVRendererNode::releaseVideoData(uint8_t ** data) {
 
     delete[](*data);
     *data = nullptr;
-}
-
-void CSJGLYUVRendererNode::fillYUVData(uint8_t *data) {
-    if (!data) {
-        return;
-    }
-
-    switch (m_fmtType) {
-    case CSJVIDEO_FMT_YUV420P:
-        fillI420Data(data);
-        break;
-    case CSJVIDEO_FMT_NV12:
-        fillNV12Data(data);
-        break;
-    }
-}
-
-void CSJGLYUVRendererNode::fillI420Data(uint8_t * data) {
-    if (!data) {
-        return;
-    }
-
-    size_t yLength = m_width * m_height;
-    if (m_yData) { 
-        memcpy(m_yData, data, yLength);
-    }
-
-    if (m_uData) {
-        memcpy(m_uData, data + yLength, yLength / 4);    
-    }
-
-    if (m_vData) {
-        memcpy(m_vData, data + yLength + yLength / 4, yLength / 4);
-    }
-}
-
-void CSJGLYUVRendererNode::fillNV12Data(uint8_t * data) {
-    if (!data) {
-        return;
-    }
-
-    size_t yLength = m_width * m_height;
-    memcpy(m_yData, data, yLength);
-
-    uint8_t* uvStart = data + yLength;
-    for (size_t i = 0; i < yLength / 4; i++) {
-        memcpy(m_uData + i, uvStart + 2 * i, 1);
-        memcpy(m_vData + i, uvStart + 2 * i + 1, 1);
-    }
-}
-
-void CSJGLYUVRendererNode::fillYV12Data(uint8_t * data) {
-
 }
 
