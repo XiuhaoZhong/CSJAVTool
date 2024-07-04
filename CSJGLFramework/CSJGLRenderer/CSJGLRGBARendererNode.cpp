@@ -3,6 +3,7 @@
 #include <iostream>
 
 #include "CSJCommonTool/CSJCommonTool.h"
+#include "CSJImageTool/CSJImageTool.h"
 
 /**
  * Default, use vao and vbo init the vertex data and color, if define the USE_VAO
@@ -16,9 +17,21 @@
 
 const float g_trianglePoints[] = {
     // point pos        point color;
-     0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f,
+    /* 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f,
     -0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f,
-     0.0f,  0.5f, 0.0f, 0.0f, 0.0f, 1.0f
+     0.0f,  0.5f, 0.0f, 0.0f, 0.0f, 1.0f*/
+
+     0.5f,  0.5f, 0.0f,		1.0f, 0.0f, 0.0f,	1.0f, 1.0f, // Top Right
+     0.5f, -0.5f, 0.0f,		0.0f, 1.0f, 0.0f,	1.0f, 0.0f, // Bottom Right
+    -0.5f,  0.5f, 0.0f,		1.0f, 1.0f, 0.0f,	0.0f, 1.0f,	// Top Left
+    -0.5f, -0.5f, 0.0f,		0.0f, 0.0f, 1.0f,	0.0f, 0.0f, // Bottom Left
+     
+};
+
+// 绘制矩形使用顶点索引;
+const int g_rectPosIdx[] = {
+    0, 1, 3,
+    1, 2, 3
 };
 
 CSJGLRGBARenererNode::CSJGLRGBARenererNode() {
@@ -54,6 +67,20 @@ bool CSJGLRGBARenererNode::init() {
 #endif // USE_VAO
     m_spProgram = spProgram;
 
+    glGenTextures(1, &m_imageTex);
+    glBindTexture(GL_TEXTURE_2D, m_imageTex);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    int width = 0, height = 0, tride = 0;
+    unsigned char* image = CSJImageTool::readFromImage("resources/images/awesomeface.png", width, height, tride);
+    if (!image) {
+    
+    }
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+
     return true;
 }
 
@@ -85,9 +112,14 @@ void CSJGLRGBARenererNode::draw() {
 
     m_spProgram->useProgram();
 
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, m_imageTex);
+    glUniform1i(glGetUniformLocation(m_spProgram->getProgram(), "imgTex"), 0);
+
 #if (USE_VAO == 1)
     glBindVertexArray(m_vVao);
-    glDrawArrays(GL_TRIANGLES, 0, 3);
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+    //glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
 #else 
     glEnableVertexAttribArray(m_posAttr);
@@ -103,16 +135,24 @@ bool CSJGLRGBARenererNode::initProgramWithVAO(CSJSpProgram spProgram) {
 
     glGenVertexArrays(1, &m_vVao);
     glGenBuffers(1, &m_vVbo);
+    //glGenBuffers(1, &m_vEbo);
 
     glBindVertexArray(m_vVao);
     glBindBuffer(GL_ARRAY_BUFFER, m_vVbo);
     glBufferData(GL_ARRAY_BUFFER, sizeof(g_trianglePoints), g_trianglePoints, GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid *)0);
+    /*glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_vEbo);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(g_rectPosIdx), g_rectPosIdx, GL_STATIC_DRAW);*/
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid *)0);
     glEnableVertexAttribArray(0);
 
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid *)(3 * sizeof(GLfloat)));
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid *)(3 * sizeof(GLfloat)));
     glEnableVertexAttribArray(1);
+
+    // texCood attributes;
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GL_FLOAT), (GLvoid *)(6 * sizeof(GL_FLOAT)));
+    glEnableVertexAttribArray(2);
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);

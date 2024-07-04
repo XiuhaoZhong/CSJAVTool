@@ -27,9 +27,10 @@ private:
     GLuint           m_vVao;
     GLuint           m_vVbo;
 
-
     GLuint           m_posAttr;
     GLuint           m_colorAttr;
+
+    GLuint           m_imageTex;
     
 };
 

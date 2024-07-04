@@ -185,24 +185,21 @@ void CSJGLYUVRendererNode::draw() {
 
 void CSJGLYUVRendererNode::initTexture() {
     glGenTextures(1, &m_texY);
+    glBindTexture(GL_TEXTURE_2D, m_texY);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
     glGenTextures(1, &m_texU);
+    glBindTexture(GL_TEXTURE_2D, m_texU);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
     glGenTextures(1, &m_texV);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-    glGenTextures(1, &m_rgbTex);
+    glBindTexture(GL_TEXTURE_2D, m_texV);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -310,15 +307,6 @@ void CSJGLYUVRendererNode::fillNV12Data(uint8_t * data) {
         memcpy(m_uData + i, uvStart + 2 * i, 1);
         memcpy(m_vData + i, uvStart + 2 * i + 1, 1);
     }
-
-//#if WRITE_YUV_TO_FILE
-//    if (outYuvFile) {
-//        fwrite(m_yData, 1, yLength, outYuvFile);
-//        fwrite(m_uData, 1, yLength / 4, outYuvFile);
-//        fwrite(m_vData, 1, yLength / 4, outYuvFile);
-//        fflush(outYuvFile);
-//    }
-//#endif
 }
 
 void CSJGLYUVRendererNode::fillYV12Data(uint8_t * data) {

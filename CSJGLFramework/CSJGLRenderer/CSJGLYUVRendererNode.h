@@ -73,7 +73,6 @@ private:
     GLuint              m_texY;
     GLuint              m_texU;
     GLuint              m_texV;
-    GLuint              m_rgbTex;
 
     GLint               m_posAttr;      // render coordinates, (-1, -1) ~ (1, 1).
     GLint               m_textCoorAttr; // texture coordinates, (0, 0) ~ (1, 1).
